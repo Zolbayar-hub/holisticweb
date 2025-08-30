@@ -4,6 +4,8 @@ Flask-SQLAlchemy>=3.0.0
 Flask-Admin>=1.6.0
 Flask-Babel>=3.0.0
 Flask-CORS>=4.0.0
+Flask-Mail>=0.9.1
+Flask-Migrate>=4.0.0
 
 # Database
 SQLAlchemy>=2.0.0

@@ -1,0 +1,24 @@
+<form method="POST" action="{{ url_for('create_booking') }}">
+  <label for="user_name">Name:</label>
+  <input type="text" name="user_name" required>
+
+  <label for="email">Email:</label>
+  <input type="email" name="email" required>
+
+  <label for="service">Choose a Service:</label>
+  <select name="service_id" required>
+    {% for service in services %}
+      <option value="{{ service.id }}">
+        {{ service.name }} - ${{ service.price }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label for="start_time">Start Time:</label>
+  <input type="datetime-local" name="start_time" required>
+
+  <label for="end_time">End Time:</label>
+  <input type="datetime-local" name="end_time" required>
+
+  <button type="submit">Book</button>
+</form>

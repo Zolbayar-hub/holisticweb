@@ -1,6 +1,8 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import db
+from datetime import datetime
+
 
 
 class Role(db.Model):
@@ -63,6 +65,35 @@ class GeneratedContent(db.Model):
     twitter_id = db.Column(db.String(255), nullable=True)  # Twitter/X tweet ID
     is_reposted = db.Column(db.Boolean, default=False, nullable=False)
     reposted_at = db.Column(db.DateTime, nullable=True)
+    
 
     def __repr__(self):
         return f"<GeneratedContent id={self.id} topic={self.topic}>"
+
+class Booking(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(20), default='pending')  # pending, confirmed, cancelled
+    admin_notes = db.Column(db.String(255), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Booking {self.user_name} {self.start_time}>"
+    service_id = db.Column(db.Integer, db.ForeignKey('services.id'), nullable=True)
+    service = db.relationship("Service", backref="bookings")
+    
+
+class Service(db.Model):
+    __tablename__ = "services"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    price = db.Column(db.Float, nullable=False)
+    duration = db.Column(db.Integer, nullable=False)  # Duration in minutes
+
+    def __repr__(self):
+        return f"<Service {self.name}>"
