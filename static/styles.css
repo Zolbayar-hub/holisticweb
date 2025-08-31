@@ -231,8 +231,7 @@ body {
 /* Hero Section */
 .hero {
     height: 100vh;
-    background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)),
-                url('../static/images/meditating_woman.jpg');
+    background: url('../static/images/meditating_woman.jpg');
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
