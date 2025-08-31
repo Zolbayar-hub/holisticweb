@@ -146,8 +146,11 @@ body {
 /* Hero Section */
 .hero {
     height: 100vh;
-    background: linear-gradient(rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)), 
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea;stop-opacity:0.1" /><stop offset="100%" style="stop-color:%23764ba2;stop-opacity:0.1" /></linearGradient></defs><rect width="1200" height="600" fill="url(%23grad)"/><circle cx="200" cy="150" r="3" fill="%23fff" opacity="0.3"/><circle cx="800" cy="100" r="2" fill="%23fff" opacity="0.5"/><circle cx="1000" cy="300" r="4" fill="%23fff" opacity="0.2"/><circle cx="300" cy="400" r="2" fill="%23fff" opacity="0.4"/><circle cx="600" cy="500" r="3" fill="%23fff" opacity="0.3"/></svg>') center/cover;
+    background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)),
+                url('../static/images/meditating_woman.jpg');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;

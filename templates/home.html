@@ -53,36 +53,15 @@
             <div class="container">
                 <h2 class="section-title">Our Therapeutic Services</h2>
                 <div class="services-grid">
+                    {% for service in services %}
                     <div class="service-card">
-                        <div class="service-icon">🧘‍♀️</div>
-                        <h3>Mindfulness Therapy</h3>
-                        <p>Learn to be present and cultivate inner peace through guided mindfulness practices and meditation techniques.</p>
+                        <div class="service-icon">🧘‍♀️</div> <!-- Optionally, add an icon field to Service model for dynamic icons -->
+                        <h3>{{ service.name }}</h3>
+                        <p>{{ service.description }}</p>
+                        <p><strong>Duration:</strong> {{ service.duration }} min</p>
+                        <p><strong>Price:</strong> ${{ '%.2f'|format(service.price) }}</p>
                     </div>
-                    <div class="service-card">
-                        <div class="service-icon">💆‍♂️</div>
-                        <h3>Body Work</h3>
-                        <p>Release physical tension and restore balance through therapeutic massage, acupuncture, and energy healing.</p>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">🌱</div>
-                        <h3>Spiritual Guidance</h3>
-                        <p>Connect with your inner wisdom and explore your spiritual path through personalized guidance and support.</p>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">🥗</div>
-                        <h3>Nutritional Wellness</h3>
-                        <p>Nourish your body with personalized nutrition plans that support your overall health and vitality.</p>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">🎨</div>
-                        <h3>Creative Therapy</h3>
-                        <p>Express and heal through art, music, and movement therapy designed to unlock your creative potential.</p>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">💚</div>
-                        <h3>Relationship Healing</h3>
-                        <p>Strengthen your connections with others and yourself through relationship counseling and communication skills.</p>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>

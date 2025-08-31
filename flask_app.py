@@ -212,7 +212,8 @@ def not_found_error(error):
 # ---- Health Check ----
 @app.route('/')
 def home():
-    return render_template('home.html')
+    services = Service.query.all()
+    return render_template('home.html', services=services)
 
 @app.route('/health')
 def health_check():
@@ -340,7 +341,7 @@ class ServiceAdminView(ModelView):
     column_list = ('id', 'name', 'price', 'description')
     column_searchable_list = ['name']
     column_filters = ['price']
-    form_columns = ('name', 'description', 'price')
+    form_columns = ('name', 'description', 'price', 'duration')
 
     def is_accessible(self):
         return is_admin()
@@ -410,19 +411,6 @@ if __name__ == '__main__':
             db.session.add(admin_user)
             db.session.commit()
 
-        # Insert sample services if missing
-        if not Service.query.first():
-            services = [
-                Service(name='Mindfulness Therapy', description='Learn to be present and cultivate inner peace through guided mindfulness practices and meditation techniques.', price=80.0, duration=60),
-                Service(name='Body Work', description='Release physical tension and restore balance through therapeutic massage, acupuncture, and energy healing.', price=100.0, duration=90),
-                Service(name='Spiritual Guidance', description='Connect with your inner wisdom and explore your spiritual path through personalized guidance and support.', price=70.0, duration=60),
-                Service(name='Nutritional Wellness', description='Nourish your body with personalized nutrition plans that support your overall health and vitality.', price=60.0, duration=45),
-                Service(name='Creative Therapy', description='Express and heal through art, music, and movement therapy designed to unlock your creative potential.', price=75.0, duration=60),
-                Service(name='Relationship Healing', description='Strengthen your connections with others and yourself through relationship counseling and communication skills.', price=90.0, duration=75)
-            ]
-            db.session.bulk_save_objects(services)
-            db.session.commit()
-            print("Sample services added to database.")
 
     app.run(
         host='127.0.0.1',
