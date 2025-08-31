@@ -91,113 +91,6 @@ from routes.auth import auth_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(booking_bp)
 
-# ---- Booking with Email Confirmation ----
-@app.route("/bookings/new", methods=["GET", "POST"])
-def create_booking():
-    if request.method == "POST":
-        try:
-            new_booking = Booking(
-                user_name=request.form["user_name"],
-                email=request.form["email"],
-                service_id=request.form["service_id"],
-                start_time=datetime.fromisoformat(request.form["start_time"]),
-                end_time=datetime.fromisoformat(request.form["end_time"]),
-            )
-            db.session.add(new_booking)
-            db.session.commit()
-
-            # ---- Send confirmation email (non-blocking) ----
-            service = Service.query.get(new_booking.service_id)
-            if app.config.get("MAIL_USERNAME") and app.config.get("MAIL_PASSWORD"):
-                import threading
-                
-                def send_email_async():
-                    """Send email in background thread to avoid blocking the request"""
-                    try:
-                        with app.app_context():
-                            # ---- Send confirmation email to customer ----
-                            print(f"📧 [Background] Sending confirmation email to {new_booking.email}")
-                            msg = Message(
-                                subject=f"🌟 Booking Confirmation - {service.name if service else 'HolisticWeb'}",
-                                recipients=[new_booking.email],
-                                sender=app.config.get('MAIL_DEFAULT_SENDER'),
-                                body=f"""Hello {new_booking.user_name},
-
-Thank you for booking with HolisticWeb! ✨
-
-📌 Service: {service.name if service else "Unknown"}
-💰 Price: ${service.price if service else "N/A"}
-🕒 Start: {new_booking.start_time.strftime("%Y-%m-%d %H:%M")}
-🕒 End:   {new_booking.end_time.strftime("%Y-%m-%d %H:%M")}
-
-{service.description if service else ""}
-
-We look forward to seeing you!
-
-Best regards,
-- The HolisticWeb Team
-
-If you need to reschedule or have any questions, please contact us.
-"""
-                            )
-                            
-                            mail.send(msg)
-                            print(f"✅ [Background] Confirmation email sent successfully to {new_booking.email}")
-                            
-                            # ---- Send notification email to admin ----
-                            try:
-                                admin_msg = Message(
-                                    subject="📩 New Booking Received",
-                                    recipients=["dambazolbayar@gmail.com"],   # replace with your admin email
-                                    sender=app.config.get('MAIL_DEFAULT_SENDER'),
-                                    body=f"""A new booking was created!
-
-📌 Service: {service.name if service else "Unknown"} (ID: {new_booking.service_id})
-📅 Date: {new_booking.start_time.strftime("%Y-%m-%d %H:%M")} - {new_booking.end_time.strftime("%Y-%m-%d %H:%M")}
-👤 Customer: {new_booking.user_name}
-📧 Email: {new_booking.email}
-💰 Price: ${service.price if service else "N/A"}
-
-Booking ID: {new_booking.id}
-
-Login to admin panel to manage this booking.
-"""
-                                )
-                                mail.send(admin_msg)
-                                print("✅ [Background] Admin notification sent successfully")
-                            except Exception as admin_email_error:
-                                print(f"❌ [Background] Admin email failed: {admin_email_error}")
-                            
-                    except Exception as email_error:
-                        print(f"❌ [Background] Failed to send customer email: {email_error}")
-                        print(f"❌ Error type: {type(email_error).__name__}")
-                        if "authentication" in str(email_error).lower():
-                            print("❌ Authentication failed - check Gmail app password")
-                        elif "timeout" in str(email_error).lower():
-                            print("❌ Connection timeout - check network/firewall")
-                
-                # Start email sending in background
-                email_thread = threading.Thread(target=send_email_async, daemon=True)
-                email_thread.start()
-                
-                # User gets immediate feedback without waiting for email
-                flash("Booking created ✅ Email confirmation being sent...", "success")
-                
-            else:
-                print("📧 Email credentials not configured")
-                flash("Booking created ✅ (Email not configured)", "info")
-
-            return redirect(url_for("home"))
-
-        except Exception as e:
-            flash(f"Error creating booking: {e}", "error")
-            return redirect(url_for("create_booking"))
-
-    services = Service.query.all()
-    return render_template("new_booking.html", services=services)
-
-
-
 # ---- Error Handlers ----
 @app.errorhandler(500)
 def internal_error(error):
@@ -214,6 +107,16 @@ def not_found_error(error):
 def home():
     services = Service.query.all()
     return render_template('home.html', services=services)
+
+@app.route('/book')
+def book_redirect():
+    """Redirect to the booking page for easy access"""
+    return redirect(url_for('booking_bp.booking_page'))
+
+@app.route('/bookings/new')
+def old_booking_redirect():
+    """Redirect old booking URL to new booking page"""
+    return redirect(url_for('booking_bp.create_booking'))
 
 @app.route('/health')
 def health_check():
