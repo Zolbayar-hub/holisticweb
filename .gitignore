@@ -8,8 +8,6 @@ __pycache__/
 *.sqlite
 data.sqlite
 # instance/
-images/
-static/images/
 .DS_Store
 *.swp
 *.bak
