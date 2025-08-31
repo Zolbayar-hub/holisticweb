@@ -58,6 +58,9 @@ print(f"   Password: {'✅ Set' if app.config['MAIL_PASSWORD'] else '❌ Not set
 
 mail = Mail(app)
 
+# Make mail available globally for blueprints
+app.mail = mail
+
 # ---- Test Mail Route ----
 @app.route("/send-email")
 def send_email():

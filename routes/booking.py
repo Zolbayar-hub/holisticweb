@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, current_app, flash, redirect, url_for
-from flask_mail import Message
+from flask_mail import Message, Mail
 from db import db
 from db.models import Booking, Service
 from datetime import datetime
@@ -73,11 +73,14 @@ def add_booking():
                 """Send email in background thread to avoid blocking the request"""
                 try:
                     with current_app.app_context():
-                        from flask_mail import Mail
-                        mail = Mail(current_app)
+                        # Get the mail instance from the app
+                        mail = current_app.mail
                         
                         # Send confirmation email to customer
                         print(f"📧 [Background] Sending confirmation email to {booking.email}")
+                        print(f"📧 [Background] SMTP Config: {current_app.config['MAIL_SERVER']}:{current_app.config['MAIL_PORT']}")
+                        print(f"📧 [Background] From: {current_app.config.get('MAIL_DEFAULT_SENDER')}")
+                        
                         msg = Message(
                             subject=f"🌟 Booking Confirmation - {service.name if service else 'HolisticWeb'}",
                             recipients=[booking.email],
@@ -132,10 +135,14 @@ Login to admin panel to manage this booking.
                 except Exception as email_error:
                     print(f"❌ [Background] Failed to send customer email: {email_error}")
                     print(f"❌ Error type: {type(email_error).__name__}")
+                    print(f"❌ Error details: {str(email_error)}")
                     if "authentication" in str(email_error).lower():
                         print("❌ Authentication failed - check Gmail app password")
                     elif "timeout" in str(email_error).lower():
                         print("❌ Connection timeout - check network/firewall")
+                    # Print full traceback for debugging
+                    import traceback
+                    traceback.print_exc()
             
             # Start email sending in background
             email_thread = threading.Thread(target=send_email_async, daemon=True)
@@ -144,6 +151,8 @@ Login to admin panel to manage this booking.
             print(f"📧 Email confirmation being sent to {booking.email}")
         else:
             print("📧 Email credentials not configured")
+            print(f"📧 MAIL_USERNAME: {current_app.config.get('MAIL_USERNAME')}")
+            print(f"📧 MAIL_PASSWORD: {'***' if current_app.config.get('MAIL_PASSWORD') else 'Not set'}")
 
         return jsonify({
             "success": True, 
