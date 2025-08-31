@@ -370,7 +370,23 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.insertAdjacentHTML('beforeend', authModalHtml);
     setupModalEventListeners();
   }
-  
+
+  // Hamburger menu dropdown logic
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    mobileMenu.classList.toggle('active');
+  });
+  // Close dropdown if clicking outside
+  document.addEventListener('click', function(e) {
+    if (mobileMenu.classList.contains('active')) {
+      if (!mobileMenu.contains(e.target) && e.target !== hamburger) {
+        mobileMenu.classList.remove('active');
+      }
+    }
+  });
+
   // Initialize auth button
   initializeAuthButton();
 });

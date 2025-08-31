@@ -7,29 +7,41 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- Header with Hamburger Menu -->
+    <!-- Header with Navigation -->
     <header class="header">
         <nav class="nav-container">
             <a href="#" class="logo">Holistic Therapy</a>
+            
+            <!-- Desktop Navigation -->
+            <ul class="desktop-nav">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="{{ url_for('create_booking') }}">Book Now</a></li>
+                <li><button id="desktop-auth-btn" class="auth-btn">Login</button></li>
+            </ul>
+            
+            <!-- Mobile Hamburger Button -->
             <button class="hamburger" id="hamburger">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
+            
+            <!-- Mobile Menu Dropdown -->
+            <div class="mobile-menu" id="mobile-menu">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="{{ url_for('create_booking') }}">Book Now</a></li>
+                </ul>
+                <button id="mobile-auth-btn" class="auth-btn">Login</button>
+            </div>
         </nav>
     </header>
-    
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobile-menu">
-        <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="{{ url_for('create_booking') }}">Book Now</a></li>
-        </ul>
-        <button id="mobile-auth-btn">Login</button>
-    </div>
     
     <!-- Hidden containers for auth.js compatibility -->
     <div id="login-btn-container" style="display: none;"></div>

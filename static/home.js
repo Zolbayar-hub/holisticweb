@@ -2,8 +2,10 @@
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobile-menu');
 const mobileAuthBtn = document.getElementById('mobile-auth-btn');
+const desktopAuthBtn = document.getElementById('desktop-auth-btn');
 
-hamburger.addEventListener('click', () => {
+hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
     hamburger.classList.toggle('active');
     mobileMenu.classList.toggle('active');
 });
@@ -14,6 +16,19 @@ document.querySelectorAll('.mobile-menu a').forEach(link => {
         hamburger.classList.remove('active');
         mobileMenu.classList.remove('active');
     });
+});
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('active');
+    }
+});
+
+// Prevent mobile menu from closing when clicking inside it
+mobileMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
 });
 
 // Smooth scrolling for anchor links
@@ -30,47 +45,56 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Override auth.js initialization to use our mobile button
-function initializeMobileAuthButton() {
-    updateMobileAuthButton().catch(error => {
-        console.error('Failed to update mobile auth button:', error);
-        // Button already has default state
+// Override auth.js initialization to use our auth buttons
+function initializeAuthButtons() {
+    updateAuthButtons().catch(error => {
+        console.error('Failed to update auth buttons:', error);
+        // Buttons already have default state
     });
 }
 
-async function updateMobileAuthButton() {
+async function updateAuthButtons() {
     try {
         const status = await checkAuthStatus();
-        if (status.logged_in) {
-            mobileAuthBtn.textContent = 'Logout';
-            mobileAuthBtn.classList.add('logout-btn');
-            mobileAuthBtn.onclick = async () => {
-                try {
-                    const res = await logout();
-                    if (res.message) {
-                        location.reload();
+        
+        // Update both mobile and desktop auth buttons
+        const authButtons = [mobileAuthBtn, desktopAuthBtn].filter(btn => btn);
+        
+        authButtons.forEach(btn => {
+            if (status.logged_in) {
+                btn.textContent = 'Logout';
+                btn.classList.add('logout-btn');
+                btn.onclick = async () => {
+                    try {
+                        const res = await logout();
+                        if (res.message) {
+                            location.reload();
+                        }
+                    } catch (error) {
+                        console.error('Logout error:', error);
                     }
-                } catch (error) {
-                    console.error('Logout error:', error);
-                }
-            };
-        } else {
-            mobileAuthBtn.textContent = 'Login';
-            mobileAuthBtn.classList.remove('logout-btn');
-            mobileAuthBtn.onclick = showLoginModal;
-        }
+                };
+            } else {
+                btn.textContent = 'Login';
+                btn.classList.remove('logout-btn');
+                btn.onclick = showLoginModal;
+            }
+        });
     } catch (error) {
         console.error('Error checking auth status:', error);
-        mobileAuthBtn.textContent = 'Login';
-        mobileAuthBtn.classList.remove('logout-btn');
-        mobileAuthBtn.onclick = showLoginModal;
+        const authButtons = [mobileAuthBtn, desktopAuthBtn].filter(btn => btn);
+        authButtons.forEach(btn => {
+            btn.textContent = 'Login';
+            btn.classList.remove('logout-btn');
+            btn.onclick = showLoginModal;
+        });
     }
 }
 
-// Initialize mobile auth button when page loads
+// Initialize auth buttons when page loads
 document.addEventListener('DOMContentLoaded', function() {
     // Wait a bit for auth.js to load
-    setTimeout(initializeMobileAuthButton, 100);
+    setTimeout(initializeAuthButtons, 100);
 });
 
 // Contact form handling
