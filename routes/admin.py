@@ -60,7 +60,7 @@ def edit_service(service_id):
             
             db.session.commit()
             flash('Service updated successfully!', 'success')
-            return redirect(url_for('admin.admin_services'))
+            return redirect(url_for('admin_panel.admin_services'))
             
         except Exception as e:
             flash(f'Error updating service: {str(e)}', 'error')
@@ -96,7 +96,7 @@ def create_service():
             db.session.add(service)
             db.session.commit()
             flash('Service created successfully!', 'success')
-            return redirect(url_for('admin.admin_services'))
+            return redirect(url_for('admin_panel.admin_services'))
             
         except Exception as e:
             flash(f'Error creating service: {str(e)}', 'error')
@@ -125,7 +125,7 @@ def delete_service(service_id):
         flash(f'Error deleting service: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('admin.admin_services'))
+    return redirect(url_for('admin_panel.admin_services'))
 
 @admin_bp.route('/emails')
 @admin_required
@@ -149,7 +149,7 @@ def edit_email_template(template_id):
             
             db.session.commit()
             flash('Email template updated successfully!', 'success')
-            return redirect(url_for('admin.admin_emails'))
+            return redirect(url_for('admin_panel.admin_emails'))
             
         except Exception as e:
             flash(f'Error updating email template: {str(e)}', 'error')
@@ -173,7 +173,7 @@ def create_email_template():
             db.session.add(template)
             db.session.commit()
             flash('Email template created successfully!', 'success')
-            return redirect(url_for('admin.admin_emails'))
+            return redirect(url_for('admin_panel.admin_emails'))
             
         except Exception as e:
             flash(f'Error creating email template: {str(e)}', 'error')
@@ -195,7 +195,7 @@ def delete_email_template(template_id):
         flash(f'Error deleting email template: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('admin.admin_emails'))
+    return redirect(url_for('admin_panel.admin_emails'))
 
 @admin_bp.route('/settings')
 @admin_required
@@ -251,7 +251,7 @@ def update_settings():
         flash(f'Error updating settings: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('admin.admin_settings'))
+    return redirect(url_for('admin_panel.admin_settings'))
 
 @admin_bp.route('/upload-image', methods=['POST'])
 @admin_required
