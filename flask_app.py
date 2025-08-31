@@ -14,7 +14,7 @@ from datetime import datetime
 import os
 from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-from db.models import User, Role, GeneratedContent, Booking, Service
+from db.models import User, Role, GeneratedContent, Booking, Service, SiteSetting, EmailTemplate
 from werkzeug.security import generate_password_hash
 from flask_babel import Babel
 from flask_login import LoginManager, current_user
@@ -91,8 +91,10 @@ def load_user(user_id):
 
 # ---- Register Blueprints ----
 from routes.auth import auth_bp
+from routes.admin import admin_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(booking_bp)
+app.register_blueprint(admin_bp)
 
 # ---- Error Handlers ----
 @app.errorhandler(500)
@@ -109,7 +111,12 @@ def not_found_error(error):
 @app.route('/')
 def home():
     services = Service.query.all()
-    return render_template('home.html', services=services)
+    
+    # Get site settings
+    site_settings = SiteSetting.query.all()
+    settings = {setting.key: setting.value for setting in site_settings}
+    
+    return render_template('home.html', services=services, settings=settings)
 
 @app.route('/book')
 def book_redirect():
@@ -316,6 +323,61 @@ if __name__ == '__main__':
             )
             db.session.add(admin_user)
             db.session.commit()
+
+        # Insert default site settings if missing
+        default_settings = [
+            ('hero_title', 'Holistic Therapy', 'Main hero section title'),
+            ('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.', 'Hero section subtitle'),
+            ('about_title', 'Our Holistic Approach', 'About section title'),
+            ('about_text_1', 'At Holistic Therapy, we believe that true healing encompasses all aspects of the human experience. Our integrated approach addresses the interconnected nature of mind, body, and spirit.', 'About section paragraph 1'),
+            ('about_text_2', 'Our experienced practitioners work with you to create personalized treatment plans that honor your unique journey and support your natural healing processes.', 'About section paragraph 2'),
+            ('about_text_3', 'Whether you\'re seeking relief from stress, looking to improve your overall wellness, or embarking on a journey of personal growth, we\'re here to support you every step of the way.', 'About section paragraph 3'),
+            ('contact_title', 'Begin Your Healing Journey', 'Contact section title'),
+            ('contact_text', 'Ready to take the first step? Contact us to schedule a consultation and discover how our holistic approach can support your wellness goals.', 'Contact section text'),
+            ('footer_text', 'Holistic Therapy. All rights reserved. | Healing Mind, Body & Spirit', 'Footer text'),
+        ]
+        
+        for key, value, description in default_settings:
+            if not SiteSetting.query.filter_by(key=key).first():
+                setting = SiteSetting(key=key, value=value, description=description)
+                db.session.add(setting)
+        
+        # Insert default email template if missing
+        if not EmailTemplate.query.filter_by(name='booking_confirmation').first():
+            template = EmailTemplate(
+                name='booking_confirmation',
+                subject='🌟 Booking Confirmation - {service_name}',
+                body="""Hello {user_name},
+
+Thank you for booking with HolisticWeb! ✨
+
+📌 Service: {service_name}
+💰 Price: ${service_price}
+🕒 Start: {start_time}
+🕒 End: {end_time}
+
+We look forward to seeing you!
+
+Best regards,
+- The HolisticWeb Team
+
+If you need to reschedule or have any questions, please contact us.""",
+                description='Default booking confirmation email sent to customers'
+            )
+            db.session.add(template)
+        
+        # Insert default services if missing
+        if not Service.query.first():
+            default_services = [
+                Service(name='Holistic Therapy Session', description='A comprehensive therapy session addressing mind, body, and spirit wellness through integrated healing techniques.', price=120.00, duration=90),
+                Service(name='Stress Relief Therapy', description='Specialized therapy focused on reducing stress and promoting relaxation through holistic approaches.', price=90.00, duration=60),
+                Service(name='Energy Healing Session', description='Therapeutic session designed to balance and restore your natural energy flow for optimal wellness.', price=100.00, duration=75),
+            ]
+            
+            for service in default_services:
+                db.session.add(service)
+        
+        db.session.commit()
 
 
     app.run(

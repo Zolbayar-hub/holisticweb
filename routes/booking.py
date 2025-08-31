@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, current_app, flash, redirect, url_for
 from flask_mail import Message, Mail
 from db import db
-from db.models import Booking, Service
+from db.models import Booking, Service, EmailTemplate
 from datetime import datetime
 import threading
 
@@ -81,11 +81,31 @@ def add_booking():
                         print(f"📧 [Background] SMTP Config: {current_app.config['MAIL_SERVER']}:{current_app.config['MAIL_PORT']}")
                         print(f"📧 [Background] From: {current_app.config.get('MAIL_DEFAULT_SENDER')}")
                         
-                        msg = Message(
-                            subject=f"🌟 Booking Confirmation - {service.name if service else 'HolisticWeb'}",
-                            recipients=[booking.email],
-                            sender=current_app.config.get('MAIL_DEFAULT_SENDER'),
-                            body=f"""Hello {booking.user_name},
+                        # Get email template
+                        email_template = EmailTemplate.query.filter_by(name='booking_confirmation').first()
+                        
+                        if email_template:
+                            # Use custom template
+                            subject = email_template.subject
+                            body = email_template.body
+                            
+                            # Replace variables in template
+                            variables = {
+                                '{user_name}': booking.user_name,
+                                '{email}': booking.email,
+                                '{service_name}': service.name if service else 'Unknown',
+                                '{service_price}': str(service.price) if service else 'N/A',
+                                '{start_time}': booking.start_time.strftime("%Y-%m-%d %H:%M"),
+                                '{end_time}': booking.end_time.strftime("%Y-%m-%d %H:%M")
+                            }
+                            
+                            for variable, value in variables.items():
+                                subject = subject.replace(variable, value)
+                                body = body.replace(variable, value)
+                        else:
+                            # Fallback to default template
+                            subject = f"🌟 Booking Confirmation - {service.name if service else 'HolisticWeb'}"
+                            body = f"""Hello {booking.user_name},
 
 Thank you for booking with HolisticWeb! ✨
 
@@ -103,6 +123,12 @@ Best regards,
 
 If you need to reschedule or have any questions, please contact us.
 """
+                        
+                        msg = Message(
+                            subject=subject,
+                            recipients=[booking.email],
+                            sender=current_app.config.get('MAIL_DEFAULT_SENDER'),
+                            body=body
                         )
                         
                         mail.send(msg)

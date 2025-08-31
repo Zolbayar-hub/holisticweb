@@ -94,6 +94,36 @@ class Service(db.Model):
     description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Float, nullable=False)
     duration = db.Column(db.Integer, nullable=False)  # Duration in minutes
+    image_path = db.Column(db.String(255), nullable=True)  # Path to service image
 
     def __repr__(self):
         return f"<Service {self.name}>"
+
+
+class SiteSetting(db.Model):
+    __tablename__ = "site_settings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(100), nullable=False, unique=True)
+    value = db.Column(db.Text, nullable=True)
+    description = db.Column(db.String(255), nullable=True)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+    def __repr__(self):
+        return f"<SiteSetting {self.key}>"
+
+
+class EmailTemplate(db.Model):
+    __tablename__ = "email_templates"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    subject = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+    def __repr__(self):
+        return f"<EmailTemplate {self.name}>"

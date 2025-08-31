@@ -19,6 +19,9 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
+                {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
+                <li><a href="{{ url_for('admin_panel.admin_panel') }}" style="color: #ffc107;">Admin</a></li>
+                {% endif %}
                 <li><button id="desktop-auth-btn" class="auth-btn">Login</button></li>
             </ul>
             
@@ -37,6 +40,9 @@
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
+                    {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
+                    <li><a href="{{ url_for('admin_panel.admin_panel') }}" style="color: #ffc107;">Admin Panel</a></li>
+                    {% endif %}
                 </ul>
                 <button id="mobile-auth-btn" class="auth-btn">Login</button>
             </div>
@@ -51,10 +57,10 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero" id="home">
+        <section class="hero" id="home" {% if settings.get('home_image') %}style="background-image: url('{{ url_for('static', filename=settings.get('home_image')) }}'); background-size: cover; background-position: center;"{% endif %}>
             <div class="hero-content">
-                <h1>Holistic Therapy</h1>
-                <p>Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.</p>
+                <h1>{{ settings.get('hero_title', 'Holistic Therapy') }}</h1>
+                <p>{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
                 <a href="#services" class="cta-button">Explore Our Services</a>
                 <a href="{{ url_for('booking_bp.booking_page') }}" class="cta-button" style="margin-left: 15px;">Book Now</a>
             </div>
@@ -67,7 +73,13 @@
                 <div class="services-grid">
                     {% for service in services %}
                     <div class="service-card">
-                        <div class="service-icon">🧘‍♀️</div> <!-- Optionally, add an icon field to Service model for dynamic icons -->
+                        {% if service.image_path %}
+                        <div class="service-image">
+                            <img src="{{ url_for('static', filename=service.image_path) }}" alt="{{ service.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        </div>
+                        {% else %}
+                        <div class="service-icon">🧘‍♀️</div>
+                        {% endif %}
                         <h3>{{ service.name }}</h3>
                         <p>{{ service.description }}</p>
                         <p><strong>Duration:</strong> {{ service.duration }} min</p>
@@ -84,10 +96,10 @@
             <div class="container">
                 <div class="about-content">
                     <div class="about-text">
-                        <h2>Our Holistic Approach</h2>
-                        <p>At Holistic Therapy, we believe that true healing encompasses all aspects of the human experience. Our integrated approach addresses the interconnected nature of mind, body, and spirit.</p>
-                        <p>Our experienced practitioners work with you to create personalized treatment plans that honor your unique journey and support your natural healing processes.</p>
-                        <p>Whether you're seeking relief from stress, looking to improve your overall wellness, or embarking on a journey of personal growth, we're here to support you every step of the way.</p>
+                        <h2>{{ settings.get('about_title', 'Our Holistic Approach') }}</h2>
+                        <p>{{ settings.get('about_text_1', 'At Holistic Therapy, we believe that true healing encompasses all aspects of the human experience. Our integrated approach addresses the interconnected nature of mind, body, and spirit.') }}</p>
+                        <p>{{ settings.get('about_text_2', 'Our experienced practitioners work with you to create personalized treatment plans that honor your unique journey and support your natural healing processes.') }}</p>
+                        <p>{{ settings.get('about_text_3', 'Whether you\'re seeking relief from stress, looking to improve your overall wellness, or embarking on a journey of personal growth, we\'re here to support you every step of the way.') }}</p>
                     </div>
                     <div class="about-image">
                         <div class="about-image-placeholder">
@@ -102,8 +114,8 @@
         <section class="contact" id="contact">
             <div class="container">
                 <div class="contact-content">
-                    <h2 class="section-title">Begin Your Healing Journey</h2>
-                    <p>Ready to take the first step? Contact us to schedule a consultation and discover how our holistic approach can support your wellness goals.</p>
+                    <h2 class="section-title">{{ settings.get('contact_title', 'Begin Your Healing Journey') }}</h2>
+                    <p>{{ settings.get('contact_text', 'Ready to take the first step? Contact us to schedule a consultation and discover how our holistic approach can support your wellness goals.') }}</p>
                     
                     <form class="contact-form">
                         <input type="text" placeholder="Your Name" required>
@@ -112,6 +124,20 @@
                         <textarea rows="5" placeholder="Tell us about your wellness goals and how we can help you..."></textarea>
                         <button type="submit">Send Message</button>
                     </form>
+                    
+                    {% if settings.get('business_phone') or settings.get('business_email') or settings.get('business_address') %}
+                    <div class="contact-info mt-4">
+                        {% if settings.get('business_phone') %}
+                        <p><strong>Phone:</strong> {{ settings.get('business_phone') }}</p>
+                        {% endif %}
+                        {% if settings.get('business_email') %}
+                        <p><strong>Email:</strong> {{ settings.get('business_email') }}</p>
+                        {% endif %}
+                        {% if settings.get('business_address') %}
+                        <p><strong>Address:</strong> {{ settings.get('business_address') }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </section>
@@ -120,7 +146,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Holistic Therapy. All rights reserved. | Healing Mind, Body & Spirit</p>
+            <p>&copy; 2025 {{ settings.get('footer_text', 'Holistic Therapy. All rights reserved. | Healing Mind, Body & Spirit') }}</p>
         </div>
     </footer>
     
