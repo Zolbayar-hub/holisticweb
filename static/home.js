@@ -98,6 +98,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize services carousel
     new ServicesCarousel();
+    
+    // Initialize about image carousel
+    new AboutImageCarousel();
 });
 
 // Contact form handling
@@ -205,5 +208,125 @@ class ServicesCarousel {
     showCarouselButtons() {
         if (this.prevBtn) this.prevBtn.style.display = 'block';
         if (this.nextBtn) this.nextBtn.style.display = 'block';
+    }
+}
+
+// About Image Carousel Functionality
+class AboutImageCarousel {
+    constructor() {
+        this.carousel = document.querySelector('.about-carousel');
+        this.slides = document.querySelectorAll('.about-slide');
+        this.prevBtn = document.getElementById('about-prev');
+        this.nextBtn = document.getElementById('about-next');
+        this.dots = document.querySelectorAll('.about-carousel-dots .about-dot');
+        this.currentSlide = 0;
+        this.autoSlideInterval = null;
+        
+        if (this.carousel && this.slides.length > 0) {
+            this.init();
+        }
+    }
+    
+    init() {
+        this.setupEventListeners();
+        this.startAutoSlide();
+        
+        // Pause auto-slide on hover
+        this.carousel.addEventListener('mouseenter', () => this.pauseAutoSlide());
+        this.carousel.addEventListener('mouseleave', () => this.startAutoSlide());
+    }
+    
+    setupEventListeners() {
+        // Navigation buttons
+        if (this.prevBtn) {
+            this.prevBtn.addEventListener('click', () => {
+                this.pauseAutoSlide();
+                this.prevSlide();
+                this.startAutoSlide();
+            });
+        }
+        
+        if (this.nextBtn) {
+            this.nextBtn.addEventListener('click', () => {
+                this.pauseAutoSlide();
+                this.nextSlide();
+                this.startAutoSlide();
+            });
+        }
+        
+        // Dot indicators
+        this.dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                this.pauseAutoSlide();
+                this.goToSlide(index);
+                this.startAutoSlide();
+            });
+        });
+        
+        // Touch/swipe support for mobile
+        let startX = 0;
+        let endX = 0;
+        
+        this.carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+        
+        this.carousel.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            this.handleSwipe(startX, endX);
+        });
+    }
+    
+    handleSwipe(startX, endX) {
+        const difference = startX - endX;
+        const threshold = 50; // Minimum swipe distance
+        
+        if (Math.abs(difference) > threshold) {
+            this.pauseAutoSlide();
+            if (difference > 0) {
+                // Swipe left - next slide
+                this.nextSlide();
+            } else {
+                // Swipe right - previous slide
+                this.prevSlide();
+            }
+            this.startAutoSlide();
+        }
+    }
+    
+    goToSlide(index) {
+        // Remove active class from current slide and dot
+        this.slides[this.currentSlide].classList.remove('active');
+        this.dots[this.currentSlide].classList.remove('active');
+        
+        // Update current slide index
+        this.currentSlide = index;
+        
+        // Add active class to new slide and dot
+        this.slides[this.currentSlide].classList.add('active');
+        this.dots[this.currentSlide].classList.add('active');
+    }
+    
+    nextSlide() {
+        const nextIndex = (this.currentSlide + 1) % this.slides.length;
+        this.goToSlide(nextIndex);
+    }
+    
+    prevSlide() {
+        const prevIndex = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+        this.goToSlide(prevIndex);
+    }
+    
+    startAutoSlide() {
+        this.autoSlideInterval = setInterval(() => {
+            this.nextSlide();
+        }, 4000); // Change slide every 4 seconds
+    }
+    
+    pauseAutoSlide() {
+        if (this.autoSlideInterval) {
+            clearInterval(this.autoSlideInterval);
+            this.autoSlideInterval = null;
+        }
     }
 }

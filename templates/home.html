@@ -108,8 +108,32 @@
                         <p>{{ settings.get('about_text_3', 'Whether you\'re seeking relief from stress, looking to improve your overall wellness, or embarking on a journey of personal growth, we\'re here to support you every step of the way.') }}</p>
                     </div>
                     <div class="about-image">
-                        <div class="about-image-placeholder">
-                            🌟 Your Healing Journey Starts Here 🌟
+                        <div class="about-carousel-wrapper">
+                            <div class="about-carousel">
+                                <div class="about-slide active">
+                                    <img src="{{ url_for('static', filename='images/meditating_woman.jpg') }}" alt="Peaceful meditation environment">
+                                    <div class="about-slide-caption">🌟 Your Healing Journey Starts Here 🌟</div>
+                                </div>
+                                <div class="about-slide">
+                                    <img src="{{ url_for('static', filename='images/zion.JPG') }}" alt="Natural healing environment">
+                                    <div class="about-slide-caption">🌿 Connect with Nature's Energy 🌿</div>
+                                </div>
+                                <div class="about-slide">
+                                    <img src="{{ url_for('static', filename='uploads/services/zion.JPG') }}" alt="Tranquil therapeutic space">
+                                    <div class="about-slide-caption">✨ Experience Inner Peace ✨</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Navigation Buttons -->
+                            <button class="about-carousel-btn about-carousel-prev" id="about-prev">&lt;</button>
+                            <button class="about-carousel-btn about-carousel-next" id="about-next">&gt;</button>
+                            
+                            <!-- Dots Indicator -->
+                            <div class="about-carousel-dots">
+                                <span class="about-dot active" data-slide="0"></span>
+                                <span class="about-dot" data-slide="1"></span>
+                                <span class="about-dot" data-slide="2"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
