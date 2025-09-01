@@ -1,8 +1,13 @@
-from dotenv import load_dotenv
-# Load .flaskenv file specifically
-load_dotenv('.flaskenv')
-# Also load .env if it exists (for overrides)
-load_dotenv()
+# Try to load environment variables from .env file (for local development)
+try:
+    from dotenv import load_dotenv
+    # Load .flaskenv file specifically
+    load_dotenv('.flaskenv')
+    # Also load .env if it exists (for overrides)
+    load_dotenv()
+except ImportError:
+    # dotenv not available (e.g., in production like PythonAnywhere)
+    print("python-dotenv not available. Using system environment variables.")
 
 from flask import Flask, render_template, redirect, url_for, flash, request, session, send_from_directory
 from flask_mail import Mail, Message
@@ -31,13 +36,21 @@ except ImportError:
 
 # ---- Flask Setup ----
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-very-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'data.sqlite')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-very-secret-key')
+
+# Database configuration - ensure instance folder exists and use proper path
+os.makedirs(app.instance_path, exist_ok=True)
+db_path = os.path.join(app.instance_path, 'data.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
-app.config['SESSION_COOKIE_SECURE'] = False
+app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
+# Print database path for debugging
+print(f"📁 Database path: {db_path}")
+print(f"📁 Instance path: {app.instance_path}")
 
 # ---- Mail Config ----
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
@@ -145,6 +158,9 @@ def serve_image(filename):
 # ---- DB Init ----
 with app.app_context():
     try:
+        # Ensure the instance directory exists
+        os.makedirs(app.instance_path, exist_ok=True)
+        
         # Try to create all tables
         db.create_all()
         
@@ -165,6 +181,8 @@ with app.app_context():
         print(f"Database initialization error: {e}")
         print("Recreating database...")
         try:
+            # Ensure the instance directory exists before recreating database
+            os.makedirs(app.instance_path, exist_ok=True)
             db.drop_all()
             db.create_all()
             print("Database recreated successfully.")
@@ -277,6 +295,9 @@ admin.add_view(ServiceAdminView(Service, db.session))
 if __name__ == '__main__':
     with app.app_context():
         try:
+            # Ensure the instance directory exists
+            os.makedirs(app.instance_path, exist_ok=True)
+            
             # Try to create all tables
             db.create_all()
             
@@ -297,6 +318,8 @@ if __name__ == '__main__':
             print(f"Database initialization error: {e}")
             print("Recreating database...")
             try:
+                # Ensure the instance directory exists before recreating database
+                os.makedirs(app.instance_path, exist_ok=True)
                 db.drop_all()
                 db.create_all()
                 print("Database recreated successfully.")

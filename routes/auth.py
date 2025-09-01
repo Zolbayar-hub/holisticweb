@@ -77,3 +77,22 @@ def login():
 def logout():
     logout_user()  # Use Flask-Login
     return jsonify({'message': 'Logged out successfully'}), 200
+
+'''
+https://business.facebook.com/latest/settings/apps?
+business_id=189521912076916
+&nav_ref=bm_settings_redirect_migration
+&bm_redirect_migration=true
+&selected_asset_id=867379254182990&selected_asset_type=app
+
+Business Suite:
+https://business.facebook.com/latest/home?
+business_id=1663785510975888
+&asset_id=682084288324866
+
+https://business.facebook.com/latest/settings/apps?
+business_id=1663785510975888
+&nav_ref=bm_settings_redirect_migration
+&bm_redirect_migration=true
+&selected_asset_id=867379254182990&selected_asset_type=app
+'''
