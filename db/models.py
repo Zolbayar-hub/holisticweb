@@ -127,3 +127,28 @@ class EmailTemplate(db.Model):
 
     def __repr__(self):
         return f"<EmailTemplate {self.name}>"
+
+class Testimonial(db.Model):
+    __tablename__ = "testimonials"
+
+    id = db.Column(db.Integer, primary_key=True)
+    client_name = db.Column(db.String(100), nullable=False)
+    client_title = db.Column(db.String(100), nullable=True)  # Job title or profession
+    testimonial_text = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False, default=5)  # 1-5 star rating
+    is_approved = db.Column(db.Boolean, default=False, nullable=False)  # Admin approval
+    is_featured = db.Column(db.Boolean, default=False, nullable=False)  # Show on homepage
+    email = db.Column(db.String(120), nullable=True)  # Optional client email
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    approved_at = db.Column(db.DateTime, nullable=True)
+    approved_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    
+    approver = db.relationship('User', backref=db.backref('approved_testimonials', lazy=True))
+
+    def __repr__(self):
+        return f"<Testimonial {self.client_name} - {'Approved' if self.is_approved else 'Pending'}>"
+
+    def get_star_display(self):
+        """Returns star rating as emoji string"""
+        return "⭐" * self.rating

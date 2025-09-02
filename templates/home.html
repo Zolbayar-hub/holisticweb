@@ -122,6 +122,10 @@
                                     <img src="{{ url_for('static', filename='uploads/services/zion.JPG') }}" alt="Tranquil therapeutic space">
                                     <div class="about-slide-caption">✨ Experience Inner Peace ✨</div>
                                 </div>
+                                <div class="about-slide">
+                                    <img src="{{ url_for('static', filename='images/test.jpg') }}" alt="Test image">
+                                    <div class="about-slide-caption">🔮 Discover Your Potential 🔮</div>
+                                </div>
                             </div>
                             
                             <!-- Navigation Buttons -->
@@ -133,9 +137,91 @@
                                 <span class="about-dot active" data-slide="0"></span>
                                 <span class="about-dot" data-slide="1"></span>
                                 <span class="about-dot" data-slide="2"></span>
+                                <span class="about-dot" data-slide="3"></span>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Testimonials Section -->
+        <section class="testimonials" id="testimonials">
+            <div class="container">
+                <h2 class="section-title">What Our Clients Say</h2>
+                <p style="text-align: center; margin-bottom: 30px;">
+                    <a href="{{ url_for('submit_testimonial') }}" class="cta-button" style="font-size: 0.9rem; padding: 10px 20px;">
+                        Share Your Experience
+                    </a>
+                </p>
+                <div class="testimonials-carousel">
+                    <div class="testimonials-container">
+                        <div class="testimonials-grid" id="testimonials-grid">
+                            {% for testimonial in testimonials %}
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <div class="stars">{{ testimonial.get_star_display() }}</div>
+                                    <p>"{{ testimonial.testimonial_text }}"</p>
+                                    <div class="testimonial-author">
+                                        <h4>{{ testimonial.client_name }}</h4>
+                                        {% if testimonial.client_title %}
+                                        <span>{{ testimonial.client_title }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <!-- Fallback testimonials if none in database -->
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                                    <p>"The holistic approach here has completely transformed my life. I came in feeling stressed and overwhelmed, but now I feel balanced and at peace. The practitioners truly care about your whole well-being."</p>
+                                    <div class="testimonial-author">
+                                        <h4>Sarah Johnson</h4>
+                                        <span>Marketing Executive</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                                    <p>"I've tried many different therapies over the years, but nothing compares to the integrated healing approach here. The combination of mind, body, and spirit work has been life-changing."</p>
+                                    <div class="testimonial-author">
+                                        <h4>Michael Chen</h4>
+                                        <span>Software Engineer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                                    <p>"After struggling with anxiety for years, I finally found relief through the personalized treatment plan they created for me. The practitioners are knowledgeable, compassionate, and truly gifted."</p>
+                                    <div class="testimonial-author">
+                                        <h4>Emily Rodriguez</h4>
+                                        <span>Teacher</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                                    <p>"The healing environment here is unlike anywhere else. From the moment you walk in, you feel the positive energy. My sessions have helped me reconnect with myself and find inner peace."</p>
+                                    <div class="testimonial-author">
+                                        <h4>David Thompson</h4>
+                                        <span>Artist</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <button class="testimonial-carousel-btn testimonial-carousel-prev" id="testimonial-prev">&lt;</button>
+                    <button class="testimonial-carousel-btn testimonial-carousel-next" id="testimonial-next">&gt;</button>
                 </div>
             </div>
         </section>

@@ -1,0 +1,226 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Testimonials{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>Manage Testimonials</h1>
+    <a href="{{ url_for('admin_panel.create_testimonial') }}" class="btn btn-primary">Add New Testimonial</a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="testimonials-grid">
+    {% for testimonial in testimonials %}
+    <div class="testimonial-admin-card">
+        <div class="testimonial-header">
+            <div class="client-info">
+                <h3>{{ testimonial.client_name }}</h3>
+                {% if testimonial.client_title %}
+                <p class="client-title">{{ testimonial.client_title }}</p>
+                {% endif %}
+            </div>
+            <div class="testimonial-status">
+                {% if testimonial.is_approved %}
+                    <span class="status-badge approved">✓ Approved</span>
+                {% else %}
+                    <span class="status-badge pending">⏳ Pending</span>
+                {% endif %}
+                {% if testimonial.is_featured %}
+                    <span class="status-badge featured">⭐ Featured</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="rating">
+            {{ testimonial.get_star_display() }}
+        </div>
+        
+        <div class="testimonial-text">
+            <p>"{{ testimonial.testimonial_text }}"</p>
+        </div>
+        
+        <div class="testimonial-meta">
+            <small>
+                Submitted: {{ testimonial.created_at.strftime('%Y-%m-%d %H:%M') }}
+                {% if testimonial.email %}
+                | Email: {{ testimonial.email }}
+                {% endif %}
+            </small>
+        </div>
+        
+        <div class="testimonial-actions">
+            <a href="{{ url_for('admin_panel.edit_testimonial', testimonial_id=testimonial.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+            
+            {% if testimonial.is_approved %}
+                <form method="POST" action="{{ url_for('admin_panel.disapprove_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Disapprove this testimonial?')">Disapprove</button>
+                </form>
+            {% else %}
+                <form method="POST" action="{{ url_for('admin_panel.approve_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                </form>
+            {% endif %}
+            
+            <form method="POST" action="{{ url_for('admin_panel.toggle_feature_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
+                <button type="submit" class="btn btn-info btn-sm">
+                    {% if testimonial.is_featured %}Unfeature{% else %}Feature{% endif %}
+                </button>
+            </form>
+            
+            <form method="POST" action="{{ url_for('admin_panel.delete_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this testimonial permanently?')">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-testimonials">
+        <p>No testimonials found. <a href="{{ url_for('admin_panel.create_testimonial') }}">Create the first one</a>.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.testimonials-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.testimonial-admin-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.testimonial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.client-info h3 {
+    margin: 0;
+    color: #333;
+}
+
+.client-title {
+    margin: 0.25rem 0 0 0;
+    color: #666;
+    font-style: italic;
+}
+
+.testimonial-status {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-badge.approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.featured {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.rating {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.testimonial-text {
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.testimonial-meta {
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.testimonial-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.375rem 0.75rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.btn-primary { background: #007bff; color: white; }
+.btn-secondary { background: #6c757d; color: white; }
+.btn-success { background: #28a745; color: white; }
+.btn-warning { background: #ffc107; color: #212529; }
+.btn-info { background: #17a2b8; color: white; }
+.btn-danger { background: #dc3545; color: white; }
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.no-testimonials {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+</style>
+{% endblock %}

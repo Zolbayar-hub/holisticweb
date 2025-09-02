@@ -19,7 +19,7 @@ from datetime import datetime
 import os
 from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-from db.models import User, Role, GeneratedContent, Booking, Service, SiteSetting, EmailTemplate
+from db.models import User, Role, GeneratedContent, Booking, Service, SiteSetting, EmailTemplate, Testimonial
 from werkzeug.security import generate_password_hash
 from flask_babel import Babel
 from flask_login import LoginManager, current_user
@@ -129,7 +129,10 @@ def home():
     site_settings = SiteSetting.query.all()
     settings = {setting.key: setting.value for setting in site_settings}
     
-    return render_template('home.html', services=services, settings=settings)
+    # Get approved testimonials for display
+    testimonials = Testimonial.query.filter_by(is_approved=True).order_by(Testimonial.created_at.desc()).all()
+    
+    return render_template('home.html', services=services, settings=settings, testimonials=testimonials)
 
 @app.route('/book')
 def book_redirect():
@@ -144,6 +147,33 @@ def old_booking_redirect():
 @app.route('/health')
 def health_check():
     return {'status': 'ok', 'message': 'Server is running'}, 200
+
+@app.route('/submit-testimonial', methods=['GET', 'POST'])
+def submit_testimonial():
+    """Public testimonial submission form"""
+    if request.method == 'POST':
+        try:
+            testimonial = Testimonial(
+                client_name=request.form.get('client_name'),
+                client_title=request.form.get('client_title'),
+                testimonial_text=request.form.get('testimonial_text'),
+                rating=int(request.form.get('rating', 5)),
+                email=request.form.get('email'),
+                is_approved=False,  # Requires admin approval
+                is_featured=False
+            )
+            
+            db.session.add(testimonial)
+            db.session.commit()
+            
+            flash('Thank you for your testimonial! It will be reviewed and published soon.', 'success')
+            return redirect(url_for('home'))
+            
+        except Exception as e:
+            flash('Error submitting testimonial. Please try again.', 'error')
+            db.session.rollback()
+    
+    return render_template('testimonial_form.html')
 
 # ---- Markdown filter ----
 @app.template_filter('markdown')
