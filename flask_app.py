@@ -9,14 +9,50 @@ except ImportError:
     # dotenv not available (e.g., in production like PythonAnywhere)
     print("python-dotenv not available. Using system environment variables.")
 
+import os
+import pytz
+from twilio.rest import Client
+
+# Get Twilio credentials
+TWILIO_SID = os.getenv("TWILIO_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE = os.getenv("TWILIO_PHONE")
+
+# Create Twilio client
+client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN) if TWILIO_SID and TWILIO_AUTH_TOKEN else None
+
+def send_sms_reminder(to_number, message):
+    """Send SMS reminder using Twilio"""
+    if not client:
+        print("Twilio client not configured. SMS not sent.")
+        return False
+    
+    try:
+        message = client.messages.create(
+            body=message,
+            from_=TWILIO_PHONE,
+            to=to_number
+        )
+        print(f"SMS sent successfully. SID: {message.sid}")
+        return True
+    except Exception as e:
+        print(f"Error sending SMS: {e}")
+        return False
+
 from flask import Flask, render_template, redirect, url_for, flash, request, session, send_from_directory
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 import markdown as md
 from db import db
 from flask_migrate import Migrate
-from datetime import datetime
-import os
+from datetime import datetime, timedelta
+
+LOCAL_TZ = pytz.timezone("America/New_York")  # change to your timezone
+
+def format_local_time(utc_time):
+    """Convert UTC datetime to local timezone and format nicely"""
+    return utc_time.astimezone(LOCAL_TZ).strftime("%Y-%m-%d %I:%M %p")
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from db.models import User, Role, GeneratedContent, Booking, Service, SiteSetting, EmailTemplate, Testimonial
@@ -24,6 +60,7 @@ from werkzeug.security import generate_password_hash
 from flask_babel import Babel
 from flask_login import LoginManager, current_user
 from routes.booking import booking_bp
+from routes.testimony import testimony_bp, get_approved_testimonials
 
 
 # Optional: CORS for local development
@@ -51,6 +88,59 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 # Print database path for debugging
 print(f"📁 Database path: {db_path}")
 print(f"📁 Instance path: {app.instance_path}")
+
+# ---- SMS Scheduler Functions ----
+def check_and_send_reminders():
+    """Check for bookings that need reminders and send SMS"""
+    with app.app_context():
+        now = datetime.utcnow()
+        reminder_time = now + timedelta(minutes=20)
+
+        # Get bookings 30 minutes from now (within 5-minute window for more flexibility)
+        bookings = Booking.query.filter(
+            Booking.start_time.between(reminder_time, reminder_time + timedelta(minutes=5))
+        ).all()
+
+        print(f"🔍 Checking for reminders at {now}")
+        print(f"📅 Looking for bookings between {reminder_time} and {reminder_time + timedelta(minutes=5)}")
+        print(f"📋 Found {len(bookings)} bookings needing reminders")
+
+        for booking in bookings:
+            # Check if booking has a phone number field
+            phone_number = getattr(booking, 'phone_number', None)
+            if phone_number:
+                # Format phone number properly (add +1 if not present)
+                formatted_phone = str(phone_number)
+                if not formatted_phone.startswith('+'):
+                    formatted_phone = '+1' + formatted_phone
+                
+                # Format appointment time in local timezone
+                local_time = format_local_time(booking.start_time.replace(tzinfo=pytz.UTC))
+                message = f"Hello {booking.user_name}, this is a reminder: your appointment is at {local_time}."
+                
+                print(f"📱 Sending reminder to {booking.user_name} at {formatted_phone}")
+                success = send_sms_reminder(formatted_phone, message)
+                
+                if success:
+                    print(f"✅ Reminder sent successfully to {booking.user_name}")
+                else:
+                    print(f"❌ Failed to send reminder to {booking.user_name}")
+            else:
+                print(f"⚠️ No phone number for booking {booking.id} - {booking.user_name}")
+
+def init_scheduler(flask_app):
+    """Initialize the background scheduler for SMS reminders"""
+    try:
+        from apscheduler.schedulers.background import BackgroundScheduler
+        scheduler = BackgroundScheduler()
+        scheduler.add_job(func=check_and_send_reminders, trigger="interval", minutes=5)
+        scheduler.start()
+        print("📅 SMS reminder scheduler started - checking every 5 minutes")
+        return scheduler
+    except Exception as e:
+        print(f"❌ Failed to start scheduler: {e}")
+        print("💡 Tip: Run the Flask app and use manual reminders instead")
+        return None
 
 # ---- Mail Config ----
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
@@ -107,6 +197,7 @@ from routes.auth import auth_bp
 from routes.admin import admin_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(booking_bp)
+app.register_blueprint(testimony_bp)
 app.register_blueprint(admin_bp)
 
 # ---- Error Handlers ----
@@ -130,7 +221,7 @@ def home():
     settings = {setting.key: setting.value for setting in site_settings}
     
     # Get approved testimonials for display
-    testimonials = Testimonial.query.filter_by(is_approved=True).order_by(Testimonial.created_at.desc()).all()
+    testimonials = get_approved_testimonials()
     
     return render_template('home.html', services=services, settings=settings, testimonials=testimonials)
 
@@ -144,36 +235,14 @@ def old_booking_redirect():
     """Redirect old booking URL to new booking page"""
     return redirect(url_for('booking_bp.create_booking'))
 
+@app.route('/submit-testimonial', methods=['GET', 'POST'])
+def old_testimonial_redirect():
+    """Redirect old testimonial URL to new testimonial route"""
+    return redirect(url_for('testimony.submit_testimonial'))
+
 @app.route('/health')
 def health_check():
     return {'status': 'ok', 'message': 'Server is running'}, 200
-
-@app.route('/submit-testimonial', methods=['GET', 'POST'])
-def submit_testimonial():
-    """Public testimonial submission form"""
-    if request.method == 'POST':
-        try:
-            testimonial = Testimonial(
-                client_name=request.form.get('client_name'),
-                client_title=request.form.get('client_title'),
-                testimonial_text=request.form.get('testimonial_text'),
-                rating=int(request.form.get('rating', 5)),
-                email=request.form.get('email'),
-                is_approved=False,  # Requires admin approval
-                is_featured=False
-            )
-            
-            db.session.add(testimonial)
-            db.session.commit()
-            
-            flash('Thank you for your testimonial! It will be reviewed and published soon.', 'success')
-            return redirect(url_for('home'))
-            
-        except Exception as e:
-            flash('Error submitting testimonial. Please try again.', 'error')
-            db.session.rollback()
-    
-    return render_template('testimonial_form.html')
 
 # ---- Markdown filter ----
 @app.template_filter('markdown')
@@ -290,9 +359,9 @@ class GeneratedContentModelView(ModelView):
             model.posted_at = None
 
 class BookingAdminView(ModelView):
-    column_list = ('id', 'user_name', 'email', 'service', 'start_time', 'end_time', 'status', 'admin_notes', 'created_at')
+    column_list = ('id', 'user_name', 'email', 'phone_number', 'service', 'start_time', 'end_time', 'status', 'admin_notes', 'created_at')
     column_filters = ['status', 'service', 'start_time', 'created_at']
-    form_columns = ('user_name', 'email', 'service', 'start_time', 'end_time', 'status', 'admin_notes')
+    form_columns = ('user_name', 'email', 'phone_number', 'service', 'start_time', 'end_time', 'status', 'admin_notes')
     def is_accessible(self): return is_admin()
     def inaccessible_callback(self, name, **kwargs):
         flash('Access denied. Admin role required.', 'error')
@@ -432,8 +501,24 @@ If you need to reschedule or have any questions, please contact us.""",
         
         db.session.commit()
 
+    # Initialize SMS reminder scheduler
+    try:
+        scheduler = init_scheduler(app)
+    except Exception as e:
+        print(f"Failed to initialize scheduler: {e}")
 
-    app.run(
+# ---- Manual Reminder Route (for testing/manual triggering) ----
+@app.route('/send-reminders')
+def manual_send_reminders():
+    """Manually trigger SMS reminders - for testing or manual use"""
+    try:
+        check_and_send_reminders()
+        return {'status': 'success', 'message': 'Reminder check completed. Check logs for details.'}, 200
+    except Exception as e:
+        return {'status': 'error', 'message': f'Failed to send reminders: {e}'}, 500
+
+# ---- Run ----
+app.run(
         host='127.0.0.1',
         port=5000,
         debug=app.config['DEBUG'],

@@ -4,6 +4,13 @@ from db import db
 from db.models import Booking, Service, EmailTemplate
 from datetime import datetime
 import threading
+import pytz
+
+LOCAL_TZ = pytz.timezone("America/New_York")  # change to your timezone
+
+def format_local_time(utc_time):
+    """Convert UTC datetime to local timezone and format nicely"""
+    return utc_time.astimezone(LOCAL_TZ).strftime("%Y-%m-%d %I:%M %p")
 
 booking_bp = Blueprint("booking_bp", __name__, url_prefix="/booking")
 
@@ -57,6 +64,7 @@ def add_booking():
         booking = Booking(
             user_name=data["user_name"],
             email=data["email"],
+            phone_number=data.get("phone"),  # Added phone number support
             service_id=data.get("service_id"),
             start_time=datetime.fromisoformat(data["start_time"]),
             end_time=datetime.fromisoformat(data["end_time"]),
@@ -69,17 +77,20 @@ def add_booking():
         if current_app.config.get("MAIL_USERNAME") and current_app.config.get("MAIL_PASSWORD"):
             service = Service.query.get(booking.service_id) if booking.service_id else None
             
+            # Capture the app instance for use in the background thread
+            app = current_app._get_current_object()
+            
             def send_email_async():
                 """Send email in background thread to avoid blocking the request"""
                 try:
-                    with current_app.app_context():
+                    with app.app_context():
                         # Get the mail instance from the app
-                        mail = current_app.mail
+                        mail = app.mail
                         
                         # Send confirmation email to customer
                         print(f"📧 [Background] Sending confirmation email to {booking.email}")
-                        print(f"📧 [Background] SMTP Config: {current_app.config['MAIL_SERVER']}:{current_app.config['MAIL_PORT']}")
-                        print(f"📧 [Background] From: {current_app.config.get('MAIL_DEFAULT_SENDER')}")
+                        print(f"📧 [Background] SMTP Config: {app.config['MAIL_SERVER']}:{app.config['MAIL_PORT']}")
+                        print(f"📧 [Background] From: {app.config.get('MAIL_DEFAULT_SENDER')}")
                         
                         # Get email template
                         email_template = EmailTemplate.query.filter_by(name='booking_confirmation').first()
@@ -95,8 +106,8 @@ def add_booking():
                                 '{email}': booking.email,
                                 '{service_name}': service.name if service else 'Unknown',
                                 '{service_price}': str(service.price) if service else 'N/A',
-                                '{start_time}': booking.start_time.strftime("%Y-%m-%d %H:%M"),
-                                '{end_time}': booking.end_time.strftime("%Y-%m-%d %H:%M")
+                                '{start_time}': format_local_time(booking.start_time.replace(tzinfo=pytz.UTC)),
+                                '{end_time}': format_local_time(booking.end_time.replace(tzinfo=pytz.UTC))
                             }
                             
                             for variable, value in variables.items():
@@ -111,8 +122,8 @@ Thank you for booking with HolisticWeb! ✨
 
 📌 Service: {service.name if service else "Unknown"}
 💰 Price: ${service.price if service else "N/A"}
-🕒 Start: {booking.start_time.strftime("%Y-%m-%d %H:%M")}
-🕒 End:   {booking.end_time.strftime("%Y-%m-%d %H:%M")}
+🕒 Start: {format_local_time(booking.start_time.replace(tzinfo=pytz.UTC))}
+🕒 End:   {format_local_time(booking.end_time.replace(tzinfo=pytz.UTC))}
 
 {service.description if service else ""}
 
@@ -127,7 +138,7 @@ If you need to reschedule or have any questions, please contact us.
                         msg = Message(
                             subject=subject,
                             recipients=[booking.email],
-                            sender=current_app.config.get('MAIL_DEFAULT_SENDER'),
+                            sender=app.config.get('MAIL_DEFAULT_SENDER'),
                             body=body
                         )
                         
@@ -139,11 +150,11 @@ If you need to reschedule or have any questions, please contact us.
                             admin_msg = Message(
                                 subject="📩 New Booking Received",
                                 recipients=["dambazolbayar@gmail.com"],   # replace with your admin email
-                                sender=current_app.config.get('MAIL_DEFAULT_SENDER'),
+                                sender=app.config.get('MAIL_DEFAULT_SENDER'),
                                 body=f"""A new booking was created!
 
 📌 Service: {service.name if service else "Unknown"} (ID: {booking.service_id})
-📅 Date: {booking.start_time.strftime("%Y-%m-%d %H:%M")} - {booking.end_time.strftime("%Y-%m-%d %H:%M")}
+📅 Date: {format_local_time(booking.start_time.replace(tzinfo=pytz.UTC))} - {format_local_time(booking.end_time.replace(tzinfo=pytz.UTC))}
 👤 Customer: {booking.user_name}
 📧 Email: {booking.email}
 💰 Price: ${service.price if service else "N/A"}
@@ -198,6 +209,7 @@ def create_booking():
             new_booking = Booking(
                 user_name=request.form["user_name"],
                 email=request.form["email"],
+                phone_number=request.form.get("phone_number"),  # Added phone number support
                 service_id=request.form["service_id"],
                 start_time=datetime.fromisoformat(request.form["start_time"]),
                 end_time=datetime.fromisoformat(request.form["end_time"]),
