@@ -57,7 +57,7 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero" id="home" style="background-image: url('{{ url_for('static', filename='images/main_page_images/meditating_woman.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
+        <section class="hero" id="home" style="background-image: linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)), url('{{ url_for('static', filename='images/main_page_images/meditating_woman.jpg') }}'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
             <div class="hero-content">
                 <h1>{{ settings.get('hero_title', 'Holistic Therapy') }}</h1>
                 <p>{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
@@ -78,7 +78,7 @@
                             <div class="service-card">
                                 {% if service.image_path %}
                                 <div class="service-image">
-                                    <img src="{{ url_for('static', filename=service.image_path) }}" alt="{{ service.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                                    <img src="{{ url_for('static', filename=service.image_path) }}" alt="{{ service.name }}">
                                 </div>
                                 {% else %}
                                 <div class="service-icon">🧘‍♀️</div>
