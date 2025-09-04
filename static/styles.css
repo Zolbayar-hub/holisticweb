@@ -84,15 +84,29 @@ body {
         display: none;
     }
 }
-
+/* Hamburger button */
 .hamburger {
     display: none; /* Hidden by default */
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
     background: none;
     border: none;
-    z-index: 1001;
+    z-index: 10000; /* make sure it's always on top */
+    position: relative; /* required for z-index to apply */
+    width: 40px;
+    height: 40px;
+    
+    /* Prevent iOS touch highlights and behaviors */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
 }
 
 /* Show hamburger on mobile devices */
@@ -103,24 +117,41 @@ body {
 }
 
 .hamburger span {
+    display: block;
     width: 25px;
     height: 3px;
     background: white;
     margin: 3px 0;
-    transition: 0.3s;
+    transition: all 0.3s ease;
     border-radius: 2px;
+    transform-origin: center;
+    position: relative;
 }
 
+/* Default state - ensure hamburger shows as three lines */
+.hamburger:not(.active) span:nth-child(1) {
+    transform: rotate(0deg) translate(0, 0);
+    opacity: 1;
+}
+.hamburger:not(.active) span:nth-child(2) {
+    transform: rotate(0deg) translate(0, 0);
+    opacity: 1;
+}
+.hamburger:not(.active) span:nth-child(3) {
+    transform: rotate(0deg) translate(0, 0);
+    opacity: 1;
+}
+
+/* Hamburger animation (turn into X) */
 .hamburger.active span:nth-child(1) {
-    transform: rotate(-45deg) translate(-5px, 6px);
+    transform: rotate(45deg) translate(5px, 5px);
 }
-
 .hamburger.active span:nth-child(2) {
     opacity: 0;
+    transform: translateX(20px);
 }
-
 .hamburger.active span:nth-child(3) {
-    transform: rotate(45deg) translate(-5px, -6px);
+    transform: rotate(-45deg) translate(7px, -6px);
 }
 
 /* Mobile Menu */
@@ -131,23 +162,35 @@ body {
     width: 280px;
     max-width: calc(100vw - 2rem);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: none;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     border-radius: 0 0 10px 10px;
     padding: 1rem 0;
-    transition: all 0.3s ease;
-    z-index: 999;
+
+    /* Hide by default */
     opacity: 0;
+    visibility: hidden;
     transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 9999;
+    
+    /* Prevent text selection and touch behaviors */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
+/* Show menu when active */
 .mobile-menu.active {
-    display: flex;
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
+    display: flex;
 }
 
 /* Hide mobile menu on desktop */

@@ -4,11 +4,54 @@ const mobileMenu = document.getElementById('mobile-menu');
 const mobileAuthBtn = document.getElementById('mobile-auth-btn');
 const desktopAuthBtn = document.getElementById('desktop-auth-btn');
 
-hamburger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    hamburger.classList.toggle('active');
-    mobileMenu.classList.toggle('active');
+// Ensure hamburger starts in correct state
+function initializeHamburger() {
+    if (hamburger && mobileMenu) {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('active');
+    }
+}
+
+// Initialize on DOM content loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize hamburger menu
+    initializeHamburger();
+    
+    // Initialize services carousel when page is ready
+    setTimeout(() => {
+        new ServicesCarousel();
+    }, 50);
+    
+    // Initialize auth buttons
+    setTimeout(() => {
+        initializeAuthButtons();
+    }, 100);
 });
+
+// Function to toggle menu
+function toggleMobileMenu(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (hamburger && mobileMenu) {
+        const isActive = hamburger.classList.contains('active');
+        
+        if (isActive) {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+        } else {
+            hamburger.classList.add('active');
+            mobileMenu.classList.add('active');
+        }
+    }
+}
+
+// Support both click + touchstart for better mobile support
+if (hamburger) {
+    ['click', 'touchstart'].forEach(evt => {
+        hamburger.addEventListener(evt, toggleMobileMenu, { passive: false });
+    });
+}
 
 // Close mobile menu when clicking on links
 document.querySelectorAll('.mobile-menu a').forEach(link => {
@@ -91,19 +134,9 @@ async function updateAuthButtons() {
     }
 }
 
-// Initialize auth buttons when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Wait a bit for auth.js to load
-    setTimeout(initializeAuthButtons, 100);
-    
-    // Initialize services carousel
-    new ServicesCarousel();
-    
-    // Initialize about image carousel
-    new AboutImageCarousel();
-    
-    // Initialize testimonials carousel
-    new TestimonialsCarousel();
+// Also initialize on window load as fallback
+window.addEventListener('load', function() {
+    initializeHamburger();
 });
 
 // Contact form handling

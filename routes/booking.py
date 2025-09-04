@@ -5,6 +5,7 @@ from db.models import Booking, Service, EmailTemplate
 from datetime import datetime
 import threading
 import pytz
+from .send_sms import send_booking_confirmation_sms, format_local_time as sms_format_local_time
 
 LOCAL_TZ = pytz.timezone("America/New_York")  # change to your timezone
 
@@ -191,10 +192,42 @@ Login to admin panel to manage this booking.
             print(f"📧 MAIL_USERNAME: {current_app.config.get('MAIL_USERNAME')}")
             print(f"📧 MAIL_PASSWORD: {'***' if current_app.config.get('MAIL_PASSWORD') else 'Not set'}")
 
+        # Send SMS confirmation (non-blocking)
+        if hasattr(booking, 'phone_number') and booking.phone_number:
+            service = Service.query.get(booking.service_id) if booking.service_id else None
+            
+            def send_sms_async():
+                """Send SMS in background thread to avoid blocking the request"""
+                try:
+                    print(f"📱 [Background] Sending SMS confirmation to {booking.phone_number}")
+                    
+                    success = send_booking_confirmation_sms(
+                        booking.phone_number,
+                        booking.user_name,
+                        service.name if service else 'HolisticWeb Service',
+                        booking.start_time
+                    )
+                    
+                    if success:
+                        print(f"✅ [Background] SMS confirmation sent successfully to {booking.phone_number}")
+                    else:
+                        print(f"❌ [Background] Failed to send SMS confirmation to {booking.phone_number}")
+                        
+                except Exception as sms_error:
+                    print(f"❌ [Background] SMS sending error: {sms_error}")
+            
+            # Start SMS sending in background
+            sms_thread = threading.Thread(target=send_sms_async, daemon=True)
+            sms_thread.start()
+            
+            print(f"📱 SMS confirmation being sent to {booking.phone_number}")
+        else:
+            print("📱 No phone number provided for SMS confirmation")
+
         return jsonify({
             "success": True, 
             "id": booking.id,
-            "message": "Booking created successfully! Confirmation email being sent."
+            "message": "Booking created successfully! Confirmation email and SMS being sent."
         }), 201
         
     except Exception as e:

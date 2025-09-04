@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from db import db
-from db.models import Service, SiteSetting, EmailTemplate, User
+from db.models import Service, SiteSetting, EmailTemplate, User, Testimonial
 from werkzeug.utils import secure_filename
 import os
 from functools import wraps
+from datetime import datetime
 
 admin_bp = Blueprint('admin_panel', __name__, url_prefix='/admin')
 
@@ -14,7 +15,7 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or current_user.role.name != 'admin':
             flash('Admin access required.', 'error')
-            return redirect(url_for('home'))
+            return redirect(url_for('main.home'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -285,3 +286,156 @@ def upload_image():
             
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@admin_bp.route('/testimonials')
+@admin_required
+def admin_testimonials():
+    """Admin testimonials management"""
+    testimonials = Testimonial.query.order_by(Testimonial.created_at.desc()).all()
+    return render_template('admin/testimonials.html', testimonials=testimonials)
+
+@admin_bp.route('/testimonials/edit/<int:testimonial_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_testimonial(testimonial_id):
+    """Edit a testimonial"""
+    testimonial = Testimonial.query.get_or_404(testimonial_id)
+    
+    if request.method == 'POST':
+        try:
+            testimonial.client_name = request.form.get('client_name')
+            testimonial.client_title = request.form.get('client_title', '')
+            testimonial.testimonial_text = request.form.get('testimonial_text')
+            testimonial.rating = int(request.form.get('rating', 5))
+            testimonial.email = request.form.get('email', '')
+            
+            # Handle approval status
+            was_approved = testimonial.is_approved
+            testimonial.is_approved = 'is_approved' in request.form
+            testimonial.is_featured = 'is_featured' in request.form
+            
+            # Set approval details if newly approved
+            if not was_approved and testimonial.is_approved:
+                testimonial.approved_at = datetime.utcnow()
+                testimonial.approved_by = current_user.id
+            elif not testimonial.is_approved:
+                testimonial.approved_at = None
+                testimonial.approved_by = None
+            
+            db.session.commit()
+            flash('Testimonial updated successfully!', 'success')
+            return redirect(url_for('admin_panel.admin_testimonials'))
+            
+        except Exception as e:
+            flash(f'Error updating testimonial: {str(e)}', 'error')
+            db.session.rollback()
+    
+    return render_template('admin/edit_testimonial.html', testimonial=testimonial)
+
+@admin_bp.route('/testimonials/create', methods=['GET', 'POST'])
+@admin_required
+def create_testimonial():
+    """Create a new testimonial"""
+    if request.method == 'POST':
+        try:
+            testimonial = Testimonial(
+                client_name=request.form.get('client_name'),
+                client_title=request.form.get('client_title', ''),
+                testimonial_text=request.form.get('testimonial_text'),
+                rating=int(request.form.get('rating', 5)),
+                email=request.form.get('email', ''),
+                is_approved='is_approved' in request.form,
+                is_featured='is_featured' in request.form
+            )
+            
+            # Set approval details if approved
+            if testimonial.is_approved:
+                testimonial.approved_at = datetime.utcnow()
+                testimonial.approved_by = current_user.id
+            
+            db.session.add(testimonial)
+            db.session.commit()
+            flash('Testimonial created successfully!', 'success')
+            return redirect(url_for('admin_panel.admin_testimonials'))
+            
+        except Exception as e:
+            flash(f'Error creating testimonial: {str(e)}', 'error')
+            db.session.rollback()
+    
+    return render_template('admin/edit_testimonial.html', testimonial=None)
+
+@admin_bp.route('/testimonials/delete/<int:testimonial_id>', methods=['POST'])
+@admin_required
+def delete_testimonial(testimonial_id):
+    """Delete a testimonial"""
+    try:
+        testimonial = Testimonial.query.get_or_404(testimonial_id)
+        db.session.delete(testimonial)
+        db.session.commit()
+        flash('Testimonial deleted successfully!', 'success')
+        
+    except Exception as e:
+        flash(f'Error deleting testimonial: {str(e)}', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('admin_panel.admin_testimonials'))
+
+@admin_bp.route('/testimonials/approve/<int:testimonial_id>', methods=['POST'])
+@admin_required
+def approve_testimonial(testimonial_id):
+    """Quick approve a testimonial"""
+    try:
+        testimonial = Testimonial.query.get_or_404(testimonial_id)
+        testimonial.is_approved = True
+        testimonial.approved_at = datetime.utcnow()
+        testimonial.approved_by = current_user.id
+        
+        db.session.commit()
+        flash('Testimonial approved successfully!', 'success')
+        
+    except Exception as e:
+        flash(f'Error approving testimonial: {str(e)}', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('admin_panel.admin_testimonials'))
+
+@admin_bp.route('/testimonials/disapprove/<int:testimonial_id>', methods=['POST'])
+@admin_required
+def disapprove_testimonial(testimonial_id):
+    """Disapprove a testimonial"""
+    try:
+        testimonial = Testimonial.query.get_or_404(testimonial_id)
+        testimonial.is_approved = False
+        testimonial.approved_at = None
+        testimonial.approved_by = None
+        testimonial.is_featured = False  # Remove from featured if disapproved
+        
+        db.session.commit()
+        flash('Testimonial disapproved successfully!', 'success')
+        
+    except Exception as e:
+        flash(f'Error disapproving testimonial: {str(e)}', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('admin_panel.admin_testimonials'))
+
+@admin_bp.route('/testimonials/toggle_feature/<int:testimonial_id>', methods=['POST'])
+@admin_required
+def toggle_feature_testimonial(testimonial_id):
+    """Toggle featured status of a testimonial"""
+    try:
+        testimonial = Testimonial.query.get_or_404(testimonial_id)
+        
+        # Only allow featuring if testimonial is approved
+        if not testimonial.is_approved and not testimonial.is_featured:
+            flash('Testimonial must be approved before it can be featured.', 'warning')
+        else:
+            testimonial.is_featured = not testimonial.is_featured
+            db.session.commit()
+            status = 'featured' if testimonial.is_featured else 'unfeatured'
+            flash(f'Testimonial {status} successfully!', 'success')
+        
+    except Exception as e:
+        flash(f'Error updating testimonial: {str(e)}', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('admin_panel.admin_testimonials'))

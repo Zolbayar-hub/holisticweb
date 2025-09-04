@@ -81,11 +81,13 @@
             </form>
         </div>
     </div>
-    {% else %}
+    {% endfor %}
+    
+    {% if not testimonials %}
     <div class="no-testimonials">
         <p>No testimonials found. <a href="{{ url_for('admin_panel.create_testimonial') }}">Create the first one</a>.</p>
     </div>
-    {% endfor %}
+    {% endif %}
 </div>
 
 <style>

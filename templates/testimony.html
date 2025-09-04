@@ -10,14 +10,14 @@
     <!-- Header with Navigation -->
     <header class="header">
         <nav class="nav-container">
-            <a href="{{ url_for('home') }}" class="logo">Holistic Therapy</a>
+            <a href="{{ url_for('main.home') }}" class="logo">Holistic Therapy</a>
             
             <!-- Desktop Navigation -->
             <ul class="desktop-nav">
-                <li><a href="{{ url_for('home') }}#home">Home</a></li>
-                <li><a href="{{ url_for('home') }}#services">Services</a></li>
-                <li><a href="{{ url_for('home') }}#about">About</a></li>
-                <li><a href="{{ url_for('home') }}#contact">Contact</a></li>
+                <li><a href="{{ url_for('main.home') }}#home">Home</a></li>
+                <li><a href="{{ url_for('main.home') }}#services">Services</a></li>
+                <li><a href="{{ url_for('main.home') }}#about">About</a></li>
+                <li><a href="{{ url_for('main.home') }}#contact">Contact</a></li>
                 <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
             </ul>
             
@@ -31,10 +31,10 @@
             <!-- Mobile Menu Dropdown -->
             <div class="mobile-menu" id="mobile-menu">
                 <ul>
-                    <li><a href="{{ url_for('home') }}#home">Home</a></li>
-                    <li><a href="{{ url_for('home') }}#services">Services</a></li>
-                    <li><a href="{{ url_for('home') }}#about">About</a></li>
-                    <li><a href="{{ url_for('home') }}#contact">Contact</a></li>
+                    <li><a href="{{ url_for('main.home') }}#home">Home</a></li>
+                    <li><a href="{{ url_for('main.home') }}#services">Services</a></li>
+                    <li><a href="{{ url_for('main.home') }}#about">About</a></li>
+                    <li><a href="{{ url_for('main.home') }}#contact">Contact</a></li>
                     <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
                 </ul>
             </div>
@@ -106,7 +106,7 @@
                         
                         <div class="form-group">
                             <button type="submit" class="submit-btn">Submit Testimonial</button>
-                            <a href="{{ url_for('home') }}" class="cancel-btn">Cancel</a>
+                            <a href="{{ url_for('main.home') }}" class="cancel-btn">Cancel</a>
                         </div>
                         
                         <p class="form-note">
