@@ -22,10 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
         new ServicesCarousel();
     }, 50);
     
+    // Initialize about images carousel
+    setTimeout(() => {
+        new AboutImageCarousel();
+    }, 100);
+    
     // Initialize auth buttons
     setTimeout(() => {
         initializeAuthButtons();
-    }, 100);
+    }, 150);
 });
 
 // Function to toggle menu

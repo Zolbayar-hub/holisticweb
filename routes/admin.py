@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from db import db
-from db.models import Service, SiteSetting, EmailTemplate, User, Testimonial
+from db.models import Service, SiteSetting, EmailTemplate, User, Testimonial, AboutImage
 from werkzeug.utils import secure_filename
 import os
 from functools import wraps
@@ -439,3 +439,157 @@ def toggle_feature_testimonial(testimonial_id):
         db.session.rollback()
     
     return redirect(url_for('admin_panel.admin_testimonials'))
+
+
+# About Images Management Routes
+@admin_bp.route('/about-images')
+@admin_required
+def admin_about_images():
+    """Admin about images management"""
+    images = AboutImage.query.order_by(AboutImage.sort_order, AboutImage.created_at).all()
+    return render_template('admin/about_images.html', images=images)
+
+@admin_bp.route('/about-images/create', methods=['GET', 'POST'])
+@admin_required
+def create_about_image():
+    """Create a new about image"""
+    if request.method == 'POST':
+        try:
+            # Get the highest sort order and add 1
+            max_order = db.session.query(db.func.max(AboutImage.sort_order)).scalar() or 0
+            
+            image = AboutImage(
+                title=request.form.get('title'),
+                caption=request.form.get('caption'),
+                sort_order=max_order + 1,
+                is_active=request.form.get('is_active') == 'on'
+            )
+            
+            # Handle image upload
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename:
+                    filename = secure_filename(file.filename)
+                    upload_dir = os.path.join(current_app.static_folder, 'uploads', 'about_images')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    file_path = os.path.join(upload_dir, filename)
+                    file.save(file_path)
+                    image.image_path = f"uploads/about_images/{filename}"
+                else:
+                    flash('Image file is required.', 'error')
+                    return render_template('admin/edit_about_image.html')
+            else:
+                flash('Image file is required.', 'error')
+                return render_template('admin/edit_about_image.html')
+            
+            db.session.add(image)
+            db.session.commit()
+            flash('About image created successfully!', 'success')
+            return redirect(url_for('admin_panel.admin_about_images'))
+            
+        except Exception as e:
+            flash(f'Error creating about image: {str(e)}', 'error')
+            db.session.rollback()
+    
+    return render_template('admin/edit_about_image.html')
+
+@admin_bp.route('/about-images/edit/<int:image_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_about_image(image_id):
+    """Edit an about image"""
+    image = AboutImage.query.get_or_404(image_id)
+    
+    if request.method == 'POST':
+        try:
+            image.title = request.form.get('title')
+            image.caption = request.form.get('caption')
+            image.is_active = request.form.get('is_active') == 'on'
+            
+            # Handle image upload
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename:
+                    # Delete old image if exists
+                    if image.image_path:
+                        old_image_path = os.path.join(current_app.static_folder, image.image_path)
+                        if os.path.exists(old_image_path):
+                            os.remove(old_image_path)
+                    
+                    filename = secure_filename(file.filename)
+                    upload_dir = os.path.join(current_app.static_folder, 'uploads', 'about_images')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    file_path = os.path.join(upload_dir, filename)
+                    file.save(file_path)
+                    image.image_path = f"uploads/about_images/{filename}"
+            
+            db.session.commit()
+            flash('About image updated successfully!', 'success')
+            return redirect(url_for('admin_panel.admin_about_images'))
+            
+        except Exception as e:
+            flash(f'Error updating about image: {str(e)}', 'error')
+            db.session.rollback()
+    
+    return render_template('admin/edit_about_image.html', image=image)
+
+@admin_bp.route('/about-images/delete/<int:image_id>', methods=['POST'])
+@admin_required
+def delete_about_image(image_id):
+    """Delete an about image"""
+    try:
+        image = AboutImage.query.get_or_404(image_id)
+        
+        # Delete image file if exists
+        if image.image_path:
+            image_full_path = os.path.join(current_app.static_folder, image.image_path)
+            if os.path.exists(image_full_path):
+                os.remove(image_full_path)
+        
+        db.session.delete(image)
+        db.session.commit()
+        flash('About image deleted successfully!', 'success')
+        
+    except Exception as e:
+        flash(f'Error deleting about image: {str(e)}', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('admin_panel.admin_about_images'))
+
+@admin_bp.route('/about-images/reorder', methods=['POST'])
+@admin_required
+def reorder_about_images():
+    """Reorder about images"""
+    try:
+        image_ids = request.json.get('image_ids', [])
+        
+        for index, image_id in enumerate(image_ids):
+            image = AboutImage.query.get(image_id)
+            if image:
+                image.sort_order = index + 1
+        
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Images reordered successfully!'})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Error reordering images: {str(e)}'})
+
+@admin_bp.route('/about-images/toggle-active/<int:image_id>', methods=['POST'])
+@admin_required
+def toggle_about_image_active(image_id):
+    """Toggle active status of an about image"""
+    try:
+        image = AboutImage.query.get_or_404(image_id)
+        image.is_active = not image.is_active
+        
+        db.session.commit()
+        status = 'activated' if image.is_active else 'deactivated'
+        flash(f'About image {status} successfully!', 'success')
+        
+    except Exception as e:
+        flash(f'Error updating about image: {str(e)}', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('admin_panel.admin_about_images'))

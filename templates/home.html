@@ -57,7 +57,7 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero" id="home" {% if settings.get('home_image') %}style="background-image: url('{{ url_for('static', filename=settings.get('home_image')) }}'); background-size: cover; background-position: center;"{% endif %}>
+        <section class="hero" id="home" style="background-image: url('{{ url_for('static', filename='images/main_page_images/meditating_woman.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
             <div class="hero-content">
                 <h1>{{ settings.get('hero_title', 'Holistic Therapy') }}</h1>
                 <p>{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
@@ -110,22 +110,32 @@
                     <div class="about-image">
                         <div class="about-carousel-wrapper">
                             <div class="about-carousel">
+                                {% if about_images %}
+                                    {% for image in about_images %}
+                                    <div class="about-slide{% if loop.first %} active{% endif %}">
+                                        <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ image.title }}">
+                                        <div class="about-slide-caption">{{ image.caption }}</div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                <!-- Fallback images if none in database -->
                                 <div class="about-slide active">
-                                    <img src="{{ url_for('static', filename='images/meditating_woman.jpg') }}" alt="Peaceful meditation environment">
+                                    <img src="{{ url_for('static', filename='images/about_images/1.jpg') }}" alt="Peaceful meditation environment">
                                     <div class="about-slide-caption">🌟 Your Healing Journey Starts Here 🌟</div>
                                 </div>
                                 <div class="about-slide">
-                                    <img src="{{ url_for('static', filename='images/zion.JPG') }}" alt="Natural healing environment">
+                                    <img src="{{ url_for('static', filename='images/about_images/2.jpg') }}" alt="Natural healing environment">
                                     <div class="about-slide-caption">🌿 Connect with Nature's Energy 🌿</div>
                                 </div>
                                 <div class="about-slide">
-                                    <img src="{{ url_for('static', filename='uploads/services/zion.JPG') }}" alt="Tranquil therapeutic space">
+                                    <img src="{{ url_for('static', filename='images/about_images/3.jpg') }}" alt="Tranquil therapeutic space">
                                     <div class="about-slide-caption">✨ Experience Inner Peace ✨</div>
                                 </div>
                                 <div class="about-slide">
-                                    <img src="{{ url_for('static', filename='images/test.jpg') }}" alt="Test image">
+                                    <img src="{{ url_for('static', filename='images/about_images/4.jpg') }}" alt="Test image">
                                     <div class="about-slide-caption">🔮 Discover Your Potential 🔮</div>
                                 </div>
+                                {% endif %}
                             </div>
                             
                             <!-- Navigation Buttons -->
@@ -134,10 +144,17 @@
                             
                             <!-- Dots Indicator -->
                             <div class="about-carousel-dots">
+                                {% if about_images %}
+                                    {% for image in about_images %}
+                                    <span class="about-dot{% if loop.first %} active{% endif %}" data-slide="{{ loop.index0 }}"></span>
+                                    {% endfor %}
+                                {% else %}
+                                <!-- Fallback dots if no images in database -->
                                 <span class="about-dot active" data-slide="0"></span>
                                 <span class="about-dot" data-slide="1"></span>
                                 <span class="about-dot" data-slide="2"></span>
                                 <span class="about-dot" data-slide="3"></span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, redirect, url_for, send_from_direc
 from flask_mail import Message
 import os
 
-from db.models import Service, SiteSetting
+from db.models import Service, SiteSetting, AboutImage
 from routes.testimony import get_approved_testimonials
 from routes.send_sms import get_sms_status, test_sms_connection, check_and_send_reminders
 
@@ -28,7 +28,10 @@ def home():
     # Get approved testimonials for display
     testimonials = get_approved_testimonials()
     
-    return render_template('home.html', services=services, settings=settings, testimonials=testimonials)
+    # Get active about images ordered by sort_order
+    about_images = AboutImage.query.filter_by(is_active=True).order_by(AboutImage.sort_order).all()
+    
+    return render_template('home.html', services=services, settings=settings, testimonials=testimonials, about_images=about_images)
 
 
 @main_bp.route('/book')

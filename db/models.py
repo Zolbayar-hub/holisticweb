@@ -153,3 +153,19 @@ class Testimonial(db.Model):
     def get_star_display(self):
         """Returns star rating as emoji string"""
         return "⭐" * self.rating
+
+
+class AboutImage(db.Model):
+    __tablename__ = "about_images"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)  # Display title for the image
+    caption = db.Column(db.String(255), nullable=True)  # Caption text that appears on the image
+    image_path = db.Column(db.String(255), nullable=False)  # Path to the image file
+    sort_order = db.Column(db.Integer, nullable=False, default=0)  # Order in the carousel
+    is_active = db.Column(db.Boolean, default=True, nullable=False)  # Whether to show this image
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+    def __repr__(self):
+        return f"<AboutImage {self.title} - {'Active' if self.is_active else 'Inactive'}>"

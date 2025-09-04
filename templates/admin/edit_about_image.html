@@ -1,0 +1,130 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Edit About Image' if image else 'Create About Image' }}{% endblock %}
+{% block page_title %}{{ 'Edit About Image' if image else 'Create New About Image' }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-images me-2"></i>
+                    {{ 'Edit About Image' if image else 'Create New About Image' }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Image Title</label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               value="{{ image.title if image else '' }}" required
+                               placeholder="A descriptive title for the image">
+                        <div class="form-text">This title is used for accessibility and admin identification.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="caption" class="form-label">Caption</label>
+                        <input type="text" class="form-control" id="caption" name="caption" 
+                               value="{{ image.caption if image else '' }}"
+                               placeholder="Caption text that appears over the image">
+                        <div class="form-text">This text will be displayed as an overlay on the image in the carousel.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                   {{ 'checked' if not image or image.is_active else '' }}>
+                            <label class="form-check-label" for="is_active">
+                                Active
+                            </label>
+                        </div>
+                        <div class="form-text">Only active images will be displayed in the about section carousel.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Image File{% if not image %} *{% endif %}</label>
+                        {% if image and image.image_path %}
+                        <div class="mb-2">
+                            <img src="{{ url_for('static', filename=image.image_path) }}" 
+                                 alt="Current image" class="preview-image rounded">
+                            <div class="text-muted small mt-1">Current image</div>
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="image" name="image" 
+                               accept="image/*" onchange="previewImage(this)"
+                               {% if not image %}required{% endif %}>
+                        <div class="form-text">
+                            {% if image %}
+                            Upload a new image to replace the current one.
+                            {% else %}
+                            Select an image file for the about section carousel.
+                            {% endif %}
+                            Recommended size: 800x600px or larger for best quality.
+                        </div>
+                        
+                        <!-- Image preview -->
+                        <div id="imagePreview" class="mt-2" style="display: none;">
+                            <img id="preview" class="preview-image rounded" alt="Preview">
+                            <div class="text-muted small mt-1">New image preview</div>
+                        </div>
+                    </div>
+
+                    {% if image %}
+                    <div class="mb-3">
+                        <label class="form-label">Current Order</label>
+                        <div class="form-control-plaintext">
+                            Position {{ image.sort_order }} in the carousel
+                        </div>
+                        <div class="form-text">Use the drag and drop feature on the main about images page to reorder images.</div>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('admin_panel.admin_about_images') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Back to About Images
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>
+                            {{ 'Update Image' if image else 'Create Image' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('preview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+.preview-image {
+    max-width: 300px;
+    max-height: 200px;
+    object-fit: cover;
+}
+</style>
+{% endblock %}

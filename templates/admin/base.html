@@ -83,6 +83,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint in ['admin_panel.admin_about_images', 'admin_panel.edit_about_image', 'admin_panel.create_about_image'] %}active{% endif %}" 
+                           href="{{ url_for('admin_panel.admin_about_images') }}">
+                            <i class="fas fa-images me-2"></i>
+                            About Images
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'admin_panel.admin_settings' %}active{% endif %}" 
                            href="{{ url_for('admin_panel.admin_settings') }}">
                             <i class="fas fa-home me-2"></i>
