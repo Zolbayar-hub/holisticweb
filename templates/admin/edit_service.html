@@ -45,6 +45,15 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="language" class="form-label">Language</label>
+                        <select class="form-control" id="language" name="language" required>
+                            <option value="ENG" {{ 'selected' if (service and service.language == 'ENG') or not service else '' }}>English</option>
+                            <option value="MON" {{ 'selected' if service and service.language == 'MON' else '' }}>Mongolian</option>
+                        </select>
+                        <div class="form-text">Select the language for this service</div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="image" class="form-label">Service Image</label>
                         {% if service and service.image_path %}
                         <div class="mb-2">

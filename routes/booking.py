@@ -28,7 +28,13 @@ def booking_page():
 # 📅 API: Get available services
 @booking_bp.route("/services")
 def get_services():
-    services = Service.query.all()
+    # Get language from query parameter or default to 'ENG'
+    current_language = request.args.get('lang', 'ENG')
+    if current_language not in ['ENG', 'MON']:
+        current_language = 'ENG'
+    
+    # Filter services by language
+    services = Service.query.filter_by(language=current_language).all()
     services_data = [
         {
             "id": s.id,
@@ -258,5 +264,11 @@ def create_booking():
             flash(f"Error creating booking: {e}", "error")
             return redirect(url_for("booking_bp.create_booking"))
 
-    services = Service.query.all()
-    return render_template("new_booking.html", services=services)
+    # Get language from query parameter or default to 'ENG'
+    current_language = request.args.get('lang', 'ENG')
+    if current_language not in ['ENG', 'MON']:
+        current_language = 'ENG'
+    
+    # Filter services by language
+    services = Service.query.filter_by(language=current_language).all()
+    return render_template("new_booking.html", services=services, current_language=current_language)

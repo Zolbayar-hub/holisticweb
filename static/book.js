@@ -21,7 +21,11 @@ class BookingApp {
     // Load services from the backend
     async loadServices() {
         try {
-            const response = await fetch('/booking/services');
+            // Get language from URL parameter or default to 'ENG'
+            const urlParams = new URLSearchParams(window.location.search);
+            const language = urlParams.get('lang') || 'ENG';
+            
+            const response = await fetch(`/booking/services?lang=${language}`);
             if (response.ok) {
                 this.services = await response.json();
                 

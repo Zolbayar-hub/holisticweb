@@ -20,13 +20,14 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def home():
     """Home page with services and testimonials"""
-    services = Service.query.all()
-    
     # Get site settings for the current language (default to 'ENG')
     # You can extend this to get language from user session, URL parameter, or browser settings
     current_language = request.args.get('lang', 'ENG')
     if current_language not in ['ENG', 'MON']:
         current_language = 'ENG'
+    
+    # Filter services by current language
+    services = Service.query.filter_by(language=current_language).all()
     
     settings = get_site_settings(current_language)
     

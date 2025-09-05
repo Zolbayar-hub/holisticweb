@@ -45,6 +45,7 @@ def edit_service(service_id):
             service.description = request.form.get('description')
             service.price = float(request.form.get('price'))
             service.duration = int(request.form.get('duration'))
+            service.language = request.form.get('language', 'ENG')  # Add language support
             
             # Handle image upload
             if 'image' in request.files:
@@ -80,7 +81,8 @@ def create_service():
                 name=request.form.get('name'),
                 description=request.form.get('description'),
                 price=float(request.form.get('price')),
-                duration=int(request.form.get('duration'))
+                duration=int(request.form.get('duration')),
+                language=request.form.get('language', 'ENG')  # Add language support
             )
             
             # Handle image upload

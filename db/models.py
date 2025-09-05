@@ -96,9 +96,10 @@ class Service(db.Model):
     price = db.Column(db.Float, nullable=False)
     duration = db.Column(db.Integer, nullable=False)  # Duration in minutes
     image_path = db.Column(db.String(255), nullable=True)  # Path to service image
+    language = db.Column(db.String(3), nullable=False, default='ENG')  # ENG or MON
 
     def __repr__(self):
-        return f"<Service {self.name}>"
+        return f"<Service {self.name} ({self.language})>"
 
 
 class SiteSetting(db.Model):
