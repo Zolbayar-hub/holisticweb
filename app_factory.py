@@ -198,6 +198,7 @@ def insert_default_data():
     """Insert default data if missing"""
     
     from db.models import Role, User, SiteSetting, EmailTemplate, Service
+    from utils.site_settings import create_or_update_setting
     from werkzeug.security import generate_password_hash
     
     # Insert roles if missing
@@ -238,9 +239,16 @@ def insert_default_data():
     
     settings_added = False
     for key, value, description in default_settings:
-        if not SiteSetting.query.filter_by(key=key).first():
-            setting = SiteSetting(key=key, value=value, description=description)
-            db.session.add(setting)
+        # Check if setting exists for English language
+        if not SiteSetting.query.filter_by(key=key, language='ENG').first():
+            create_or_update_setting(key, value, 'ENG', description)
+            settings_added = True
+        
+        # Optionally add Mongolian placeholders (you can customize these later)
+        if not SiteSetting.query.filter_by(key=key, language='MON').first():
+            # For now, use the same English values as placeholders for Mongolian
+            # These can be updated through the admin interface
+            create_or_update_setting(key, value, 'MON', f"{description} (Mongolian)")
             settings_added = True
     
     if settings_added:

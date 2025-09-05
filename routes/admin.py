@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from db import db
 from db.models import Service, SiteSetting, EmailTemplate, User, Testimonial, AboutImage
 from werkzeug.utils import secure_filename
+from utils.site_settings import get_settings_by_language
 import os
 from functools import wraps
 from datetime import datetime
@@ -204,25 +205,40 @@ def admin_settings():
     """Admin site settings management"""
     settings = SiteSetting.query.all()
     
-    # Convert to dictionary for easier access
-    settings_dict = {setting.key: setting.value for setting in settings}
+    # Convert to dictionary for easier access, grouped by language
+    settings_dict = {}
+    settings_by_language = get_settings_by_language()
     
-    return render_template('admin/settings.html', settings=settings, settings_dict=settings_dict)
+    # Create a flat settings dict for backward compatibility
+    for lang_settings in settings_by_language.values():
+        settings_dict.update(lang_settings)
+    
+    return render_template('admin/settings.html', 
+                         settings=settings, 
+                         settings_dict=settings_dict,
+                         settings_by_language=settings_by_language)
 
 @admin_bp.route('/settings/update', methods=['POST'])
 @admin_required
 def update_settings():
     """Update site settings"""
     try:
+        # Get the selected language from form, default to 'ENG'
+        selected_language = request.form.get('language', 'ENG')
+        
+        # Validate language
+        if selected_language not in ['ENG', 'MON']:
+            selected_language = 'ENG'
+        
         # Get all form data
         for key, value in request.form.items():
             if key.startswith('setting_'):
                 setting_key = key.replace('setting_', '')
                 
-                # Find or create setting
-                setting = SiteSetting.query.filter_by(key=setting_key).first()
+                # Find or create setting for the selected language
+                setting = SiteSetting.query.filter_by(key=setting_key, language=selected_language).first()
                 if not setting:
-                    setting = SiteSetting(key=setting_key)
+                    setting = SiteSetting(key=setting_key, language=selected_language)
                     db.session.add(setting)
                 
                 setting.value = value
@@ -238,15 +254,15 @@ def update_settings():
                 file_path = os.path.join(upload_dir, filename)
                 file.save(file_path)
                 
-                # Update or create home_image setting
-                setting = SiteSetting.query.filter_by(key='home_image').first()
+                # Update or create home_image setting for the selected language
+                setting = SiteSetting.query.filter_by(key='home_image', language=selected_language).first()
                 if not setting:
-                    setting = SiteSetting(key='home_image')
+                    setting = SiteSetting(key='home_image', language=selected_language)
                     db.session.add(setting)
                 setting.value = f"uploads/home/{filename}"
         
         db.session.commit()
-        flash('Settings updated successfully!', 'success')
+        flash(f'Settings updated successfully for {selected_language}!', 'success')
         
     except Exception as e:
         flash(f'Error updating settings: {str(e)}', 'error')

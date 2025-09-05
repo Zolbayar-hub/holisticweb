@@ -16,6 +16,24 @@
             <div class="card-body">
                 <form method="POST" action="{{ url_for('admin_panel.update_settings') }}" enctype="multipart/form-data">
                     
+                    <!-- Language Selection -->
+                    <div class="mb-4">
+                        <h6 class="text-primary">
+                            <i class="fas fa-language me-1"></i>
+                            Language Selection
+                        </h6>
+                        <hr>
+                        
+                        <div class="mb-3">
+                            <label for="language" class="form-label">Select Language to Edit</label>
+                            <select class="form-control" id="language" name="language" onchange="loadLanguageSettings(this.value)">
+                                <option value="ENG" selected>English (ENG)</option>
+                                <option value="MON">Mongolian (MON)</option>
+                            </select>
+                            <div class="form-text">Choose the language for the content you want to edit. Settings are saved per language.</div>
+                        </div>
+                    </div>
+                    
                     <!-- Hero Section -->
                     <div class="mb-4">
                         <h6 class="text-primary">
@@ -225,6 +243,46 @@
 
 {% block scripts %}
 <script>
+// Language settings data passed from backend
+const settingsByLanguage = {{ settings_by_language | tojson }};
+
+function loadLanguageSettings(language) {
+    const langSettings = settingsByLanguage[language] || {};
+    
+    // Update all form fields with the selected language values
+    const formElements = document.querySelectorAll('[name^="setting_"]');
+    formElements.forEach(element => {
+        const settingKey = element.name.replace('setting_', '');
+        const value = langSettings[settingKey] || '';
+        
+        if (element.tagName === 'TEXTAREA') {
+            element.value = value;
+        } else if (element.type === 'text' || element.type === 'email') {
+            element.value = value;
+        }
+    });
+    
+    // Show a message about which language is being edited
+    showLanguageMessage(language);
+}
+
+function showLanguageMessage(language) {
+    // Remove any existing language messages
+    const existingMessage = document.querySelector('.language-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Create new message
+    const message = document.createElement('div');
+    message.className = 'alert alert-info language-message';
+    message.innerHTML = `<i class="fas fa-info-circle me-2"></i>Now editing content for: <strong>${language === 'ENG' ? 'English' : 'Mongolian'}</strong>`;
+    
+    // Insert after language selection
+    const languageSection = document.querySelector('.mb-4');
+    languageSection.insertAdjacentElement('afterend', message);
+}
+
 function previewHomeImage(input) {
     const preview = document.getElementById('homeImagePreview');
     const previewImg = document.getElementById('homePreview');
@@ -242,5 +300,10 @@ function previewHomeImage(input) {
         preview.style.display = 'none';
     }
 }
+
+// Initialize with English settings on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadLanguageSettings('ENG');
+});
 </script>
 {% endblock %}

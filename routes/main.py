@@ -3,13 +3,14 @@ Main application routes
 Contains core routes like home, health check, etc.
 """
 
-from flask import Blueprint, render_template, redirect, url_for, send_from_directory, current_app
+from flask import Blueprint, render_template, redirect, url_for, send_from_directory, current_app, request
 from flask_mail import Message
 import os
 
 from db.models import Service, SiteSetting, AboutImage
 from routes.testimony import get_approved_testimonials
 from routes.send_sms import get_sms_status, test_sms_connection, check_and_send_reminders
+from utils.site_settings import get_site_settings
 
 
 # Create main blueprint
@@ -21,9 +22,13 @@ def home():
     """Home page with services and testimonials"""
     services = Service.query.all()
     
-    # Get site settings
-    site_settings = SiteSetting.query.all()
-    settings = {setting.key: setting.value for setting in site_settings}
+    # Get site settings for the current language (default to 'ENG')
+    # You can extend this to get language from user session, URL parameter, or browser settings
+    current_language = request.args.get('lang', 'ENG')
+    if current_language not in ['ENG', 'MON']:
+        current_language = 'ENG'
+    
+    settings = get_site_settings(current_language)
     
     # Get approved testimonials for display
     testimonials = get_approved_testimonials()
@@ -31,7 +36,12 @@ def home():
     # Get active about images ordered by sort_order
     about_images = AboutImage.query.filter_by(is_active=True).order_by(AboutImage.sort_order).all()
     
-    return render_template('home.html', services=services, settings=settings, testimonials=testimonials, about_images=about_images)
+    return render_template('home.html', 
+                         services=services, 
+                         settings=settings, 
+                         testimonials=testimonials, 
+                         about_images=about_images,
+                         current_language=current_language)
 
 
 @main_bp.route('/book')

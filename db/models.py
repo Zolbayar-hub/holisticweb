@@ -103,16 +103,20 @@ class Service(db.Model):
 
 class SiteSetting(db.Model):
     __tablename__ = "site_settings"
+    __table_args__ = (
+        db.UniqueConstraint('key', 'language', name='uq_site_settings_key_language'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    key = db.Column(db.String(100), nullable=False, unique=True)
+    key = db.Column(db.String(100), nullable=False)
     value = db.Column(db.Text, nullable=True)
     description = db.Column(db.String(255), nullable=True)
+    language = db.Column(db.String(3), nullable=False, default='ENG')  # ENG or MON
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     def __repr__(self):
-        return f"<SiteSetting {self.key}>"
+        return f"<SiteSetting {self.key} ({self.language})>"
 
 
 class EmailTemplate(db.Model):
