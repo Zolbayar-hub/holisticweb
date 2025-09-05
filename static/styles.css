@@ -282,6 +282,7 @@ body {
     color: white;
     position: relative;
     overflow: hidden; /* Prevent any overflow issues */
+    background-position: center top; /* Show top of image to avoid cutting off head */
 }
 
 /* Hero background fitting options */
@@ -1053,7 +1054,7 @@ body {
     .hero {
         height: 70vh; /* Reduce height on mobile */
         min-height: 500px;
-        background-position: center center;
+        background-position: center top; /* Prioritize showing top of image */
         background-attachment: scroll; /* Ensure scroll on mobile */
     }
     
@@ -1104,6 +1105,7 @@ body {
     .hero {
         height: 80vh; /* Slightly reduce height on tablets */
         min-height: 550px;
+        background-position: center top; /* Prioritize showing top of image */
     }
     
     .hero-content h1 {
