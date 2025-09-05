@@ -256,11 +256,11 @@
                     <h2 class="section-title">{{ settings.get('contact_title', 'Begin Your Healing Journey') }}</h2>
                     <p>{{ settings.get('contact_text', 'Ready to take the first step? Contact us to schedule a consultation and discover how our holistic approach can support your wellness goals.') }}</p>
                     
-                    <form class="contact-form">
-                        <input type="text" placeholder="Your Name" required>
-                        <input type="email" placeholder="Your Email" required>
-                        <input type="tel" placeholder="Your Phone">
-                        <textarea rows="5" placeholder="Tell us about your wellness goals and how we can help you..."></textarea>
+                    <form class="contact-form" method="POST" action="{{ url_for('main.contact_form') }}">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="tel" name="phone" placeholder="Your Phone">
+                        <textarea name="message" rows="5" placeholder="Tell us about your wellness goals and how we can help you..." required></textarea>
                         <button type="submit">Send Message</button>
                     </form>
                     

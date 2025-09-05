@@ -147,8 +147,41 @@ window.addEventListener('load', function() {
 // Contact form handling
 document.querySelector('.contact-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    alert('Thank you for your message! We will get back to you soon.');
-    this.reset();
+    
+    const form = this;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    
+    // Prepare form data
+    const formData = new FormData(form);
+    
+    // Send the form data
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+            form.reset();
+        } else {
+            alert(data.message || 'There was an error sending your message. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error sending your message. Please try again.');
+    })
+    .finally(() => {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    });
 });
 
 // Services Carousel Functionality
