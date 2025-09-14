@@ -313,6 +313,8 @@ function setupModalEventListeners() {
         hideLoginModal();
         await updateAuthButton(); // Update button after successful login
         await updateMobileAuthButton(); // Also update mobile button
+        // After login success
+        window.location.reload();
       } else {
         loginMessage.textContent = res.error || 'Login failed';
       }
