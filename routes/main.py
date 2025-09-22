@@ -6,11 +6,22 @@ Contains core routes like home, health check, etc.
 from flask import Blueprint, render_template, redirect, url_for, send_from_directory, current_app, request, jsonify, flash
 from flask_mail import Message
 import os
+from datetime import datetime
 
 from db.models import Service, SiteSetting, AboutImage
 from routes.testimony import get_approved_testimonials
 from routes.send_sms import get_sms_status, test_sms_connection, check_and_send_reminders
 from utils.site_settings import get_site_settings
+
+# Facebook integration - try to import, set availability flag
+FACEBOOK_AVAILABLE = False
+try:
+    from routes.facebook import FacebookPoster
+    from routes.facebook import get_facebook_status, test_facebook_connection, get_facebook_pages, post_to_facebook
+    FACEBOOK_AVAILABLE = True
+except ImportError:
+    print("⚠️ Facebook integration not available - missing dependencies or facebook module")
+    FacebookPoster = None
 
 
 # Create main blueprint
@@ -269,3 +280,101 @@ This message was sent via the contact form on your website.
         </ul>
         <p><a href="/">← Back to Home</a></p>
         """
+
+
+@main_bp.route('/facebook-status')
+def facebook_status():
+    if not FACEBOOK_AVAILABLE:
+        return {'facebook_service': 'unavailable', 'message': 'Facebook integration module not available'}, 503
+    try:
+        status = get_facebook_status()
+        return {'facebook_service': status, 'message': 'Facebook service status'}, 200
+    except Exception as e:
+        return {'facebook_service': {'connected': False, 'error': str(e)}, 'message': 'Facebook status check failed'}, 500
+
+
+@main_bp.route('/test-facebook')
+def test_facebook():
+    if not FACEBOOK_AVAILABLE:
+        return {'status': 'error', 'message': 'Facebook integration not available'}, 503
+    try:
+        result = test_facebook_connection()
+        return {
+            'status': 'success' if result.get('success') else 'error',
+            'message': result.get('message'),
+            'details': result
+        }, 200 if result.get('success') else 500
+    except Exception as e:
+        return {'status': 'error', 'message': f'Facebook test failed: {str(e)}'}, 500
+
+
+@main_bp.route('/facebook-pages')
+def facebook_pages():
+    if not FACEBOOK_AVAILABLE:
+        return {'status': 'error', 'message': 'Facebook integration not available'}, 503
+    try:
+        result = get_facebook_pages()
+        return {'status': 'success' if result.get('success') else 'error', 'data': result}, 200 if result.get('success') else 500
+    except Exception as e:
+        return {'status': 'error', 'message': f'Failed to get Facebook pages: {str(e)}'}, 500
+
+
+@main_bp.route('/test-facebook-post', methods=['POST'])
+def test_facebook_post():
+    if not FACEBOOK_AVAILABLE:
+        return jsonify({'status': 'error', 'message': 'Facebook integration not available'}), 503
+    try:
+        data = request.get_json() or {}
+        message = data.get('message', f'Test post from Holistic Web - {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+        page_id = data.get('page_id')
+        link = data.get('link')
+        result = post_to_facebook(message, page_id=page_id, link=link)
+        return jsonify({
+            'status': 'success' if result.get('success') else 'error',
+            'message': result.get('message', 'Facebook post completed'),
+            'details': result
+        }), 200 if result.get('success') else 500
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': f'Facebook post test failed: {str(e)}'}), 500
+
+
+@main_bp.route('/auto-facebook-post', methods=['POST'])
+def auto_facebook_post():
+    """Trigger AI-generated Facebook post"""
+    if not FACEBOOK_AVAILABLE:
+        return jsonify({"status": "error", "message": "Facebook integration not available"}), 503
+    try:
+        fb = FacebookPoster(openai_api_key=os.getenv("OPENAI_API_KEY"))
+        topic = request.json.get("topic", "Benefits of meditation")
+        
+        # Generate AI text
+        ai_text = fb.generate_ai_post(topic)
+        if not ai_text:
+            return jsonify({"status": "error", "message": "Failed to generate AI text"}), 500
+        
+        # Try to generate AI image (optional)
+        include_image = request.json.get("include_image", True)
+        if include_image:
+            ai_image = fb.generate_ai_image("Calm meditation scene with nature")
+            if ai_image:
+                result = fb.post_text_with_image(ai_text, ai_image)
+            else:
+                # Fall back to text-only if image generation fails
+                result = fb.post_text(ai_text)
+        else:
+            result = fb.post_text(ai_text)
+            
+        return jsonify({
+            "status": "success" if result else "error", 
+            "message": "Posted to Facebook" if result else "Failed to post",
+            "ai_text": ai_text,
+            "result": result
+        }), 200 if result else 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@main_bp.route('/facebook-test')
+def facebook_test_page():
+    """Facebook testing interface"""
+    return render_template('facebook_test.html')

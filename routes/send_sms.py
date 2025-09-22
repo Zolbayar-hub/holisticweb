@@ -1,18 +1,8 @@
 
 import os
+import json
 from datetime import datetime, timedelta
 import pytz
-
-# Try to load environment variables from .env file (for local development)
-try:
-    from dotenv import load_dotenv
-    # Load .flaskenv file specifically
-    load_dotenv('.flaskenv')
-    # Also load .env if it exists (for overrides)
-    load_dotenv()
-except ImportError:
-    # dotenv not available (e.g., in production like PythonAnywhere)
-    print("python-dotenv not available. Using system environment variables.")
 
 try:
     from twilio.rest import Client
@@ -21,10 +11,31 @@ except ImportError:
     TWILIO_AVAILABLE = False
     print("Twilio not available. SMS functionality will be disabled.")
 
+# Load Twilio credentials from JSON file
+def load_twilio_credentials():
+    """Load Twilio credentials from twilio_creds.json file"""
+    try:
+        # Get the directory of the current file and look for twilio_creds.json
+        current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        creds_path = os.path.join(current_dir, 'twilio_creds.json')
+        
+        with open(creds_path, 'r') as f:
+            creds = json.load(f)
+        
+        return {
+            'sid': creds.get('account_sid'),
+            'auth_token': creds.get('auth_token'),
+            'phone_number': creds.get('phone_number')
+        }
+    except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+        print(f"❌ Error loading Twilio credentials: {e}")
+        return {'sid': None, 'auth_token': None, 'phone_number': None}
+
 # Get Twilio credentials
-TWILIO_SID = os.getenv("TWILIO_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_PHONE = os.getenv("TWILIO_PHONE")
+twilio_creds = load_twilio_credentials()
+TWILIO_SID = twilio_creds['sid']
+TWILIO_AUTH_TOKEN = twilio_creds['auth_token']
+TWILIO_PHONE = twilio_creds['phone_number']
 
 # Create Twilio client
 client = None

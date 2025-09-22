@@ -4,6 +4,25 @@ Centralized configuration for the Flask application
 """
 
 import os
+import json
+
+
+def load_facebook_credentials():
+    """Load Facebook credentials from creds.json file"""
+    creds_file = "creds.json"
+    if os.path.exists(creds_file):
+        try:
+            with open(creds_file, 'r') as f:
+                creds = json.load(f)
+                return {
+                    'app_id': creds.get('app_id'),
+                    'app_secret': creds.get('app_secret'), 
+                    'page_id': creds.get('page_id'),
+                    'page_access_token': creds.get('page_access_token')
+                }
+        except Exception as e:
+            print(f"⚠️ Error loading Facebook credentials: {e}")
+    return {}
 
 
 class Config:
@@ -30,10 +49,36 @@ class Config:
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@holisticweb.com')
     MAIL_TIMEOUT = 10
     
+    # Facebook Configuration - Load from environment variables or creds.json
+    @property
+    def facebook_config(self):
+        fb_creds = load_facebook_credentials()
+        return {
+            'FACEBOOK_APP_ID': os.environ.get('FACEBOOK_APP_ID') or fb_creds.get('app_id'),
+            'FACEBOOK_APP_SECRET': os.environ.get('FACEBOOK_APP_SECRET') or fb_creds.get('app_secret'),
+            'FACEBOOK_DEFAULT_PAGE_ID': os.environ.get('FACEBOOK_DEFAULT_PAGE_ID') or fb_creds.get('page_id'),
+            'FACEBOOK_REDIRECT_URI': os.environ.get('FACEBOOK_REDIRECT_URI', 'http://localhost:5000/auth/facebook/callback')
+        }
+    
+    # Set Facebook config as class attributes
+    @classmethod
+    def _load_facebook_config(cls):
+        """Load Facebook configuration from environment or file"""
+        fb_creds = load_facebook_credentials()
+        cls.FACEBOOK_APP_ID = os.environ.get('FACEBOOK_APP_ID') or fb_creds.get('app_id')
+        cls.FACEBOOK_APP_SECRET = os.environ.get('FACEBOOK_APP_SECRET') or fb_creds.get('app_secret')
+        cls.FACEBOOK_DEFAULT_PAGE_ID = os.environ.get('FACEBOOK_DEFAULT_PAGE_ID') or fb_creds.get('page_id')
+        cls.FACEBOOK_REDIRECT_URI = os.environ.get('FACEBOOK_REDIRECT_URI', 'http://localhost:5000/auth/facebook/callback')
+    
     @staticmethod
     def init_app(app):
         """Initialize app-specific configuration"""
-        pass
+        # Load Facebook configuration into app config
+        fb_creds = load_facebook_credentials()
+        app.config['FACEBOOK_APP_ID'] = os.environ.get('FACEBOOK_APP_ID') or fb_creds.get('app_id')
+        app.config['FACEBOOK_APP_SECRET'] = os.environ.get('FACEBOOK_APP_SECRET') or fb_creds.get('app_secret')
+        app.config['FACEBOOK_DEFAULT_PAGE_ID'] = os.environ.get('FACEBOOK_DEFAULT_PAGE_ID') or fb_creds.get('page_id')
+        app.config['FACEBOOK_REDIRECT_URI'] = os.environ.get('FACEBOOK_REDIRECT_URI', 'http://localhost:5000/auth/facebook/callback')
 
 
 class DevelopmentConfig(Config):
@@ -99,4 +144,10 @@ def print_config_status(app):
     print(f"   TLS: {app.config['MAIL_USE_TLS']}, SSL: {app.config['MAIL_USE_SSL']}")
     print(f"   Username: {'✅ Set' if app.config['MAIL_USERNAME'] else '❌ Not set'}")
     print(f"   Password: {'✅ Set' if app.config['MAIL_PASSWORD'] else '❌ Not set'}")
+    
+    print("\n📘 FACEBOOK CONFIGURATION:")
+    print(f"   App ID: {'✅ Set' if app.config['FACEBOOK_APP_ID'] else '❌ Not set'}")
+    print(f"   App Secret: {'✅ Set' if app.config['FACEBOOK_APP_SECRET'] else '❌ Not set'}")
+    print(f"   Redirect URI: {app.config['FACEBOOK_REDIRECT_URI']}")
+    print(f"   Default Page ID: {'✅ Set' if app.config['FACEBOOK_DEFAULT_PAGE_ID'] else '❌ Not set'}")
     print("="*60 + "\n")
