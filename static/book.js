@@ -307,7 +307,7 @@ class BookingApp {
                     
                     slots.push({
                         time: time,
-                        available: isAvailable,
+                        available: true,  // always true now
                         timeString: this.formatTime(time)
                     });
                 }
@@ -330,15 +330,12 @@ class BookingApp {
             slotElement.className = 'time-slot';
             slotElement.textContent = slot.timeString;
             
-            if (slot.available) {
-                slotElement.addEventListener('click', () => this.selectTimeSlot(slot, slotElement));
-            } else {
-                slotElement.classList.add('unavailable');
-            }
-            
-            timeSlotsContainer.appendChild(slotElement);
-        });
-    }
+            // Always clickable
+        slotElement.addEventListener('click', () => this.selectTimeSlot(slot, slotElement));
+
+        timeSlotsContainer.appendChild(slotElement);
+    });
+}
 
     selectTimeSlot(slot, element) {
         // Remove previous selection
