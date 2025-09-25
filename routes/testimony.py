@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
+from flask_mail import Message
 from flask_login import current_user
 from db import db
 from db.models import Testimonial
 from functools import wraps
+from datetime import datetime
 
 # Create testimonial blueprint
 testimony_bp = Blueprint('testimony', __name__, url_prefix='/testimonials')
@@ -34,14 +36,46 @@ def submit_testimonial():
                 testimonial_text=request.form.get('testimonial_text'),
                 rating=int(request.form.get('rating', 5)),
                 email=request.form.get('email'),
-                is_approved=False,  # Requires admin approval
+                is_approved=True,  # Publish immediately
                 is_featured=False
             )
+
+            # Set approval metadata for immediate publish
+            testimonial.approved_at = datetime.utcnow()
+            testimonial.approved_by = None
             
             db.session.add(testimonial)
             db.session.commit()
-            
-            flash('Thank you for your testimonial! It will be reviewed and published soon.', 'success')
+
+            # Notify admin by email (best-effort)
+            try:
+                mail = current_app.mail
+                admin_subject = f"New Testimonial Submitted by {testimonial.client_name}"
+                admin_body = f"""
+A new testimonial was just submitted and published immediately on the site.
+
+Name: {testimonial.client_name}
+Title: {testimonial.client_title}
+Rating: {testimonial.rating}
+Email: {testimonial.email}
+
+Testimonial:
+{testimonial.testimonial_text}
+
+--
+This notification was sent automatically.
+"""
+                admin_msg = Message(
+                    subject=admin_subject,
+                    recipients=[current_app.config.get('MAIL_USERNAME', 'admin@example.com')],
+                    body=admin_body
+                )
+                mail.send(admin_msg)
+            except Exception as e:
+                # Log but don't block the user from seeing their testimonial
+                current_app.logger.error(f"Failed to send testimonial notification: {e}")
+
+            flash('Thank you — your testimonial has been published and will appear on the homepage.', 'success')
             return redirect(url_for('main.home'))
             
         except Exception as e:

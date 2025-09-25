@@ -400,62 +400,22 @@ def delete_testimonial(testimonial_id):
 @admin_bp.route('/testimonials/approve/<int:testimonial_id>', methods=['POST'])
 @admin_required
 def approve_testimonial(testimonial_id):
-    """Quick approve a testimonial"""
-    try:
-        testimonial = Testimonial.query.get_or_404(testimonial_id)
-        testimonial.is_approved = True
-        testimonial.approved_at = datetime.utcnow()
-        testimonial.approved_by = current_user.id
-        
-        db.session.commit()
-        flash('Testimonial approved successfully!', 'success')
-        
-    except Exception as e:
-        flash(f'Error approving testimonial: {str(e)}', 'error')
-        db.session.rollback()
-    
+    """Quick approve a testimonial (disabled: testimonials are published immediately)."""
+    flash('Operation not allowed. Testimonials are published immediately — only deletion is permitted by admin.', 'warning')
     return redirect(url_for('admin_panel.admin_testimonials'))
 
 @admin_bp.route('/testimonials/disapprove/<int:testimonial_id>', methods=['POST'])
 @admin_required
 def disapprove_testimonial(testimonial_id):
-    """Disapprove a testimonial"""
-    try:
-        testimonial = Testimonial.query.get_or_404(testimonial_id)
-        testimonial.is_approved = False
-        testimonial.approved_at = None
-        testimonial.approved_by = None
-        testimonial.is_featured = False  # Remove from featured if disapproved
-        
-        db.session.commit()
-        flash('Testimonial disapproved successfully!', 'success')
-        
-    except Exception as e:
-        flash(f'Error disapproving testimonial: {str(e)}', 'error')
-        db.session.rollback()
-    
+    """Disapprove a testimonial (disabled: testimonials are published immediately)."""
+    flash('Operation not allowed. Testimonials are published immediately — only deletion is permitted by admin.', 'warning')
     return redirect(url_for('admin_panel.admin_testimonials'))
 
 @admin_bp.route('/testimonials/toggle_feature/<int:testimonial_id>', methods=['POST'])
 @admin_required
 def toggle_feature_testimonial(testimonial_id):
-    """Toggle featured status of a testimonial"""
-    try:
-        testimonial = Testimonial.query.get_or_404(testimonial_id)
-        
-        # Only allow featuring if testimonial is approved
-        if not testimonial.is_approved and not testimonial.is_featured:
-            flash('Testimonial must be approved before it can be featured.', 'warning')
-        else:
-            testimonial.is_featured = not testimonial.is_featured
-            db.session.commit()
-            status = 'featured' if testimonial.is_featured else 'unfeatured'
-            flash(f'Testimonial {status} successfully!', 'success')
-        
-    except Exception as e:
-        flash(f'Error updating testimonial: {str(e)}', 'error')
-        db.session.rollback()
-    
+    """Toggle featured status of a testimonial (disabled in this mode)."""
+    flash('Operation not allowed. Featuring is disabled when testimonials are auto-published.', 'warning')
     return redirect(url_for('admin_panel.admin_testimonials'))
 
 

@@ -173,9 +173,9 @@
             <div class="container">
                 <h2 class="section-title">What Our Clients Say</h2>
                 <p style="text-align: center; margin-bottom: 30px;">
-                    <a href="{{ url_for('testimony.submit_testimonial') }}" class="cta-button" style="font-size: 0.9rem; padding: 10px 20px;">
+                    <button id="open-testimonial-btn" class="cta-button" style="font-size: 0.9rem; padding: 10px 20px; border: none; cursor: pointer;">
                         Share Your Experience
-                    </a>
+                    </button>
                 </p>
                 <div class="testimonials-carousel">
                     <div class="testimonials-container">
@@ -299,6 +299,101 @@
             currentUrl.searchParams.set('lang', language);
             window.location.href = currentUrl.toString();
         }
+    </script>
+    
+    <!-- Modal for inline testimonial submission -->
+    <div id="testimonial-modal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000;">
+        <div class="modal-dialog" style="max-width:900px; width:calc(100% - 2rem); margin:2rem auto; background:white; padding:1.25rem; border-radius:8px; position:relative; box-sizing:border-box; max-height:calc(100vh - 4rem); overflow-y:auto;">
+            <button id="close-testimonial-modal" style="position:absolute; right:12px; top:12px; background:none; border:none; font-size:1.25rem; cursor:pointer;">&times;</button>
+            <h2 style="margin-top:0;">Share Your Experience</h2>
+            <p>We would love to hear about your healing journey with us. Your testimonial will be published immediately.</p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('testimony.submit_testimonial') }}" class="testimonial-form">
+                <div class="form-group">
+                    <label for="client_name_modal">Your Name *</label>
+                    <input type="text" id="client_name_modal" name="client_name" required placeholder="Enter your full name" style="width:100%; box-sizing:border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="client_title_modal">Your Title/Profession</label>
+                    <input type="text" id="client_title_modal" name="client_title" placeholder="e.g., Teacher, Marketing Executive (optional)" style="width:100%; box-sizing:border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="email_modal">Your Email</label>
+                    <input type="email" id="email_modal" name="email" placeholder="your.email@example.com (optional)" style="width:100%; box-sizing:border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="rating_modal">Rating *</label>
+                    <div class="rating-input">
+                        <input type="radio" id="m_star5" name="rating" value="5" checked>
+                        <label for="m_star5">⭐⭐⭐⭐⭐</label>
+                        <input type="radio" id="m_star4" name="rating" value="4">
+                        <label for="m_star4">⭐⭐⭐⭐</label>
+                        <input type="radio" id="m_star3" name="rating" value="3">
+                        <label for="m_star3">⭐⭐⭐</label>
+                        <input type="radio" id="m_star2" name="rating" value="2">
+                        <label for="m_star2">⭐⭐</label>
+                        <input type="radio" id="m_star1" name="rating" value="1">
+                        <label for="m_star1">⭐</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="testimonial_text_modal">Your Experience *</label>
+                    <textarea id="testimonial_text_modal" name="testimonial_text" rows="6" required placeholder="Please share your experience with our holistic therapy services." style="width:100%; box-sizing:border-box; min-height:120px;"></textarea>
+                </div>
+                <div class="form-group" style="display:flex; gap:8px; align-items:center;">
+                    <button type="submit" class="submit-btn">Submit Testimonial</button>
+                    <button type="button" id="cancel-testimonial-modal" class="cancel-btn">Cancel</button>
+                </div>
+                <p class="form-note"><small>* Required fields. Your testimonial will be published immediately on the site after submission.</small></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Testimonial modal open/close
+    (function(){
+        const openBtn = document.getElementById('open-testimonial-btn');
+        const modal = document.getElementById('testimonial-modal');
+        const closeBtn = document.getElementById('close-testimonial-modal');
+        const cancelBtn = document.getElementById('cancel-testimonial-modal');
+
+        if (!openBtn || !modal) return;
+
+        function openModal(){
+            modal.style.display = 'block';
+            // prevent background scroll
+            document.body.style.overflow = 'hidden';
+            const firstInput = modal.querySelector('input, textarea');
+            if (firstInput) firstInput.focus();
+        }
+        function closeModal(){
+            modal.style.display = 'none';
+            // restore background scroll
+            document.body.style.overflow = '';
+        }
+        openBtn.addEventListener('click', openModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+        // Close when clicking outside dialog
+        modal.addEventListener('click', function(e){
+            if (e.target === modal) closeModal();
+        });
+
+        // Allow ESC to close
+        document.addEventListener('keydown', function(e){
+            if (e.key === 'Escape' && modal.style.display === 'block') closeModal();
+        });
+    })();
     </script>
 </body>
 </html>

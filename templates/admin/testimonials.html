@@ -58,24 +58,7 @@
         </div>
         
         <div class="testimonial-actions">
-            <a href="{{ url_for('admin_panel.edit_testimonial', testimonial_id=testimonial.id) }}" class="btn btn-secondary btn-sm">Edit</a>
-            
-            {% if testimonial.is_approved %}
-                <form method="POST" action="{{ url_for('admin_panel.disapprove_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
-                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Disapprove this testimonial?')">Disapprove</button>
-                </form>
-            {% else %}
-                <form method="POST" action="{{ url_for('admin_panel.approve_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
-                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                </form>
-            {% endif %}
-            
-            <form method="POST" action="{{ url_for('admin_panel.toggle_feature_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
-                <button type="submit" class="btn btn-info btn-sm">
-                    {% if testimonial.is_featured %}Unfeature{% else %}Feature{% endif %}
-                </button>
-            </form>
-            
+            <!-- Admin can only delete testimonials. Testimonials are published immediately when submitted. -->
             <form method="POST" action="{{ url_for('admin_panel.delete_testimonial', testimonial_id=testimonial.id) }}" style="display: inline;">
                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this testimonial permanently?')">Delete</button>
             </form>
