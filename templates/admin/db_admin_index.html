@@ -1,0 +1,123 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Database Administration Panel</h1>
+            <p class="lead">Comprehensive database management interface powered by Flask-Admin</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-users"></i> User Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Manage user accounts, roles, and permissions.</p>
+                            <ul>
+                                <li>View and edit user profiles</li>
+                                <li>Manage user roles and permissions</li>
+                                <li>Track user registration dates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-content"></i> Content Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Manage all website content and bookings.</p>
+                            <ul>
+                                <li>Services and pricing</li>
+                                <li>Client bookings and appointments</li>
+                                <li>Testimonials and reviews</li>
+                                <li>About page images</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card border-warning">
+                        <div class="card-header bg-warning text-white">
+                            <h5 class="mb-0"><i class="fas fa-cog"></i> Configuration</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>System settings and templates.</p>
+                            <ul>
+                                <li>Site settings and configuration</li>
+                                <li>Email templates</li>
+                                <li>Multi-language support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card border-info">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fas fa-robot"></i> AI Content</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>AI-generated content management.</p>
+                            <ul>
+                                <li>Generated social media posts</li>
+                                <li>Content scheduling and tracking</li>
+                                <li>Platform-specific content</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card border-secondary">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0"><i class="fas fa-info-circle"></i> Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Common administrative tasks:</p>
+                            <div class="btn-group-vertical d-block">
+                                <a href="/db-admin/db_users/" class="btn btn-outline-primary btn-sm mb-2">Manage Users</a>
+                                <a href="/db-admin/db_bookings/" class="btn btn-outline-success btn-sm mb-2">View Bookings</a>
+                                <a href="/db-admin/db_testimonials/" class="btn btn-outline-info btn-sm mb-2">Review Testimonials</a>
+                                <a href="/db-admin/db_site_settings/" class="btn btn-outline-warning btn-sm">Site Settings</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4" role="alert">
+                <h4 class="alert-heading"><i class="fas fa-lightbulb"></i> Important Notes</h4>
+                <ul class="mb-0">
+                    <li>This interface provides direct database access - use with caution</li>
+                    <li>Changes made here are permanent and bypass application logic</li>
+                    <li>For regular admin tasks, consider using the main admin panel at <a href="/admin">/admin</a></li>
+                    <li>Always backup your database before making significant changes</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.btn-group-vertical .btn {
+    border-radius: 0.25rem !important;
+}
+</style>
+{% endblock %}

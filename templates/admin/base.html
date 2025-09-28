@@ -55,43 +55,43 @@
                 
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'admin_panel.admin_panel' %}active{% endif %}" 
-                           href="{{ url_for('admin_panel.admin_panel') }}">
+                        <a class="nav-link {% if request.endpoint == 'web_admin_panel.web_admin_panel' %}active{% endif %}" 
+                           href="{{ url_for('web_admin_panel.web_admin_panel') }}">
                             <i class="fas fa-tachometer-alt me-2"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'admin_panel.admin_services' %}active{% endif %}" 
-                           href="{{ url_for('admin_panel.admin_services') }}">
+                        <a class="nav-link {% if request.endpoint == 'web_admin_panel.admin_services' %}active{% endif %}" 
+                           href="{{ url_for('web_admin_panel.admin_services') }}">
                             <i class="fas fa-spa me-2"></i>
                             Services
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'admin_panel.admin_emails' %}active{% endif %}" 
-                           href="{{ url_for('admin_panel.admin_emails') }}">
+                        <a class="nav-link {% if request.endpoint == 'web_admin_panel.admin_emails' %}active{% endif %}" 
+                           href="{{ url_for('web_admin_panel.admin_emails') }}">
                             <i class="fas fa-envelope me-2"></i>
                             Email Templates
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'admin_panel.admin_testimonials' %}active{% endif %}" 
-                           href="{{ url_for('admin_panel.admin_testimonials') }}">
+                        <a class="nav-link {% if request.endpoint == 'web_admin_panel.admin_testimonials' %}active{% endif %}" 
+                           href="{{ url_for('web_admin_panel.admin_testimonials') }}">
                             <i class="fas fa-quote-left me-2"></i>
                             Testimonials
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint in ['admin_panel.admin_about_images', 'admin_panel.edit_about_image', 'admin_panel.create_about_image'] %}active{% endif %}" 
-                           href="{{ url_for('admin_panel.admin_about_images') }}">
+                        <a class="nav-link {% if request.endpoint in ['web_admin_panel.admin_about_images', 'web_admin_panel.edit_about_image', 'web_admin_panel.create_about_image'] %}active{% endif %}" 
+                           href="{{ url_for('web_admin_panel.admin_about_images') }}">
                             <i class="fas fa-images me-2"></i>
                             About Images
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'admin_panel.admin_settings' %}active{% endif %}" 
-                           href="{{ url_for('admin_panel.admin_settings') }}">
+                        <a class="nav-link {% if request.endpoint == 'web_admin_panel.admin_settings' %}active{% endif %}" 
+                           href="{{ url_for('web_admin_panel.admin_settings') }}">
                             <i class="fas fa-home me-2"></i>
                             Home Page Settings
                         </a>

@@ -20,7 +20,7 @@
                 <li><a href="#contact">Contact</a></li>
                 <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
                 {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
-                <li><a href="{{ url_for('admin_panel.admin_panel') }}" style="color: #ffc107;">Admin</a></li>
+                <li><a href="{{ url_for('web_admin_panel.web_admin_panel') }}" style="color: #ffc107;">Admin</a></li>
                 {% endif %}
                 <li class="language-switcher">
                     <select onchange="switchLanguage(this.value)" style="background: #2c5530; color: white; border: 1px solid #4a7c59; border-radius: 4px; padding: 4px 8px;">
@@ -47,7 +47,7 @@
                     <li><a href="#contact">Contact</a></li>
                     <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
                     {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
-                    <li><a href="{{ url_for('admin_panel.admin_panel') }}" style="color: #ffc107;">Admin Panel</a></li>
+                    <li><a href="{{ url_for('web_admin_panel.web_admin_panel') }}" style="color: #ffc107;">Admin Panel</a></li>
                     {% endif %}
                 </ul>
                 <button id="mobile-auth-btn" class="auth-btn">Login</button>

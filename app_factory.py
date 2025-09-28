@@ -106,7 +106,7 @@ def register_blueprints(app):
     """Register application blueprints"""
     
     from routes.auth import auth_bp
-    from routes.admin import admin_bp
+    from routes.web_admin import web_admin_bp
     from routes.booking import booking_bp
     from routes.testimony import testimony_bp
     from routes.main import main_bp
@@ -115,7 +115,7 @@ def register_blueprints(app):
     app.register_blueprint(auth_bp)
     app.register_blueprint(booking_bp)
     app.register_blueprint(testimony_bp)
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(web_admin_bp)
     
     print("✅ Blueprints registered")
 

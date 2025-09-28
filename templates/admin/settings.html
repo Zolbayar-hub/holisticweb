@@ -14,7 +14,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ url_for('admin_panel.update_settings') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ url_for('web_admin_panel.update_settings') }}" enctype="multipart/form-data">
                     
                     <!-- Language Selection -->
                     <div class="mb-4">
@@ -177,7 +177,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('admin_panel.admin_panel') }}" class="btn btn-secondary">
+                        <a href="{{ url_for('web_admin_panel.web_admin_panel') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i>
                             Back to Dashboard
                         </a>

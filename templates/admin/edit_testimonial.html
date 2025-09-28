@@ -5,7 +5,7 @@
 {% block content %}
 <div class="admin-header">
     <h1>{{ 'Edit' if testimonial else 'Create' }} Testimonial</h1>
-    <a href="{{ url_for('admin_panel.admin_testimonials') }}" class="btn btn-secondary">Back to Testimonials</a>
+    <a href="{{ url_for('web_admin_panel.admin_testimonials') }}" class="btn btn-secondary">Back to Testimonials</a>
 </div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -97,7 +97,7 @@
         <button type="submit" class="btn btn-primary">
             {{ 'Update' if testimonial else 'Create' }} Testimonial
         </button>
-        <a href="{{ url_for('admin_panel.admin_testimonials') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{ url_for('web_admin_panel.admin_testimonials') }}" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
 
