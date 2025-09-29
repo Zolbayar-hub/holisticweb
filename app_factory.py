@@ -97,9 +97,20 @@ def initialize_extensions(app):
     except ImportError:
         print("⚠️ Flask-CORS not installed. Skipping...")
     
-    # Flask-Admin
-    from utils.admin_setup import setup_admin
-    setup_admin(app)
+    # Flask-Admin (Database Admin Panel)
+    try:
+        from db_admin import init_db_admin
+        init_db_admin(app)
+        print("✅ Database Admin Panel initialized")
+    except Exception as e:
+        print(f"❌ Error initializing Database Admin: {e}")
+        # Fall back to old admin setup
+        try:
+            from utils.admin_setup import setup_admin
+            setup_admin(app)
+            print("✅ Fallback admin setup initialized")
+        except Exception as e2:
+            print(f"❌ All admin setup failed: {e2}")
 
 
 def register_blueprints(app):

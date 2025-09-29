@@ -52,7 +52,11 @@ class SecureModelView(ModelView):
 
     def inaccessible_callback(self, name, **kwargs):
         flash(_('Database admin access requires admin privileges.'), 'error')
-        return redirect(url_for('auth.login'))
+        # Make sure we redirect to login, not web_admin
+        if not current_user.is_authenticated:
+            return redirect(url_for('auth.login'))
+        else:
+            return redirect(url_for('main.home'))
 
 
 class UserModelView(SecureModelView):
@@ -60,7 +64,12 @@ class UserModelView(SecureModelView):
     column_searchable_list = ['username', 'email']
     column_filters = ['role', 'is_paid', 'created_at']
     column_editable_list = ['is_paid']
-    form_excluded_columns = ['password', 'bookings']
+    column_labels = {
+        'is_paid': 'Paid Status',
+        'role': 'Role',
+        'created_at': 'Created'
+    }
+    form_excluded_columns = ['password', 'bookings', 'created_at', 'updated_at']
 
     form_extra_fields = {
         'role_id': SelectField(
@@ -107,6 +116,16 @@ class UserModelView(SecureModelView):
         return True
 
 
+class UserPaidTestModelView(UserModelView):
+    """Filtered view showing only paid users"""
+    
+    def get_query(self):
+        return self.session.query(self.model).filter(self.model.is_paid == True)
+
+    def get_count_query(self):
+        return self.session.query(db.func.count('*')).filter(self.model.is_paid == True)
+
+
 class ServiceModelView(SecureModelView):
     column_list = ['id', 'name', 'price', 'duration', 'language']
     column_searchable_list = ['name', 'description']
@@ -139,10 +158,29 @@ class TestimonialModelView(SecureModelView):
 
 
 class SiteSettingModelView(SecureModelView):
-    column_list = ['id', 'key', 'language', 'updated_at']
-    column_searchable_list = ['key', 'value']
+    column_list = ['id', 'key', 'value', 'language', 'description', 'updated_at']
+    column_searchable_list = ['key', 'value', 'description']
     column_filters = ['language', 'key']
-    form_widget_args = {'value': {'rows': 6}}
+    column_editable_list = ['value']
+    column_labels = {
+        'key': 'Key',
+        'value': 'Value',
+        'description': 'Description',
+        'language': 'Language'
+    }
+    form_widget_args = {
+        'value': {'rows': 4, 'style': 'font-family: monospace;'},
+        'description': {'rows': 2}
+    }
+    column_formatters = {
+        'value': lambda view, context, model, name: (
+            model.value[:50] + '...' if model.value and len(model.value) > 50 
+            else model.value or ''
+        )
+    }
+    
+    # Make the form more user-friendly
+    form_excluded_columns = ['created_at', 'updated_at']
 
 
 class EmailTemplateModelView(SecureModelView):
@@ -180,25 +218,46 @@ class RoleModelView(SecureModelView):
 
 # Add more ModelViews as needed for other tables
 def init_db_admin(app):
-    db_admin = Admin(
-        app,
-        name=_('Database Admin'),
-        template_mode='bootstrap4',
-        index_view=MyAdminIndexView(endpoint='db_admin', url='/db_admin')
-    )
+    """Initialize the Database Admin Panel with Flask-Admin"""
+    try:
+        print("🗄️ Initializing Database Admin Panel...")
+        
+        # Create admin with specific configuration to avoid conflicts
+        db_admin = Admin(
+            app,
+            name='Database Admin',
+            template_mode='bootstrap4',
+            index_view=MyAdminIndexView(endpoint='db_admin', url='/db_admin'),
+            static_url_path='/admin/static'
+        )
 
-    # Add model views - Database Administration Only
-    db_admin.add_view(UserModelView(User, db.session, name=_('Users'), category=_('User Management')))
-    db_admin.add_view(RoleModelView(Role, db.session, name=_('Roles'), category=_('User Management')))
-    db_admin.add_view(BookingModelView(Booking, db.session, name=_('Bookings'), category=_('Data Management')))
-    db_admin.add_view(GeneratedContentModelView(GeneratedContent, db.session, name=_('Generated Content'), category=_('AI Content')))
-    
-    # Raw database views for troubleshooting (read-only recommended)
-    db_admin.add_view(SiteSettingModelView(SiteSetting, db.session, name=_('Site Settings (Raw)'), category=_('Raw Data')))
-    db_admin.add_view(ServiceModelView(Service, db.session, name=_('Services (Raw)'), category=_('Raw Data')))
-    db_admin.add_view(TestimonialModelView(Testimonial, db.session, name=_('Testimonials (Raw)'), category=_('Raw Data')))
-    db_admin.add_view(AboutImageModelView(AboutImage, db.session, name=_('About Images (Raw)'), category=_('Raw Data')))
-    db_admin.add_view(EmailTemplateModelView(EmailTemplate, db.session, name=_('Email Templates (Raw)'), category=_('Raw Data')))
+        print("📊 Adding model views to Database Admin...")
+        
+        # Add model views to match the navigation structure
+        # Core User Management
+        db_admin.add_view(UserPaidTestModelView(User, db.session, name='User Paid', endpoint='db_admin_user_paid_test'))
+        db_admin.add_view(UserModelView(User, db.session, name='User', endpoint='db_admin_users'))
+        db_admin.add_view(RoleModelView(Role, db.session, name='Role', endpoint='db_admin_roles'))
+        
+        # Configuration and Settings
+        db_admin.add_view(SiteSettingModelView(SiteSetting, db.session, name='Config', endpoint='db_admin_config'))
+        
+        # Business Operations
+        db_admin.add_view(ServiceModelView(Service, db.session, name='Service', endpoint='db_admin_services'))
+        db_admin.add_view(BookingModelView(Booking, db.session, name='Booking', endpoint='db_admin_bookings'))
+        
+        # Content Management
+        db_admin.add_view(TestimonialModelView(Testimonial, db.session, name='Testimonial', endpoint='db_admin_testimonials'))
+        db_admin.add_view(AboutImageModelView(AboutImage, db.session, name='About Image', endpoint='db_admin_images'))
+        db_admin.add_view(EmailTemplateModelView(EmailTemplate, db.session, name='Email Template', endpoint='db_admin_emails'))
+        db_admin.add_view(GeneratedContentModelView(GeneratedContent, db.session, name='Generated Content', endpoint='db_admin_content'))
 
-    return db_admin
+        print("✅ Database Admin Panel initialized with all model views")
+        return db_admin
+        
+    except Exception as e:
+        print(f"❌ Error initializing Database Admin Panel: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
 
