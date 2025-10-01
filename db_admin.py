@@ -158,6 +158,12 @@ class TestimonialModelView(SecureModelView):
 
 
 class SiteSettingModelView(SecureModelView):
+    can_create = True
+    can_edit = True
+    can_delete = True
+    
+    list_template = 'admin/config_list.html' 
+    
     column_list = ['id', 'key', 'value', 'language', 'description', 'updated_at']
     column_searchable_list = ['key', 'value', 'description']
     column_filters = ['language', 'key']
