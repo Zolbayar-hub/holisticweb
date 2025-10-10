@@ -246,6 +246,9 @@ def insert_default_data():
         ('contact_title', 'Begin Your Healing Journey', 'Contact section title'),
         ('contact_text', 'Ready to take the first step? Contact us to schedule a consultation and discover how our holistic approach can support your wellness goals.', 'Contact section text'),
         ('footer_text', 'Holistic Therapy. All rights reserved. | Healing Mind, Body & Spirit', 'Footer text'),
+        ('business_phone', '8014720284', 'Business phone number'),
+        ('business_email', 'bayarba27@gmail.com', 'Business email address'),
+        ('business_address', '123 Wellness Street, Healing City, HC 12345', 'Business address'),
     ]
     
     settings_added = False

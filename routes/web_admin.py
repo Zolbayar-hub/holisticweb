@@ -63,7 +63,7 @@ def edit_service(service_id):
             
             db.session.commit()
             flash('Service updated successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_services'))
+            return redirect(url_for('web_admin_panel.admin_services'))
             
         except Exception as e:
             flash(f'Error updating service: {str(e)}', 'error')
@@ -100,7 +100,7 @@ def create_service():
             db.session.add(service)
             db.session.commit()
             flash('Service created successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_services'))
+            return redirect(url_for('web_admin_panel.admin_services'))
             
         except Exception as e:
             flash(f'Error creating service: {str(e)}', 'error')
@@ -129,7 +129,7 @@ def delete_service(service_id):
         flash(f'Error deleting service: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('web_web_admin_panel.admin_services'))
+    return redirect(url_for('web_admin_panel.admin_services'))
 
 @web_admin_bp.route('/emails')
 @admin_required
@@ -153,7 +153,7 @@ def edit_email_template(template_id):
             
             db.session.commit()
             flash('Email template updated successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_emails'))
+            return redirect(url_for('web_admin_panel.admin_emails'))
             
         except Exception as e:
             flash(f'Error updating email template: {str(e)}', 'error')
@@ -177,7 +177,7 @@ def create_email_template():
             db.session.add(template)
             db.session.commit()
             flash('Email template created successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_emails'))
+            return redirect(url_for('web_admin_panel.admin_emails'))
             
         except Exception as e:
             flash(f'Error creating email template: {str(e)}', 'error')
@@ -199,7 +199,7 @@ def delete_email_template(template_id):
         flash(f'Error deleting email template: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('web_web_admin_panel.admin_emails'))
+    return redirect(url_for('web_admin_panel.admin_emails'))
 
 @web_admin_bp.route('/settings')
 @admin_required
@@ -270,7 +270,7 @@ def update_settings():
         flash(f'Error updating settings: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('web_web_admin_panel.admin_settings'))
+    return redirect(url_for('web_admin_panel.admin_settings'))
 
 @web_admin_bp.route('/upload-image', methods=['POST'])
 @admin_required
@@ -341,7 +341,7 @@ def edit_testimonial(testimonial_id):
             
             db.session.commit()
             flash('Testimonial updated successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_testimonials'))
+            return redirect(url_for('web_admin_panel.admin_testimonials'))
             
         except Exception as e:
             flash(f'Error updating testimonial: {str(e)}', 'error')
@@ -373,7 +373,7 @@ def create_testimonial():
             db.session.add(testimonial)
             db.session.commit()
             flash('Testimonial created successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_testimonials'))
+            return redirect(url_for('web_admin_panel.admin_testimonials'))
             
         except Exception as e:
             flash(f'Error creating testimonial: {str(e)}', 'error')
@@ -395,28 +395,28 @@ def delete_testimonial(testimonial_id):
         flash(f'Error deleting testimonial: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('web_web_admin_panel.admin_testimonials'))
+    return redirect(url_for('web_admin_panel.admin_testimonials'))
 
 @web_admin_bp.route('/testimonials/approve/<int:testimonial_id>', methods=['POST'])
 @admin_required
 def approve_testimonial(testimonial_id):
     """Quick approve a testimonial (disabled: testimonials are published immediately)."""
     flash('Operation not allowed. Testimonials are published immediately — only deletion is permitted by admin.', 'warning')
-    return redirect(url_for('web_web_admin_panel.admin_testimonials'))
+    return redirect(url_for('web_admin_panel.admin_testimonials'))
 
 @web_admin_bp.route('/testimonials/disapprove/<int:testimonial_id>', methods=['POST'])
 @admin_required
 def disapprove_testimonial(testimonial_id):
     """Disapprove a testimonial (disabled: testimonials are published immediately)."""
     flash('Operation not allowed. Testimonials are published immediately — only deletion is permitted by admin.', 'warning')
-    return redirect(url_for('web_web_admin_panel.admin_testimonials'))
+    return redirect(url_for('web_admin_panel.admin_testimonials'))
 
 @web_admin_bp.route('/testimonials/toggle_feature/<int:testimonial_id>', methods=['POST'])
 @admin_required
 def toggle_feature_testimonial(testimonial_id):
     """Toggle featured status of a testimonial (disabled in this mode)."""
     flash('Operation not allowed. Featuring is disabled when testimonials are auto-published.', 'warning')
-    return redirect(url_for('web_web_admin_panel.admin_testimonials'))
+    return redirect(url_for('web_admin_panel.admin_testimonials'))
 
 
 # About Images Management Routes
@@ -464,7 +464,7 @@ def create_about_image():
             db.session.add(image)
             db.session.commit()
             flash('About image created successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_about_images'))
+            return redirect(url_for('web_admin_panel.admin_about_images'))
             
         except Exception as e:
             flash(f'Error creating about image: {str(e)}', 'error')
@@ -504,7 +504,7 @@ def edit_about_image(image_id):
             
             db.session.commit()
             flash('About image updated successfully!', 'success')
-            return redirect(url_for('web_web_admin_panel.admin_about_images'))
+            return redirect(url_for('web_admin_panel.admin_about_images'))
             
         except Exception as e:
             flash(f'Error updating about image: {str(e)}', 'error')
@@ -533,7 +533,7 @@ def delete_about_image(image_id):
         flash(f'Error deleting about image: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('web_web_admin_panel.admin_about_images'))
+    return redirect(url_for('web_admin_panel.admin_about_images'))
 
 @web_admin_bp.route('/about-images/reorder', methods=['POST'])
 @admin_required
@@ -570,4 +570,4 @@ def toggle_about_image_active(image_id):
         flash(f'Error updating about image: {str(e)}', 'error')
         db.session.rollback()
     
-    return redirect(url_for('web_web_admin_panel.admin_about_images'))
+    return redirect(url_for('web_admin_panel.admin_about_images'))

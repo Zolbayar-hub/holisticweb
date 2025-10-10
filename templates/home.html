@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holistic Therapy - Heal Your Mind, Body & Spirit</title>
+    <title>Holistic Therapy- Heal Your Mind, Body & Spirit</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <!-- Header with Navigation -->
     <header class="header">
+        <!-- Background Music -->
+        <audio id="background-music" loop preload="auto">
+            <source src="{{ url_for('static', filename='mixkit-classical-6-713.mp3') }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        
+        <!-- Music Control Button -->
+        <button id="music-toggle" class="music-control" title="Toggle Background Music">
+            <span id="music-icon">🎵</span>
+        </button>
+        
         <nav class="nav-container">
-            <a href="#" class="logo">Holistic Therapy</a>
+            <a href="#" class="logo">SERENITY WELLNESS Studio</a>
             
             <!-- Desktop Navigation -->
             <ul class="desktop-nav">
@@ -65,7 +76,7 @@
         <!-- Hero Section -->
         <section class="hero" id="home" style="background-image: linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)), url('{{ url_for('static', filename='images/main_page_images/meditating_woman.jpg') }}'); background-size: cover; background-position: center top; background-repeat: no-repeat;">
             <div class="hero-content">
-                <h1>{{ settings.get('hero_title', 'Holistic Therapy') }}</h1>
+                <h1>{{ settings.get('hero_title', 'Bio Energy Healer and Sound Therapy') }}</h1>
                 <p>{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
                 <a href="#services" class="cta-button">Explore Our Services</a>
                 <a href="{{ url_for('booking_bp.booking_page') }}" class="cta-button" style="margin-left: 15px;">Book Now</a>
@@ -299,6 +310,100 @@
             currentUrl.searchParams.set('lang', language);
             window.location.href = currentUrl.toString();
         }
+        
+        // Background Music Control
+        document.addEventListener('DOMContentLoaded', function() {
+            const music = document.getElementById('background-music');
+            const musicToggle = document.getElementById('music-toggle');
+            const musicIcon = document.getElementById('music-icon');
+            let isPlaying = false;
+            let musicReady = false;
+            
+            // Check if audio file loads successfully
+            music.addEventListener('loadeddata', function() {
+                console.log('✅ Music file loaded successfully');
+                musicReady = true;
+                musicIcon.textContent = '🎵';
+                musicToggle.title = 'Click to Play Background Music';
+            });
+            
+            music.addEventListener('error', function(e) {
+                console.error('❌ Music file failed to load:', e);
+                musicIcon.textContent = '❌';
+                musicToggle.title = 'Music file not found';
+                musicToggle.style.opacity = '0.5';
+                musicToggle.disabled = true;
+            });
+            
+            music.addEventListener('canplay', function() {
+                console.log('🎶 Music is ready to play');
+                musicReady = true;
+            });
+            
+            // Set initial volume
+            music.volume = 0.3; // 30% volume for background music
+            
+            musicToggle.addEventListener('click', function() {
+                if (!musicReady) {
+                    console.log('⚠️ Music not ready yet');
+                    return;
+                }
+                
+                if (isPlaying) {
+                    music.pause();
+                    musicIcon.textContent = '🎵';
+                    musicToggle.title = 'Play Background Music';
+                    isPlaying = false;
+                    console.log('⏸️ Music paused');
+                } else {
+                    music.play().then(() => {
+                        musicIcon.textContent = '🔇';
+                        musicToggle.title = 'Pause Background Music';
+                        isPlaying = true;
+                        console.log('▶️ Music started playing');
+                    }).catch(error => {
+                        console.error('❌ Music play failed:', error);
+                        musicIcon.textContent = '❌';
+                        musicToggle.title = 'Failed to play music';
+                    });
+                }
+            });
+            
+            // Handle music ending (though it's set to loop)
+            music.addEventListener('ended', function() {
+                isPlaying = false;
+                musicIcon.textContent = '🎵';
+                musicToggle.title = 'Play Background Music';
+                console.log('🔄 Music ended');
+            });
+            
+            // Auto-start music with user interaction fallback
+            const startMusicOnInteraction = function() {
+                if (!isPlaying && musicReady) {
+                    music.play().then(() => {
+                        musicIcon.textContent = '🔇';
+                        musicToggle.title = 'Pause Background Music';
+                        isPlaying = true;
+                        console.log('🎵 Auto-started music on user interaction');
+                    }).catch(error => {
+                        console.log('⚠️ Auto-start prevented, user must click button:', error);
+                    });
+                }
+            };
+            
+            // Try to start music on first user interaction
+            document.addEventListener('click', startMusicOnInteraction, { once: true });
+            document.addEventListener('scroll', startMusicOnInteraction, { once: true });
+            
+            // Debug: Log audio element properties
+            setTimeout(() => {
+                console.log('🔍 Audio Debug Info:');
+                console.log('- Audio source:', music.src);
+                console.log('- Ready state:', music.readyState);
+                console.log('- Network state:', music.networkState);
+                console.log('- Can play type:', music.canPlayType('audio/mpeg'));
+            }, 1000);
+        });
     </script>
     
     <!-- Modal for inline testimonial submission -->
