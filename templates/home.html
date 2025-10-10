@@ -75,9 +75,9 @@
     <main class="main-content">
         <!-- Hero Section -->
         <section class="hero" id="home" style="background-image: linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)), url('{{ url_for('static', filename='images/main_page_images/meditating_woman.jpg') }}'); background-size: cover; background-position: center top; background-repeat: no-repeat;">
-            <div class="hero-content">
+            <div class="hero-content" style="text-align: center !important;">
                 <h1>{{ settings.get('hero_title', 'Bio Energy Healer and Sound Therapy') }}</h1>
-                <p>{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
+                <p style="text-align: center !important; margin: 0 auto;">{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
                 <a href="#services" class="cta-button">Explore Our Services</a>
                 <a href="{{ url_for('booking_bp.booking_page') }}" class="cta-button" style="margin-left: 15px;">Book Now</a>
             </div>
