@@ -99,6 +99,25 @@
                     </div>
                     
                     <div class="form-group">
+                        <label for="num-people">
+                            <i class="fas fa-users"></i> Number of People
+                        </label>
+                        <select id="num-people" name="num-people" required>
+                            <option value="1" selected>1 person (just me)</option>
+                            <option value="2">2 people</option>
+                            <option value="3">3 people</option>
+                            <option value="4">4 people</option>
+                            <option value="5">5 people</option>
+                            <option value="6">6 people</option>
+                            <option value="7">7 people</option>
+                            <option value="8">8 people</option>
+                            <option value="9">9 people</option>
+                            <option value="10">10 people (maximum)</option>
+                        </select>
+                        <small class="help-text">You can book for up to 10 people total. You will be the main contact for the group.</small>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="special-requests">
                             <i class="fas fa-comment"></i> Special Requests (Optional)
                         </label>
@@ -146,9 +165,15 @@
                     <div class="booking-details" id="confirmation-details">
                         <!-- Confirmation details will be populated -->
                     </div>
-                    <button class="btn btn-primary" onclick="location.reload()">
-                        Book Another Session
-                    </button>
+                    <div class="success-actions">
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            Book Another Session
+                        </button>
+                        <a href="{{ url_for('booking_bp.my_bookings') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-calendar-check me-1"></i>
+                            View My Bookings
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

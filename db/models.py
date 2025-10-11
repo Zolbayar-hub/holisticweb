@@ -79,10 +79,11 @@ class Booking(db.Model):
     end_time = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(20), default='pending')  # pending, confirmed, cancelled
     admin_notes = db.Column(db.String(255), nullable=True)
+    num_people = db.Column(db.Integer, default=1, nullable=False)  # Number of people in the booking (1-10)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<Booking {self.user_name} {self.start_time}>"
+        return f"<Booking {self.user_name} ({self.num_people} people) {self.start_time}>"
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'), nullable=True)
     service = db.relationship("Service", backref="bookings")
     

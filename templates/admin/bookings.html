@@ -1,0 +1,150 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Bookings{% endblock %}
+{% block page_title %}Manage Bookings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar-check me-2"></i>
+                    All Bookings
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if bookings %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>People</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Contact</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr class="{% if booking.status == 'cancelled' %}table-secondary{% elif booking.status == 'confirmed' %}table-success{% endif %}">
+                                <td>{{ booking.id }}</td>
+                                <td>
+                                    <strong>{{ booking.user_name }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ booking.email }}</small>
+                                </td>
+                                <td>
+                                    {% if booking.service %}
+                                        {{ booking.service.name }}
+                                        <br>
+                                        <small class="text-muted">${{ booking.service.price }}</small>
+                                    {% else %}
+                                        <span class="text-muted">No service</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">{{ booking.num_people }}</span>
+                                    <br>
+                                    <small class="text-muted">{{ 'person' if booking.num_people == 1 else 'people' }}</small>
+                                </td>
+                                <td>
+                                    <strong>{{ booking.start_time.strftime('%Y-%m-%d') }}</strong>
+                                    <br>
+                                    <small>{{ booking.start_time.strftime('%I:%M %p') }} - {{ booking.end_time.strftime('%I:%M %p') }}</small>
+                                </td>
+                                <td>
+                                    {% if booking.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif booking.status == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                    {% elif booking.status == 'cancelled' %}
+                                        <span class="badge bg-secondary">Cancelled</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ booking.status.title() }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small>
+                                        <i class="fas fa-envelope"></i> {{ booking.email }}
+                                        {% if booking.phone_number %}
+                                        <br>
+                                        <i class="fas fa-phone"></i> {{ booking.phone_number }}
+                                        {% endif %}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if booking.status != 'cancelled' %}
+                                    <button class="btn btn-sm btn-outline-danger" 
+                                            onclick="confirmCancelBooking({{ booking.id }}, '{{ booking.user_name }}')">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                    {% else %}
+                                    <span class="text-muted">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No bookings found</h5>
+                    <p class="text-muted">Bookings will appear here once customers start booking services.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelModalLabel">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Confirm Cancellation
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel the booking for <strong id="customerName"></strong>?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle me-2"></i>
+                    This action cannot be undone. The customer will be notified via email.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>
+                    No, Keep Booking
+                </button>
+                <form id="cancelForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-check me-1"></i>
+                        Yes, Cancel Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmCancelBooking(bookingId, customerName) {
+    document.getElementById('customerName').textContent = customerName;
+    document.getElementById('cancelForm').action = `/web_admin/bookings/${bookingId}/cancel`;
+    
+    const modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

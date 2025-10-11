@@ -59,6 +59,22 @@
 </div>
 
 <div class="row mt-4">
+    <!-- Bookings Card -->
+    <div class="col-md-4 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-calendar-check fa-3x text-danger mb-3"></i>
+                <h5 class="card-title">Bookings</h5>
+                <p class="card-text">View and manage customer bookings.</p>
+                <a href="{{ url_for('web_admin_panel.admin_bookings') }}" class="btn btn-danger">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    Manage Bookings
+                </a>
+            </div>
+        </div>
+    </div>
+
+<div class="row mt-4">
     <!-- About Images Card -->
     <div class="col-md-4 mb-3">
         <div class="card text-center">

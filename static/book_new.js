@@ -118,7 +118,7 @@ class BookingApp {
                     name: "Reiki Healing",
                     description: "Energy healing session for physical and emotional wellness",
                     duration: 60,
-                   
+                    price: 90,
                     icon: "fas fa-hands"
                 },
                 {
@@ -496,7 +496,6 @@ class BookingApp {
         const name = document.getElementById('user-name').value;
         const email = document.getElementById('user-email').value;
         const phone = document.getElementById('user-phone').value;
-        const numPeople = parseInt(document.getElementById('num-people').value) || 1;
         const requests = document.getElementById('special-requests').value;
         
         const endTime = new Date(this.selectedTime.time);
@@ -525,10 +524,6 @@ class BookingApp {
                 <span class="summary-value">${this.selectedService.duration} minutes</span>
             </div>
             <div class="summary-item">
-                <span class="summary-label">Number of People:</span>
-                <span class="summary-value">${numPeople} ${numPeople === 1 ? 'person' : 'people'}</span>
-            </div>
-            <div class="summary-item">
                 <span class="summary-label">Name:</span>
                 <span class="summary-value">${name}</span>
             </div>
@@ -548,6 +543,12 @@ class BookingApp {
                     <span class="summary-value">${requests}</span>
                 </div>
             ` : ''}
+            ${this.selectedTime.isFullyBooked ? `
+                <div class="summary-item fully-booked-warning">
+                    <span class="summary-label">⚠️ Notice:</span>
+                    <span class="summary-value">This slot is fully booked (${this.selectedTime.bookingCount} people). Your booking will be saved as waitlist.</span>
+                </div>
+            ` : ''}
             <div class="summary-item">
                 <span class="summary-label">Total Price:</span>
                 <span class="summary-value">$${this.selectedService.price}</span>
@@ -559,55 +560,13 @@ class BookingApp {
         this.showLoading(true);
         
         try {
-            // Get number of people with better validation
-            const numPeopleElement = document.getElementById('num-people');
-            let numPeople = 1; // Default value
-            
-            if (numPeopleElement && numPeopleElement.value) {
-                numPeople = parseInt(numPeopleElement.value);
-                if (isNaN(numPeople) || numPeople < 1) {
-                    numPeople = 1;
-                } else if (numPeople > 10) {
-                    numPeople = 10;
-                }
-            }
-            
-            console.log('Number of people selected:', numPeople);
-            
-            // Validate required fields
-            const userName = document.getElementById('user-name').value.trim();
-            const userEmail = document.getElementById('user-email').value.trim();
-            
-            if (!userName) {
-                throw new Error('Please enter your full name.');
-            }
-            
-            if (!userEmail || !userEmail.includes('@')) {
-                throw new Error('Please enter a valid email address.');
-            }
-            
-            if (!this.selectedService || !this.selectedTime) {
-                throw new Error('Please select a service and time slot.');
-            }
-            
-            console.log('Submitting booking with data:', {
-                user_name: userName,
-                email: userEmail,
-                phone: document.getElementById('user-phone').value || null,
-                num_people: numPeople,
-                service_id: this.selectedService.id,
-                start_time: this.selectedTime.time.toISOString(),
-                end_time: new Date(this.selectedTime.time.getTime() + this.selectedService.duration * 60000).toISOString()
-            });
-            
             const bookingData = {
-                user_name: userName,
-                email: userEmail,
+                user_name: document.getElementById('user-name').value,
+                email: document.getElementById('user-email').value,
                 start_time: this.selectedTime.time.toISOString(),
                 end_time: new Date(this.selectedTime.time.getTime() + this.selectedService.duration * 60000).toISOString(),
                 service_id: this.selectedService.id,
                 phone: document.getElementById('user-phone').value || null,
-                num_people: numPeople,
                 special_requests: document.getElementById('special-requests').value || null
             };
             
@@ -629,33 +588,12 @@ class BookingApp {
                     this.showSuccess();
                 }
             } else {
-                let errorMessage = 'Failed to create booking';
-                try {
-                    const error = await response.json();
-                    errorMessage = error.error || error.message || errorMessage;
-                    console.error('Server error response:', error);
-                } catch (parseError) {
-                    console.error('Failed to parse error response:', parseError);
-                    errorMessage = `Server error (${response.status}): ${response.statusText}`;
-                }
-                console.error('Final error message:', errorMessage);
-                throw new Error(errorMessage);
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to create booking');
             }
         } catch (error) {
             console.error('Error submitting booking:', error);
-            console.error('Error details:', error.message);
-            console.error('Error type:', typeof error);
-            console.error('Error string representation:', String(error));
-            
-            // Better error message handling
-            let errorMessage = 'Failed to submit booking. Please try again.';
-            if (error && error.message) {
-                errorMessage = error.message;
-            } else if (typeof error === 'string') {
-                errorMessage = error;
-            }
-            
-            this.showError(errorMessage);
+            this.showError('Failed to submit booking. Please try again.');
         } finally {
             this.showLoading(false);
         }
@@ -741,25 +679,18 @@ class BookingApp {
 
     showLoading(show) {
         const overlay = document.getElementById('loading-overlay');
-        if (overlay) {
-            overlay.style.display = show ? 'flex' : 'none';
-        }
+        overlay.style.display = show ? 'flex' : 'none';
     }
 
     showError(message) {
         const modal = document.getElementById('error-modal');
         const errorMessage = document.getElementById('error-message');
-        if (modal && errorMessage) {
-            errorMessage.textContent = message;
-            modal.style.display = 'block';
-        }
+        errorMessage.textContent = message;
+        modal.style.display = 'block';
     }
 
     closeModal() {
-        const modal = document.getElementById('error-modal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
+        document.getElementById('error-modal').style.display = 'none';
     }
 }
 

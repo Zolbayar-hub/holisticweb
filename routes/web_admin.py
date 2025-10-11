@@ -571,3 +571,32 @@ def toggle_about_image_active(image_id):
         db.session.rollback()
     
     return redirect(url_for('web_admin_panel.admin_about_images'))
+
+@web_admin_bp.route('/bookings')
+@admin_required
+def admin_bookings():
+    """Admin bookings management"""
+    from db.models import Booking, Service
+    bookings = Booking.query.order_by(Booking.start_time.desc()).all()
+    return render_template('admin/bookings.html', bookings=bookings)
+
+@web_admin_bp.route('/bookings/<int:booking_id>/cancel', methods=['POST'])
+@admin_required
+def admin_cancel_booking(booking_id):
+    """Cancel a booking from admin panel"""
+    try:
+        from db.models import Booking
+        booking = Booking.query.get_or_404(booking_id)
+        
+        if booking.status == 'cancelled':
+            flash('Booking is already cancelled.', 'warning')
+        else:
+            booking.status = 'cancelled'
+            db.session.commit()
+            flash(f'Booking for {booking.user_name} has been cancelled successfully.', 'success')
+        
+        return redirect(url_for('web_admin_panel.admin_bookings'))
+        
+    except Exception as e:
+        flash(f'Error cancelling booking: {str(e)}', 'error')
+        return redirect(url_for('web_admin_panel.admin_bookings'))
