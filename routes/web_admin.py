@@ -436,14 +436,17 @@ def create_about_image():
             # Get the highest sort order and add 1
             max_order = db.session.query(db.func.max(AboutImage.sort_order)).scalar() or 0
             
+            media_type = request.form.get('media_type', 'image')
+            
             image = AboutImage(
                 title=request.form.get('title'),
                 caption=request.form.get('caption'),
+                media_type=media_type,
                 sort_order=max_order + 1,
                 is_active=request.form.get('is_active') == 'on'
             )
             
-            # Handle image upload
+            # Handle media upload (image or video)
             if 'image' in request.files:
                 file = request.files['image']
                 if file and file.filename:
@@ -455,10 +458,10 @@ def create_about_image():
                     file.save(file_path)
                     image.image_path = f"uploads/about_images/{filename}"
                 else:
-                    flash('Image file is required.', 'error')
+                    flash('Media file is required.', 'error')
                     return render_template('admin/edit_about_image.html')
             else:
-                flash('Image file is required.', 'error')
+                flash('Media file is required.', 'error')
                 return render_template('admin/edit_about_image.html')
             
             db.session.add(image)
@@ -482,17 +485,18 @@ def edit_about_image(image_id):
         try:
             image.title = request.form.get('title')
             image.caption = request.form.get('caption')
+            image.media_type = request.form.get('media_type', 'image')
             image.is_active = request.form.get('is_active') == 'on'
             
-            # Handle image upload
+            # Handle media upload (image or video)
             if 'image' in request.files:
                 file = request.files['image']
                 if file and file.filename:
-                    # Delete old image if exists
+                    # Delete old file if exists
                     if image.image_path:
-                        old_image_path = os.path.join(current_app.static_folder, image.image_path)
-                        if os.path.exists(old_image_path):
-                            os.remove(old_image_path)
+                        old_file_path = os.path.join(current_app.static_folder, image.image_path)
+                        if os.path.exists(old_file_path):
+                            os.remove(old_file_path)
                     
                     filename = secure_filename(file.filename)
                     upload_dir = os.path.join(current_app.static_folder, 'uploads', 'about_images')

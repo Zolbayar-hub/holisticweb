@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize about images carousel
     setTimeout(() => {
-        new AboutImageCarousel();
+        window.aboutCarouselInstance = new AboutImageCarousel();
     }, 100);
     
     // Initialize auth buttons
@@ -392,9 +392,21 @@ class AboutImageCarousel {
     }
     
     startAutoSlide() {
+        this.pauseAutoSlide(); // Clear any existing interval
+        
+        // Check if current slide is a video
+        const currentSlideElement = this.slides[this.currentSlide];
+        const hasVideo = currentSlideElement && currentSlideElement.querySelector('video[data-video-slide]');
+        
+        if (hasVideo) {
+            // Don't auto-advance on video slides - let the video control the timing
+            console.log('Video slide detected - auto-slide paused');
+            return;
+        }
+        
         this.autoSlideInterval = setInterval(() => {
             this.nextSlide();
-        }, 4000); // Change slide every 4 seconds
+        }, 4000); // Change slide every 4 seconds for image slides
     }
     
     pauseAutoSlide() {

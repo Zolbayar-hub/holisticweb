@@ -165,13 +165,14 @@ class AboutImage(db.Model):
     __tablename__ = "about_images"
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)  # Display title for the image
-    caption = db.Column(db.String(255), nullable=True)  # Caption text that appears on the image
-    image_path = db.Column(db.String(255), nullable=False)  # Path to the image file
+    title = db.Column(db.String(100), nullable=False)  # Display title for the image/video
+    caption = db.Column(db.String(255), nullable=True)  # Caption text that appears on the media
+    image_path = db.Column(db.String(255), nullable=False)  # Path to the image/video file
+    media_type = db.Column(db.String(10), nullable=False, default='image')  # 'image' or 'video'
     sort_order = db.Column(db.Integer, nullable=False, default=0)  # Order in the carousel
-    is_active = db.Column(db.Boolean, default=True, nullable=False)  # Whether to show this image
+    is_active = db.Column(db.Boolean, default=True, nullable=False)  # Whether to show this media
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     def __repr__(self):
-        return f"<AboutImage {self.title} - {'Active' if self.is_active else 'Inactive'}>"
+        return f"<AboutImage {self.title} ({self.media_type}) - {'Active' if self.is_active else 'Inactive'}>"

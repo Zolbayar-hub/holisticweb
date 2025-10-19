@@ -24,11 +24,20 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="media_type" class="form-label">Media Type</label>
+                        <select class="form-control" id="media_type" name="media_type" onchange="toggleMediaType()">
+                            <option value="image" {{ 'selected' if not image or image.media_type == 'image' else '' }}>Image</option>
+                            <option value="video" {{ 'selected' if image and image.media_type == 'video' else '' }}>Video</option>
+                        </select>
+                        <div class="form-text">Choose whether to upload an image or video file.</div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="caption" class="form-label">Caption</label>
                         <input type="text" class="form-control" id="caption" name="caption" 
                                value="{{ image.caption if image else '' }}"
-                               placeholder="Caption text that appears over the image">
-                        <div class="form-text">This text will be displayed as an overlay on the image in the carousel.</div>
+                               placeholder="Caption text that appears over the media">
+                        <div class="form-text">This text will be displayed as an overlay on the media in the carousel.</div>
                     </div>
 
                     <div class="mb-3">
@@ -43,30 +52,41 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="image" class="form-label">Image File{% if not image %} *{% endif %}</label>
+                        <label for="image" class="form-label" id="fileLabel">Media File{% if not image %} *{% endif %}</label>
                         {% if image and image.image_path %}
                         <div class="mb-2">
+                            {% if image.media_type == 'video' %}
+                            <video class="preview-image rounded" controls style="max-width: 300px;">
+                                <source src="{{ url_for('static', filename=image.image_path) }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="text-muted small mt-1">Current video</div>
+                            {% else %}
                             <img src="{{ url_for('static', filename=image.image_path) }}" 
                                  alt="Current image" class="preview-image rounded">
                             <div class="text-muted small mt-1">Current image</div>
+                            {% endif %}
                         </div>
                         {% endif %}
                         <input type="file" class="form-control" id="image" name="image" 
-                               accept="image/*" onchange="previewImage(this)"
+                               accept="image/*,video/*" onchange="previewMedia(this)"
                                {% if not image %}required{% endif %}>
-                        <div class="form-text">
+                        <div class="form-text" id="fileHelp">
                             {% if image %}
-                            Upload a new image to replace the current one.
+                            Upload a new file to replace the current one.
                             {% else %}
-                            Select an image file for the about section carousel.
+                            Select a media file for the about section carousel.
                             {% endif %}
-                            Recommended size: 800x600px or larger for best quality.
+                            <span id="sizeRecommendation">Recommended image size: 800x600px or larger. For videos: MP4 format recommended.</span>
                         </div>
                         
-                        <!-- Image preview -->
-                        <div id="imagePreview" class="mt-2" style="display: none;">
-                            <img id="preview" class="preview-image rounded" alt="Preview">
-                            <div class="text-muted small mt-1">New image preview</div>
+                        <!-- Media preview -->
+                        <div id="mediaPreview" class="mt-2" style="display: none;">
+                            <img id="imagePreview" class="preview-image rounded" alt="Preview" style="display: none;">
+                            <video id="videoPreview" class="preview-image rounded" controls style="display: none; max-width: 300px;">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="text-muted small mt-1" id="previewLabel">New media preview</div>
                         </div>
                     </div>
 
@@ -99,23 +119,63 @@
 
 {% block scripts %}
 <script>
-function previewImage(input) {
-    const preview = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('preview');
+function toggleMediaType() {
+    const mediaType = document.getElementById('media_type').value;
+    const fileInput = document.getElementById('image');
+    const fileLabel = document.getElementById('fileLabel');
+    const sizeRecommendation = document.getElementById('sizeRecommendation');
+    
+    if (mediaType === 'video') {
+        fileInput.accept = 'video/*';
+        fileLabel.textContent = 'Video File{% if not image %} *{% endif %}';
+        sizeRecommendation.textContent = 'Upload MP4 format for best compatibility. Recommended resolution: 1920x1080 or higher.';
+    } else {
+        fileInput.accept = 'image/*';
+        fileLabel.textContent = 'Image File{% if not image %} *{% endif %}';
+        sizeRecommendation.textContent = 'Recommended image size: 800x600px or larger for best quality.';
+    }
+    
+    // Clear any existing preview
+    document.getElementById('mediaPreview').style.display = 'none';
+}
+
+function previewMedia(input) {
+    const mediaPreview = document.getElementById('mediaPreview');
+    const imagePreview = document.getElementById('imagePreview');
+    const videoPreview = document.getElementById('videoPreview');
+    const previewLabel = document.getElementById('previewLabel');
     
     if (input.files && input.files[0]) {
-        const reader = new FileReader();
+        const file = input.files[0];
+        const fileType = file.type;
         
-        reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            preview.style.display = 'block';
+        if (fileType.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                videoPreview.style.display = 'none';
+                previewLabel.textContent = 'New image preview';
+                mediaPreview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else if (fileType.startsWith('video/')) {
+            const url = URL.createObjectURL(file);
+            videoPreview.src = url;
+            videoPreview.style.display = 'block';
+            imagePreview.style.display = 'none';
+            previewLabel.textContent = 'New video preview';
+            mediaPreview.style.display = 'block';
         }
-        
-        reader.readAsDataURL(input.files[0]);
     } else {
-        preview.style.display = 'none';
+        mediaPreview.style.display = 'none';
     }
 }
+
+// Initialize the form based on current media type
+document.addEventListener('DOMContentLoaded', function() {
+    toggleMediaType();
+});
 </script>
 {% endblock %}
 

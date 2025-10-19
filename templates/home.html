@@ -84,8 +84,11 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero" id="home" style="background-image: linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)), url('{{ url_for('static', filename='images/main_page_images/meditating_woman.jpg') }}'); background-size: cover; background-position: center top; background-repeat: no-repeat;">
-            <div class="hero-content" style="text-align: center !important;">
+        <section class="hero" id="home" style="position: relative; overflow: hidden; min-height: 100vh; display: flex; align-items: center;">
+            <img id="hero-image" src="{{ url_for('static', filename=settings.get('home_image', 'images/main_page_images/meditating_woman.jpg')) }}" alt="Hero Background" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;">
+            
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)); z-index: -1;"></div>
+            <div class="hero-content" style="text-align: center !important; position: relative; z-index: 1; width: 100%;">
                 <h1>{{ settings.get('hero_title', 'Bio Energy Healer and Sound Therapy') }}</h1>
                 <p style="text-align: center !important; margin: 0 auto;">{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
                 <a href="#services" class="cta-button">Explore Our Services</a>
@@ -140,26 +143,34 @@
                                 {% if about_images %}
                                     {% for image in about_images %}
                                     <div class="about-slide{% if loop.first %} active{% endif %}">
-                                        <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ image.title }}">
+                                        {% if image.media_type == 'video' %}
+                                        <video autoplay muted style="width: 100%; height: 100%; object-fit: cover;" 
+                                               data-video-slide="true">
+                                            <source src="{{ url_for('static', filename=image.image_path) }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        {% else %}
+                                        <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ image.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% endif %}
                                         <div class="about-slide-caption">{{ image.caption }}</div>
                                     </div>
                                     {% endfor %}
                                 {% else %}
                                 <!-- Fallback images if none in database -->
                                 <div class="about-slide active">
-                                    <img src="{{ url_for('static', filename='images/about_images/1.jpg') }}" alt="Peaceful meditation environment">
+                                    <img src="{{ url_for('static', filename='images/about_images/1.jpg') }}" alt="Peaceful meditation environment" style="width: 100%; height: 100%; object-fit: cover;">
                                     <div class="about-slide-caption">🌟 Your Healing Journey Starts Here 🌟</div>
                                 </div>
                                 <div class="about-slide">
-                                    <img src="{{ url_for('static', filename='images/about_images/2.jpg') }}" alt="Natural healing environment">
+                                    <img src="{{ url_for('static', filename='images/about_images/2.jpg') }}" alt="Natural healing environment" style="width: 100%; height: 100%; object-fit: cover;">
                                     <div class="about-slide-caption">🌿 Connect with Nature's Energy 🌿</div>
                                 </div>
                                 <div class="about-slide">
-                                    <img src="{{ url_for('static', filename='images/about_images/3.jpg') }}" alt="Tranquil therapeutic space">
+                                    <img src="{{ url_for('static', filename='images/about_images/3.jpg') }}" alt="Tranquil therapeutic space" style="width: 100%; height: 100%; object-fit: cover;">
                                     <div class="about-slide-caption">✨ Experience Inner Peace ✨</div>
                                 </div>
                                 <div class="about-slide">
-                                    <img src="{{ url_for('static', filename='images/about_images/4.jpg') }}" alt="Test image">
+                                    <img src="{{ url_for('static', filename='images/about_images/4.jpg') }}" alt="Test image" style="width: 100%; height: 100%; object-fit: cover;">
                                     <div class="about-slide-caption">🔮 Discover Your Potential 🔮</div>
                                 </div>
                                 {% endif %}
@@ -306,7 +317,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 {{ settings.get('footer_text', 'Holistic Therapy. All rights reserved. | Healing Mind, Body & Spirit') }}</p>
+            <p>&copy; 2025 {{ settings.get('footer_text', 'Bio Energy Healer and Sound Therapy. All rights reserved. | Healing Mind, Body & Spirit') }}</p>
         </div>
     </footer>
     
@@ -329,6 +340,15 @@
             let isPlaying = false;
             let musicReady = false;
             
+            console.log('🎵 Initializing music control...');
+            console.log('Music element:', music);
+            console.log('Music source:', music ? music.src : 'No music element found');
+            
+            if (!music || !musicToggle) {
+                console.error('❌ Music elements not found');
+                return;
+            }
+            
             // Check if audio file loads successfully
             music.addEventListener('loadeddata', function() {
                 console.log('✅ Music file loaded successfully');
@@ -339,6 +359,7 @@
             
             music.addEventListener('error', function(e) {
                 console.error('❌ Music file failed to load:', e);
+                console.error('❌ Error details:', e.target.error);
                 musicIcon.textContent = '❌';
                 musicToggle.title = 'Music file not found';
                 musicToggle.style.opacity = '0.5';
@@ -350,14 +371,21 @@
                 musicReady = true;
             });
             
+            music.addEventListener('loadstart', function() {
+                console.log('🔄 Music loading started...');
+            });
+            
+            music.addEventListener('loadedmetadata', function() {
+                console.log('📊 Music metadata loaded, duration:', this.duration);
+            });
+            
             // Set initial volume
-            music.volume = 0.3; // 30% volume for background music
+            music.volume = 0.5; // Increase to 50% volume for testing
             
             musicToggle.addEventListener('click', function() {
-                if (!musicReady) {
-                    console.log('⚠️ Music not ready yet');
-                    return;
-                }
+                console.log('🖱️ Music button clicked');
+                console.log('Music ready:', musicReady);
+                console.log('Current playing state:', isPlaying);
                 
                 if (isPlaying) {
                     music.pause();
@@ -366,15 +394,20 @@
                     isPlaying = false;
                     console.log('⏸️ Music paused');
                 } else {
+                    console.log('▶️ Attempting to play music...');
                     music.play().then(() => {
                         musicIcon.textContent = '🔇';
                         musicToggle.title = 'Pause Background Music';
                         isPlaying = true;
-                        console.log('▶️ Music started playing');
+                        console.log('✅ Music started playing successfully');
                     }).catch(error => {
                         console.error('❌ Music play failed:', error);
                         musicIcon.textContent = '❌';
                         musicToggle.title = 'Failed to play music';
+                        
+                        // Try to reload the audio
+                        console.log('🔄 Attempting to reload audio...');
+                        music.load();
                     });
                 }
             });
@@ -387,24 +420,6 @@
                 console.log('🔄 Music ended');
             });
             
-            // Auto-start music with user interaction fallback
-            const startMusicOnInteraction = function() {
-                if (!isPlaying && musicReady) {
-                    music.play().then(() => {
-                        musicIcon.textContent = '🔇';
-                        musicToggle.title = 'Pause Background Music';
-                        isPlaying = true;
-                        console.log('🎵 Auto-started music on user interaction');
-                    }).catch(error => {
-                        console.log('⚠️ Auto-start prevented, user must click button:', error);
-                    });
-                }
-            };
-            
-            // Try to start music on first user interaction
-            document.addEventListener('click', startMusicOnInteraction, { once: true });
-            document.addEventListener('scroll', startMusicOnInteraction, { once: true });
-            
             // Debug: Log audio element properties
             setTimeout(() => {
                 console.log('🔍 Audio Debug Info:');
@@ -412,7 +427,132 @@
                 console.log('- Ready state:', music.readyState);
                 console.log('- Network state:', music.networkState);
                 console.log('- Can play type:', music.canPlayType('audio/mpeg'));
+                console.log('- Current time:', music.currentTime);
+                console.log('- Duration:', music.duration);
+                console.log('- Volume:', music.volume);
+                console.log('- Muted:', music.muted);
+                console.log('- Paused:', music.paused);
             }, 1000);
+        });
+        
+        // Video handling for about carousel
+        document.addEventListener('DOMContentLoaded', function() {
+            const aboutCarousel = document.querySelector('.about-carousel');
+            if (aboutCarousel) {
+                let aboutCarouselInstance = null;
+                let videoPlayCount = new Map(); // Track video play cycles
+                
+                // Get the carousel instance from home.js
+                setTimeout(() => {
+                    // Find the AboutImageCarousel instance
+                    if (window.aboutCarouselInstance) {
+                        aboutCarouselInstance = window.aboutCarouselInstance;
+                        console.log('🎠 Found carousel instance');
+                    }
+                }, 200);
+                
+                // Handle video slides differently
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            const slide = mutation.target;
+                            const video = slide.querySelector('video[data-video-slide]');
+                            
+                            if (video) {
+                                if (slide.classList.contains('active')) {
+                                    console.log('🎬 Video slide became active');
+                                    
+                                    // Pause carousel auto-advance
+                                    if (aboutCarouselInstance && typeof aboutCarouselInstance.pauseAutoSlide === 'function') {
+                                        aboutCarouselInstance.pauseAutoSlide();
+                                        console.log('⏸️ Carousel auto-advance paused for video');
+                                    }
+                                    
+                                    // Reset video play count for this video
+                                    videoPlayCount.set(video, 0);
+                                    
+                                    // Reset video to beginning and play
+                                    video.currentTime = 0;
+                                    video.play().then(() => {
+                                        console.log('✅ Video started playing');
+                                    }).catch(e => {
+                                        console.log('⚠️ Video autoplay prevented:', e);
+                                    });
+                                    
+                                } else {
+                                    console.log('⏸️ Video slide became inactive');
+                                    video.pause();
+                                    video.currentTime = 0;
+                                    videoPlayCount.delete(video);
+                                }
+                            } else if (slide.classList.contains('active')) {
+                                // Regular image slide - ensure auto-advance is running
+                                if (aboutCarouselInstance && typeof aboutCarouselInstance.startAutoSlide === 'function') {
+                                    aboutCarouselInstance.startAutoSlide();
+                                    console.log('▶️ Carousel auto-advance resumed for image');
+                                }
+                            }
+                        }
+                    });
+                });
+                
+                // Observe all slides for class changes
+                const slides = aboutCarousel.querySelectorAll('.about-slide');
+                slides.forEach(slide => {
+                    observer.observe(slide, { attributes: true, attributeFilter: ['class'] });
+                    
+                    // Initialize videos
+                    const video = slide.querySelector('video[data-video-slide]');
+                    if (video) {
+                        // Add event listeners for video debugging
+                        video.addEventListener('loadeddata', function() {
+                            console.log('📹 Video loaded, duration:', this.duration, 'seconds');
+                        });
+                        
+                        video.addEventListener('loadedmetadata', function() {
+                            console.log('📊 Video metadata loaded, dimensions:', this.videoWidth, 'x', this.videoHeight);
+                        });
+                        
+                        video.addEventListener('play', function() {
+                            console.log('▶️ Video started playing');
+                        });
+                        
+                        video.addEventListener('pause', function() {
+                            console.log('⏸️ Video paused');
+                        });
+                        
+                        video.addEventListener('ended', function() {
+                            const currentCount = videoPlayCount.get(this) || 0;
+                            const newCount = currentCount + 1;
+                            videoPlayCount.set(this, newCount);
+                            
+                            console.log('🔄 Video ended, play count:', newCount);
+                            
+                            // After video plays once, advance to next slide
+                            if (newCount >= 1) {
+                                console.log('✅ Video played once, advancing carousel...');
+                                setTimeout(() => {
+                                    if (aboutCarouselInstance && typeof aboutCarouselInstance.nextSlide === 'function') {
+                                        aboutCarouselInstance.nextSlide();
+                                        aboutCarouselInstance.startAutoSlide();
+                                    }
+                                }, 1000); // Wait 1 second before advancing
+                            }
+                        });
+                        
+                        video.addEventListener('error', function(e) {
+                            console.error('❌ Video error:', e);
+                        });
+                        
+                        // If this slide is currently active, start the video
+                        if (slide.classList.contains('active')) {
+                            video.currentTime = 0;
+                            videoPlayCount.set(video, 0);
+                            video.play().catch(e => console.log('Video autoplay prevented:', e));
+                        }
+                    }
+                });
+            }
         });
         
         // Header scroll effect for transparency
