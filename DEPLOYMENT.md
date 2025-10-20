@@ -54,11 +54,58 @@ The application is now configured to:
 4. **Email**: Use app-specific passwords for Gmail (not your regular password)
 5. **HTTPS**: Set `SESSION_COOKIE_SECURE=True` if using HTTPS
 
+## File Upload Configuration for PythonAnywhere
+
+The home image upload feature requires proper directory permissions on PythonAnywhere:
+
+### After deployment, run this command in a PythonAnywhere console:
+
+```bash
+cd /home/yourusername/mysite
+python3 fix_upload_permissions.py
+```
+
+### Manual permission fix (if needed):
+
+```bash
+# Navigate to your app directory
+cd /home/yourusername/mysite
+
+# Create upload directories with proper permissions
+mkdir -p static/uploads/home
+mkdir -p static/uploads/services
+mkdir -p static/uploads/about_images
+
+# Set directory permissions
+chmod 755 static/uploads
+chmod 755 static/uploads/home
+chmod 755 static/uploads/services
+chmod 755/about_images
+
+# Fix any existing file permissions
+find static/uploads -type f -exec chmod 644 {} \;
+```
+
+### Troubleshooting File Uploads:
+
+1. **Check the debug endpoint**: Visit `/web_admin/debug/file-system` as admin to see directory status
+2. **Check error logs**: In PythonAnywhere Dashboard > Web > Error log
+3. **Verify static file mapping**: Ensure `/static/` is mapped to your `static` folder
+4. **Test file permissions**: Upload a test image and check if it appears
+
 ## Testing the Deployment
 
 After deployment, check the error log in PythonAnywhere to see:
 - Database path confirmation
 - Any initialization errors
 - Email configuration status
+- File upload directory creation
 
 The app will print useful debug information on startup to help troubleshoot any issues.
+
+### Common PythonAnywhere Issues:
+
+1. **Upload folder permissions**: Use the fix script above
+2. **Static file serving**: Verify static files mapping in web app configuration
+3. **File path separators**: Code handles both Windows and Unix paths
+4. **Large file uploads**: Default limit is 10MB, adjust if needed

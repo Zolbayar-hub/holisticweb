@@ -56,21 +56,43 @@
 
                         <div class="mb-3">
                             <label for="home_image" class="form-label">Background Image</label>
+                            
+                            <!-- Current image display -->
                             {% if settings_dict.get('home_image') %}
                             <div class="mb-2">
                                 <img src="{{ url_for('static', filename=settings_dict.get('home_image')) }}" 
-                                     alt="Current background" class="preview-image rounded">
-                                <div class="text-muted small mt-1">Current background image</div>
+                                     alt="Current background" class="preview-image rounded"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div class="text-danger small mt-1" style="display: none;">⚠️ Current image file not found</div>
+                                <div class="text-muted small mt-1">Current: {{ settings_dict.get('home_image') }}</div>
                             </div>
                             {% endif %}
+                            
+                            <!-- File input -->
                             <input type="file" class="form-control" id="home_image" name="home_image" 
-                                   accept="image/*" onchange="previewHomeImage(this)">
-                            <div class="form-text">Upload a new background image for the hero section. Recommended size: 1920x1080px</div>
+                                   accept="image/*,.webp" onchange="previewHomeImage(this)">
+                            <div class="form-text">
+                                Upload a new background image for the hero section. 
+                                <br>Supported: JPG, PNG, GIF, WebP | Recommended: 1920x1080px
+                                <br><small>Language: <span id="currentLanguage">{{ selected_language or 'ENG' }}</span></small>
+                            </div>
+                            
+                            <!-- Upload status -->
+                            <div id="uploadStatus" class="mt-2" style="display: none;">
+                                <div class="alert alert-info">Uploading...</div>
+                            </div>
                             
                             <!-- Image preview -->
                             <div id="homeImagePreview" class="mt-2" style="display: none;">
                                 <img id="homePreview" class="preview-image rounded" alt="Preview">
                                 <div class="text-muted small mt-1">New image preview</div>
+                            </div>
+                            
+                            <!-- Debug info for troubleshooting -->
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="checkFileSystemDebug()">
+                                    🔍 Debug File System
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -300,6 +322,136 @@ function previewHomeImage(input) {
         preview.style.display = 'none';
     }
 }
+
+function checkFileSystemDebug() {
+    // Show loading state
+    const debugButton = event.target;
+    const originalText = debugButton.innerHTML;
+    debugButton.innerHTML = '🔄 Checking...';
+    debugButton.disabled = true;
+    
+    fetch('/web_admin/debug/file-system')
+        .then(response => response.json())
+        .then(data => {
+            // Create modal or alert with debug info
+            let debugInfo = 'File System Debug Information:\n\n';
+            debugInfo += `Static Folder: ${data.static_folder}\n`;
+            debugInfo += `Uploads Dir: ${data.uploads_dir}\n`;
+            debugInfo += `Home Uploads Dir: ${data.home_uploads_dir}\n\n`;
+            
+            debugInfo += 'Directory Existence:\n';
+            for (const [dir, exists] of Object.entries(data.directories_exist)) {
+                debugInfo += `  ${dir}: ${exists ? '✅' : '❌'}\n`;
+            }
+            
+            debugInfo += '\nPermissions:\n';
+            for (const [dir, perms] of Object.entries(data.permissions)) {
+                debugInfo += `  ${dir}: ${perms}\n`;
+            }
+            
+            debugInfo += '\nCurrent Home Images:\n';
+            for (const [lang, info] of Object.entries(data.current_home_images)) {
+                if (typeof info === 'object') {
+                    debugInfo += `  ${lang}: ${info.value} (exists: ${info.file_exists ? '✅' : '❌'})\n`;
+                } else {
+                    debugInfo += `  Error: ${info}\n`;
+                }
+            }
+            
+            // Show in alert or console
+            console.log('File System Debug:', data);
+            alert(debugInfo);
+        })
+        .catch(error => {
+            console.error('Debug check failed:', error);
+            alert('Debug check failed. Check console for details.');
+        })
+        .finally(() => {
+            debugButton.innerHTML = originalText;
+            debugButton.disabled = false;
+        });
+}
+
+function enhancedPreviewHomeImage(input) {
+    const preview = document.getElementById('homeImagePreview');
+    const previewImg = document.getElementById('homePreview');
+    const status = document.getElementById('uploadStatus');
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Invalid file type. Please select a JPG, PNG, GIF, or WebP image.');
+            input.value = '';
+            preview.style.display = 'none';
+            return;
+        }
+        
+        // Validate file size (10MB max)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('File too large. Please select an image under 10MB.');
+            input.value = '';
+            preview.style.display = 'none';
+            return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+            
+            // Show file info
+            const fileInfo = `File: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            preview.querySelector('.text-muted').textContent = fileInfo;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// Enhanced form submission with progress tracking
+function enhanceFormSubmission() {
+    const form = document.querySelector('form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const homeImageInput = document.getElementById('home_image');
+    
+    form.addEventListener('submit', function(e) {
+        // If there's a home image file, show upload progress
+        if (homeImageInput.files && homeImageInput.files[0]) {
+            const status = document.getElementById('uploadStatus');
+            status.style.display = 'block';
+            status.innerHTML = '<div class="alert alert-info">🔄 Uploading home image...</div>';
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '🔄 Uploading...';
+        }
+    });
+}
+
+// Initialize enhanced functionality when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Replace the existing preview function
+    const homeImageInput = document.getElementById('home_image');
+    if (homeImageInput) {
+        homeImageInput.setAttribute('onchange', 'enhancedPreviewHomeImage(this)');
+    }
+    
+    // Enhance form submission
+    enhanceFormSubmission();
+    
+    // Update current language display
+    const languageSelect = document.getElementById('language');
+    const currentLanguageSpan = document.getElementById('currentLanguage');
+    if (languageSelect && currentLanguageSpan) {
+        languageSelect.addEventListener('change', function() {
+            currentLanguageSpan.textContent = this.value;
+        });
+    }
+});
 
 // Initialize with English settings on page load
 document.addEventListener('DOMContentLoaded', function() {

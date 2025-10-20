@@ -249,19 +249,55 @@ def update_settings():
         if 'home_image' in request.files:
             file = request.files['home_image']
             if file and file.filename:
-                filename = secure_filename(file.filename)
-                upload_dir = os.path.join(current_app.static_folder, 'uploads', 'home')
-                os.makedirs(upload_dir, exist_ok=True)
-                
-                file_path = os.path.join(upload_dir, filename)
-                file.save(file_path)
-                
-                # Update or create home_image setting for the selected language
-                setting = SiteSetting.query.filter_by(key='home_image', language=selected_language).first()
-                if not setting:
-                    setting = SiteSetting(key='home_image', language=selected_language)
-                    db.session.add(setting)
-                setting.value = f"uploads/home/{filename}"
+                try:
+                    # Generate a unique filename to avoid conflicts
+                    import time
+                    timestamp = str(int(time.time()))
+                    original_filename = secure_filename(file.filename)
+                    name, ext = os.path.splitext(original_filename)
+                    filename = f"{name}_{timestamp}{ext}"
+                    
+                    # Ensure upload directory exists with proper permissions
+                    upload_dir = os.path.join(current_app.static_folder, 'uploads', 'home')
+                    try:
+                        os.makedirs(upload_dir, mode=0o755, exist_ok=True)
+                        current_app.logger.info(f"Created/verified upload directory: {upload_dir}")
+                    except OSError as e:
+                        current_app.logger.error(f"Failed to create upload directory: {e}")
+                        raise Exception(f"Failed to create upload directory: {e}")
+                    
+                    # Save file with error handling
+                    file_path = os.path.join(upload_dir, filename)
+                    file.save(file_path)
+                    
+                    # Verify file was saved successfully
+                    if not os.path.exists(file_path):
+                        raise Exception("File was not saved successfully")
+                    
+                    # Set file permissions (important for PythonAnywhere)
+                    try:
+                        os.chmod(file_path, 0o644)
+                        current_app.logger.info(f"Set file permissions for: {file_path}")
+                    except OSError as e:
+                        current_app.logger.warning(f"Could not set file permissions: {e}")
+                    
+                    # Update or create home_image setting for the selected language
+                    setting = SiteSetting.query.filter_by(key='home_image', language=selected_language).first()
+                    if not setting:
+                        setting = SiteSetting(key='home_image', language=selected_language)
+                        db.session.add(setting)
+                    
+                    # Store relative path for Flask's url_for function
+                    relative_path = f"uploads/home/{filename}"
+                    setting.value = relative_path
+                    
+                    current_app.logger.info(f"Successfully uploaded home image: {relative_path} for language: {selected_language}")
+                    
+                except Exception as upload_error:
+                    current_app.logger.error(f"Home image upload failed: {upload_error}")
+                    flash(f'Failed to upload home image: {str(upload_error)}', 'error')
+                    db.session.rollback()
+                    return redirect(url_for('web_admin_panel.admin_settings'))
         
         db.session.commit()
         flash(f'Settings updated successfully for {selected_language}!', 'success')
@@ -604,3 +640,201 @@ def admin_cancel_booking(booking_id):
     except Exception as e:
         flash(f'Error cancelling booking: {str(e)}', 'error')
         return redirect(url_for('web_admin_panel.admin_bookings'))
+
+@web_admin_bp.route('/debug/file-system')
+@admin_required
+def debug_file_system():
+    """Debug route to check file system permissions and paths"""
+    debug_info = {
+        'static_folder': current_app.static_folder,
+        'uploads_dir': os.path.join(current_app.static_folder, 'uploads'),
+        'home_uploads_dir': os.path.join(current_app.static_folder, 'uploads', 'home'),
+        'directories_exist': {},
+        'permissions': {},
+        'current_home_images': {},
+        'file_listings': {}
+    }
+    
+    # Check directory existence
+    dirs_to_check = [
+        debug_info['static_folder'],
+        debug_info['uploads_dir'],
+        debug_info['home_uploads_dir']
+    ]
+    
+    for dir_path in dirs_to_check:
+        debug_info['directories_exist'][dir_path] = os.path.exists(dir_path)
+        if os.path.exists(dir_path):
+            try:
+                debug_info['permissions'][dir_path] = oct(os.stat(dir_path).st_mode)[-3:]
+                debug_info['file_listings'][dir_path] = os.listdir(dir_path) if os.path.isdir(dir_path) else 'Not a directory'
+            except Exception as e:
+                debug_info['permissions'][dir_path] = f"Error: {e}"
+                debug_info['file_listings'][dir_path] = f"Error: {e}"
+    
+    # Check current home_image settings
+    try:
+        home_image_settings = SiteSetting.query.filter_by(key='home_image').all()
+        for setting in home_image_settings:
+            debug_info['current_home_images'][setting.language] = {
+                'value': setting.value,
+                'file_exists': os.path.exists(os.path.join(current_app.static_folder, setting.value)) if setting.value else False
+            }
+    except Exception as e:
+        debug_info['current_home_images']['error'] = str(e)
+    
+    return jsonify(debug_info)
+
+@web_admin_bp.route('/upload-home-image', methods=['POST'])
+@admin_required
+def upload_home_image():
+    """Dedicated endpoint for home image upload with enhanced error handling"""
+    try:
+        current_app.logger.info("Starting home image upload process")
+        
+        if 'home_image' not in request.files:
+            return jsonify({'success': False, 'error': 'No image file provided'}), 400
+        
+        file = request.files['home_image']
+        if not file or file.filename == '':
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
+        
+        # Get language from form
+        language = request.form.get('language', 'ENG')
+        if language not in ['ENG', 'MON']:
+            language = 'ENG'
+        
+        # Validate file type
+        allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+        filename = secure_filename(file.filename)
+        file_ext = os.path.splitext(filename)[1].lower()
+        
+        if file_ext not in allowed_extensions:
+            return jsonify({
+                'success': False, 
+                'error': f'Invalid file type. Allowed: {", ".join(allowed_extensions)}'
+            }), 400
+        
+        # Generate unique filename
+        import time
+        timestamp = str(int(time.time()))
+        name, ext = os.path.splitext(filename)
+        unique_filename = f"hero_{language.lower()}_{timestamp}{ext}"
+        
+        # Prepare upload directory
+        upload_dir = os.path.join(current_app.static_folder, 'uploads', 'home')
+        
+        # Create directory with proper permissions
+        try:
+            os.makedirs(upload_dir, mode=0o755, exist_ok=True)
+            current_app.logger.info(f"Verified upload directory: {upload_dir}")
+        except OSError as e:
+            current_app.logger.error(f"Failed to create upload directory: {e}")
+            return jsonify({'success': False, 'error': 'Server configuration error'}), 500
+        
+        # Check if directory is writable
+        if not os.access(upload_dir, os.W_OK):
+            current_app.logger.error(f"Upload directory not writable: {upload_dir}")
+            return jsonify({'success': False, 'error': 'Upload directory not writable'}), 500
+        
+        # Save file
+        file_path = os.path.join(upload_dir, unique_filename)
+        try:
+            file.save(file_path)
+            current_app.logger.info(f"File saved to: {file_path}")
+        except Exception as e:
+            current_app.logger.error(f"File save failed: {e}")
+            return jsonify({'success': False, 'error': 'Failed to save file'}), 500
+        
+        # Verify file was saved
+        if not os.path.exists(file_path):
+            current_app.logger.error(f"File verification failed: {file_path}")
+            return jsonify({'success': False, 'error': 'File verification failed'}), 500
+        
+        # Set file permissions
+        try:
+            os.chmod(file_path, 0o644)
+            current_app.logger.info(f"Set file permissions for: {file_path}")
+        except OSError as e:
+            current_app.logger.warning(f"Could not set file permissions: {e}")
+        
+        # Update database
+        try:
+            setting = SiteSetting.query.filter_by(key='home_image', language=language).first()
+            if not setting:
+                setting = SiteSetting(key='home_image', language=language)
+                db.session.add(setting)
+            
+            # Store relative path
+            relative_path = f"uploads/home/{unique_filename}"
+            setting.value = relative_path
+            
+            db.session.commit()
+            current_app.logger.info(f"Database updated with home image: {relative_path} for {language}")
+            
+            return jsonify({
+                'success': True,
+                'message': f'Home image updated successfully for {language}',
+                'image_path': relative_path,
+                'image_url': url_for('static', filename=relative_path)
+            })
+            
+        except Exception as e:
+            current_app.logger.error(f"Database update failed: {e}")
+            db.session.rollback()
+            # Clean up uploaded file on database error
+            try:
+                os.remove(file_path)
+            except:
+                pass
+            return jsonify({'success': False, 'error': 'Database update failed'}), 500
+            
+    except Exception as e:
+        current_app.logger.error(f"Home image upload error: {e}")
+        return jsonify({'success': False, 'error': 'Upload failed'}), 500
+
+@web_admin_bp.route('/test/home-image')
+@admin_required  
+def test_home_image():
+    """Test route to verify home image functionality"""
+    try:
+        # Get all home image settings
+        home_settings = SiteSetting.query.filter_by(key='home_image').all()
+        
+        results = {
+            'settings_found': len(home_settings),
+            'settings': {},
+            'file_checks': {},
+            'static_folder': current_app.static_folder
+        }
+        
+        for setting in home_settings:
+            results['settings'][setting.language] = setting.value
+            
+            if setting.value:
+                # Check if file exists
+                file_path = os.path.join(current_app.static_folder, setting.value)
+                file_exists = os.path.exists(file_path)
+                
+                results['file_checks'][setting.language] = {
+                    'relative_path': setting.value,
+                    'absolute_path': file_path,
+                    'exists': file_exists,
+                    'url': url_for('static', filename=setting.value) if file_exists else None
+                }
+                
+                if file_exists:
+                    try:
+                        stat_info = os.stat(file_path)
+                        results['file_checks'][setting.language].update({
+                            'size': stat_info.st_size,
+                            'permissions': oct(stat_info.st_mode)[-3:],
+                            'last_modified': datetime.fromtimestamp(stat_info.st_mtime).isoformat()
+                        })
+                    except Exception as e:
+                        results['file_checks'][setting.language]['stat_error'] = str(e)
+        
+        return jsonify(results)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
