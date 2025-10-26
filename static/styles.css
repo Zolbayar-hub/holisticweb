@@ -1164,7 +1164,7 @@ body {
 /* Responsive Design for Testimonials */
 @media (max-width: 768px) {
     .testimonials-container {
-        margin: 0 40px;
+        margin: 0 20px;
     }
     
     .testimonial-card {
@@ -1176,6 +1176,19 @@ body {
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
+        z-index: 10;
+        /* Ensure buttons are touchable and visible */
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .testimonial-carousel-prev {
+        left: -10px; /* Position within touchable area */
+    }
+    
+    .testimonial-carousel-next {
+        right: -10px; /* Position within touchable area */
     }
 }
 
