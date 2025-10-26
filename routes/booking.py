@@ -185,7 +185,7 @@ Thank you for booking with HolisticWeb! ✨
 We look forward to seeing you and your group!
 
 Best regards,
-- The HolisticWeb Team
+- Serenity Wellness Studio
 
 If you need to reschedule or have any questions, please contact us.
 """
@@ -317,15 +317,20 @@ def get_available_slots():
         # Parse the date
         selected_date = datetime.fromisoformat(date_str).date()
         
-        # Generate time slots (9 AM to 6 PM, 30-minute intervals)
+        # Generate time slots (8:30 AM to 2:00 PM, 30-minute intervals)
         slots = []
-        start_hour = 9
-        end_hour = 18
+        start_hour = 8
+        end_hour = 15  # Set to 15 to include 2:00 PM (14:00)
         
         for hour in range(start_hour, end_hour):
             for minutes in [0, 30]:
-                if hour == end_hour - 1 and minutes == 30:
-                    break  # Don't go past 6 PM
+                # Skip 8:00 AM slot, start from 8:30 AM
+                if hour == 8 and minutes == 0:
+                    continue
+                # Stop after 2:00 PM (don't include 2:30 PM)
+                if hour == 14 and minutes == 30:
+                    break
+                    break  # Don't go past 2:00 PM
                 
                 # Create datetime for this slot
                 slot_datetime = datetime.combine(selected_date, datetime.min.time().replace(hour=hour, minute=minutes))
@@ -443,7 +448,7 @@ Your booking has been cancelled.
 If you did not request this cancellation or have any questions, please contact us immediately.
 
 Best regards,
-- The HolisticWeb Team
+- Serenity Wellness Studio
 """
                         
                         from flask_mail import Message

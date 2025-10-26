@@ -120,7 +120,7 @@
 <script>
 function confirmDelete(serviceId, serviceName) {
     document.getElementById('serviceName').textContent = serviceName;
-    document.getElementById('deleteForm').action = '/admin-panel/services/delete/' + serviceId;
+    document.getElementById('deleteForm').action = '/web_admin/services/delete/' + serviceId;
     
     var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
     deleteModal.show();

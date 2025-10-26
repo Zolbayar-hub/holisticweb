@@ -114,7 +114,7 @@ Your booking has been confirmed:
 
 We look forward to seeing you!
 
-- HolisticWeb Team"""
+- Serenity Wellness Studio"""
         
         return send_sms_reminder(to_number, message)
         
@@ -138,7 +138,7 @@ This is a reminder: your appointment is at {local_time}.
 
 See you soon!
 
-- HolisticWeb Team"""
+- Serenity Wellness Studio"""
         
         return send_sms_reminder(to_number, message)
         

@@ -742,7 +742,11 @@ class BookingApp {
     showLoading(show) {
         const overlay = document.getElementById('loading-overlay');
         if (overlay) {
-            overlay.style.display = show ? 'flex' : 'none';
+            if (show) {
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
         }
     }
 

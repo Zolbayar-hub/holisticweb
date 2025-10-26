@@ -9,17 +9,6 @@
 <body>
     <!-- Header with Navigation -->
     <header class="header">
-        <!-- Background Music -->
-        <audio id="background-music" loop preload="auto">
-            <source src="{{ url_for('static', filename='mixkit-classical-6-713.mp3') }}" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-        
-        <!-- Music Control Button -->
-        <button id="music-toggle" class="music-control" title="Toggle Background Music">
-            <span id="music-icon">🎵</span>
-        </button>
-        
         <nav class="nav-container">
             <a href="#" class="logo">
                 <div class="logo-image">
@@ -337,109 +326,6 @@
             currentUrl.searchParams.set('lang', language);
             window.location.href = currentUrl.toString();
         }
-        
-        // Background Music Control
-        document.addEventListener('DOMContentLoaded', function() {
-            const music = document.getElementById('background-music');
-            const musicToggle = document.getElementById('music-toggle');
-            const musicIcon = document.getElementById('music-icon');
-            let isPlaying = false;
-            let musicReady = false;
-            
-            console.log('🎵 Initializing music control...');
-            console.log('Music element:', music);
-            console.log('Music source:', music ? music.src : 'No music element found');
-            
-            if (!music || !musicToggle) {
-                console.error('❌ Music elements not found');
-                return;
-            }
-            
-            // Check if audio file loads successfully
-            music.addEventListener('loadeddata', function() {
-                console.log('✅ Music file loaded successfully');
-                musicReady = true;
-                musicIcon.textContent = '🎵';
-                musicToggle.title = 'Click to Play Background Music';
-            });
-            
-            music.addEventListener('error', function(e) {
-                console.error('❌ Music file failed to load:', e);
-                console.error('❌ Error details:', e.target.error);
-                musicIcon.textContent = '❌';
-                musicToggle.title = 'Music file not found';
-                musicToggle.style.opacity = '0.5';
-                musicToggle.disabled = true;
-            });
-            
-            music.addEventListener('canplay', function() {
-                console.log('🎶 Music is ready to play');
-                musicReady = true;
-            });
-            
-            music.addEventListener('loadstart', function() {
-                console.log('🔄 Music loading started...');
-            });
-            
-            music.addEventListener('loadedmetadata', function() {
-                console.log('📊 Music metadata loaded, duration:', this.duration);
-            });
-            
-            // Set initial volume
-            music.volume = 0.5; // Increase to 50% volume for testing
-            
-            musicToggle.addEventListener('click', function() {
-                console.log('🖱️ Music button clicked');
-                console.log('Music ready:', musicReady);
-                console.log('Current playing state:', isPlaying);
-                
-                if (isPlaying) {
-                    music.pause();
-                    musicIcon.textContent = '🎵';
-                    musicToggle.title = 'Play Background Music';
-                    isPlaying = false;
-                    console.log('⏸️ Music paused');
-                } else {
-                    console.log('▶️ Attempting to play music...');
-                    music.play().then(() => {
-                        musicIcon.textContent = '🔇';
-                        musicToggle.title = 'Pause Background Music';
-                        isPlaying = true;
-                        console.log('✅ Music started playing successfully');
-                    }).catch(error => {
-                        console.error('❌ Music play failed:', error);
-                        musicIcon.textContent = '❌';
-                        musicToggle.title = 'Failed to play music';
-                        
-                        // Try to reload the audio
-                        console.log('🔄 Attempting to reload audio...');
-                        music.load();
-                    });
-                }
-            });
-            
-            // Handle music ending (though it's set to loop)
-            music.addEventListener('ended', function() {
-                isPlaying = false;
-                musicIcon.textContent = '🎵';
-                musicToggle.title = 'Play Background Music';
-                console.log('🔄 Music ended');
-            });
-            
-            // Debug: Log audio element properties
-            setTimeout(() => {
-                console.log('🔍 Audio Debug Info:');
-                console.log('- Audio source:', music.src);
-                console.log('- Ready state:', music.readyState);
-                console.log('- Network state:', music.networkState);
-                console.log('- Can play type:', music.canPlayType('audio/mpeg'));
-                console.log('- Current time:', music.currentTime);
-                console.log('- Duration:', music.duration);
-                console.log('- Volume:', music.volume);
-                console.log('- Muted:', music.muted);
-                console.log('- Paused:', music.paused);
-            }, 1000);
-        });
         
         // Video handling for about carousel
         document.addEventListener('DOMContentLoaded', function() {

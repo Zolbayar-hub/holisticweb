@@ -286,7 +286,7 @@ Thank you for booking with HolisticWeb! ✨
 We look forward to seeing you!
 
 Best regards,
-- The HolisticWeb Team
+- Serenity Wellness Studio
 
 If you need to reschedule or have any questions, please contact us.""",
             description='Default booking confirmation email sent to customers'
