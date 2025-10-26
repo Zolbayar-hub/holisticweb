@@ -1192,6 +1192,16 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    /* Prevent horizontal scrolling */
+    body {
+        overflow-x: hidden;
+    }
+    
+    .container {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    
     .hero {
         height: 70vh; /* Reduce height on mobile */
         min-height: 500px;
@@ -1215,72 +1225,82 @@ body {
     
     /* Mobile services section */
     .services {
-        padding: 80px 0; /* Remove horizontal padding on mobile */
+        padding: 80px 1rem; /* Add some horizontal padding for better layout */
     }
     
     /* Mobile carousel styles */
     .services-container {
-        margin: 0; /* Remove all margins on mobile */
-        overflow: visible; /* Allow content to extend beyond container */
-        width: 100vw; /* Full viewport width */
+        margin: 0 auto; /* Center the container */
+        overflow: hidden; /* Prevent horizontal scrolling */
+        width: 100%;
+        max-width: 100%;
     }
     
     .services-grid {
         gap: 0; /* Remove gap between cards on mobile */
+        touch-action: pan-x; /* Enable smooth touch scrolling */
     }
     
     .service-card {
-        flex: 0 0 100vw; /* Full viewport width */
-        min-width: 100vw;
+        flex: 0 0 100%; /* Full container width, not viewport */
+        min-width: 100%;
         padding: 0; /* Remove all padding */
         border-radius: 0; /* Remove border radius */
         margin: 0; /* Remove all margins */
-        width: 100vw;
+        width: 100%;
         box-shadow: none; /* Remove shadow on mobile for cleaner look */
         position: relative;
+        background: white;
+        min-height: auto; /* Let content determine height */
+        display: flex;
+        flex-direction: column;
     }
     
     .service-image {
         margin: 0 !important; /* Override desktop margins */
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        width: 100vw;
+        width: 100%;
         border-radius: 0;
         position: relative;
-        left: 0;
-        right: 0;
         overflow: hidden;
+        flex-shrink: 0; /* Prevent image from shrinking */
     }
     
     .service-image img {
-        height: 300px; /* Match the about section mobile height */
+        height: 250px; /* Reduced height for better proportions */
         border-radius: 0;
-        width: 100vw;
+        width: 100%;
         object-fit: cover;
         object-position: center;
+        display: block;
     }
     
     /* Add padding back to text content only */
     .service-card h3,
     .service-card p,
     .service-book-btn {
-        padding-left: 2rem;
-        padding-right: 2rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
     }
     
     .service-card h3 {
-        padding-top: 2rem;
+        padding-top: 1.5rem;
         margin-bottom: 1rem;
+        font-size: 1.3rem;
     }
     
     .service-card p {
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
     }
     
     .service-book-btn {
-        margin-bottom: 2rem;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        align-self: flex-start;
+        margin-left: 1.5rem;
     }
     
     .about-carousel-wrapper {

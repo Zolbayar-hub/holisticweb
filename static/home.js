@@ -236,6 +236,41 @@ class ServicesCarousel {
         if (this.nextBtn) {
             this.nextBtn.addEventListener('click', () => this.next());
         }
+        
+        // Add touch/swipe support for mobile
+        if (this.grid && window.innerWidth <= 768) {
+            let startX = 0;
+            let isDragging = false;
+            
+            this.grid.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+            }, { passive: true });
+            
+            this.grid.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+            }, { passive: false });
+            
+            this.grid.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                const endX = e.changedTouches[0].clientX;
+                const diff = startX - endX;
+                const minSwipeDistance = 50;
+                
+                if (Math.abs(diff) > minSwipeDistance) {
+                    if (diff > 0) {
+                        // Swiped left - go to next
+                        this.next();
+                    } else {
+                        // Swiped right - go to previous
+                        this.prev();
+                    }
+                }
+            }, { passive: true });
+        }
     }
     
     prev() {
@@ -258,11 +293,17 @@ class ServicesCarousel {
     updateCarousel() {
         if (!this.grid) return;
         
-        const cardWidth = this.cards[0].offsetWidth;
-        const gap = 32; // 2rem in pixels
-        const translateX = -(this.currentIndex * (cardWidth + gap));
-        
-        this.grid.style.transform = `translateX(${translateX}px)`;
+        // On mobile, use percentage-based translation for smoother movement
+        if (window.innerWidth <= 768) {
+            const translateX = -(this.currentIndex * 100);
+            this.grid.style.transform = `translateX(${translateX}%)`;
+        } else {
+            // Desktop uses the original calculation
+            const cardWidth = this.cards[0].offsetWidth;
+            const gap = 32; // 2rem in pixels
+            const translateX = -(this.currentIndex * (cardWidth + gap));
+            this.grid.style.transform = `translateX(${translateX}px)`;
+        }
     }
     
     updateButtons() {
