@@ -59,6 +59,13 @@
                     {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
                     <li><a href="{{ url_for('web_admin_panel.web_admin_panel') }}" style="color: #ffc107;">Admin Panel</a></li>
                     {% endif %}
+                    <li class="mobile-language-switcher">
+                        <label style="color: white; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Language:</label>
+                        <select onchange="switchLanguage(this.value)" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; padding: 8px 12px; width: 100%; font-size: 1rem;">
+                            <option value="ENG" {% if current_language == 'ENG' %}selected{% endif %}>English</option>
+                            <option value="MON" {% if current_language == 'MON' %}selected{% endif %}>Монгол</option>
+                        </select>
+                    </li>
                 </ul>
                 <button id="mobile-auth-btn" class="auth-btn">Login</button>
             </div>
