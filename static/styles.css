@@ -370,9 +370,9 @@ body {
 .hero {
     height: 100vh;
     min-height: 600px; /* Ensure minimum height on smaller screens */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: flex-end !important; /* Force content to bottom */
+    justify-content: center !important;
     text-align: center;
     color: white;
     position: relative;
@@ -399,10 +399,11 @@ body {
 }
 
 .hero-content {
-    position: relative;
+    position: relative !important;
     z-index: 2; /* Ensure content appears above any overlay */
     max-width: 900px;
-    padding: 0 20px;
+    padding: 0 20px 100px 20px !important; /* Increased bottom padding and force with !important */
+    margin-bottom: 0 !important; /* Ensure no margin pushing it up */
 }
 
 .hero-content h1 {
@@ -1174,6 +1175,7 @@ body {
         min-height: 500px;
         background-position: center top; /* Prioritize showing top of image */
         background-attachment: scroll; /* Ensure scroll on mobile */
+        align-items: flex-end !important; /* Keep the lower positioning on mobile too */
     }
     
     .hero-content h1 {
@@ -1278,6 +1280,7 @@ body {
         height: 80vh; /* Slightly reduce height on tablets */
         min-height: 550px;
         background-position: center top; /* Prioritize showing top of image */
+        align-items: flex-end !important; /* Keep the lower positioning on tablets too */
     }
     
     .hero-content h1 {
