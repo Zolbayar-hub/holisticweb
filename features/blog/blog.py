@@ -70,6 +70,66 @@ BLOG_CATEGORIES = {
             'Better Sleep',
             'Energy Balance'
         ]
+    },
+    'soundbath': {
+        'name': 'Sound Bath',
+        'description': 'Immerse yourself in healing vibrations through sound baths, singing bowls, and vibrational therapy for deep relaxation and restoration.',
+        'icon': '🎵',
+        'color': '#667eea',
+        'services': [
+            'Sound Healing Therapy',
+            'Tibetan Singing Bowls',
+            'Crystal Bowl Sessions',
+            'Vibrational Therapy'
+        ]
+    },
+    'science': {
+        'name': 'Science',
+        'description': 'Explore the scientific research and evidence behind holistic wellness practices, from neuroscience to frequency healing.',
+        'icon': '🔬',
+        'color': '#3498db',
+        'services': [
+            'Research-Based Therapy',
+            'Neuroscience Studies',
+            'Evidence-Based Wellness',
+            'Scientific Validation'
+        ]
+    },
+    'wellness': {
+        'name': 'Wellness',
+        'description': 'Comprehensive wellness approaches that integrate mind, body, and spirit for optimal health and well-being.',
+        'icon': '🌿',
+        'color': '#27ae60',
+        'services': [
+            'Holistic Wellness',
+            'Mind-Body Integration',
+            'Lifestyle Wellness',
+            'Complete Health Solutions'
+        ]
+    },
+    'ai': {
+        'name': 'AI & Technology',
+        'description': 'Explore how artificial intelligence and modern technology enhance traditional wellness practices and meditation.',
+        'icon': '🤖',
+        'color': '#667eea',
+        'services': [
+            'AI-Enhanced Meditation',
+            'Smart Wellness Tools',
+            'Biometric Tracking',
+            'Personalized Therapy'
+        ]
+    },
+    'energy-healing': {
+        'name': 'Energy Healing',
+        'description': 'Understand and release energy blockages through various healing modalities including chakra work, breathwork, and energy clearing techniques.',
+        'icon': '🌟',
+        'color': '#764ba2',
+        'services': [
+            'Energy Blockage Clearing',
+            'Chakra Balancing',
+            'Reiki Healing',
+            'Breathwork Therapy'
+        ]
     }
 }
 

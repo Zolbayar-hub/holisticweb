@@ -1203,3 +1203,1414 @@ body {
 .post-image[data-category="wellness-benefits"] .placeholder-image {
     background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(230, 126, 34, 0.05) 100%);
 }
+
+/* Category-specific styling for science posts */
+.post-image[data-category="science"] .placeholder-image {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+}
+
+/* Category-specific styling for wellness posts */
+.post-image[data-category="wellness"] .placeholder-image {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+}
+
+/* Sound Healing Therapy Blog Post Styles */
+.sound-healing-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 3rem 2rem;
+    border-radius: 15px;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.sound-healing-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20S-10 18.954-10 30s8.954 20 20 20 20-8.954 20-20zM10 30c0-11.046 8.954-20 20-20s20 8.954 20 20-8.954 20-20 20-20-8.954-20-20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    animation: soundWaves 20s linear infinite;
+    opacity: 0.3;
+}
+
+@keyframes soundWaves {
+    0% { transform: translateX(0) translateY(0); }
+    100% { transform: translateX(-60px) translateY(-60px); }
+}
+
+.sound-healing-hero .lead {
+    font-size: 1.3rem;
+    line-height: 1.7;
+    color: white;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+    font-weight: 300;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.therapy-overview {
+    background: rgba(102, 126, 234, 0.03);
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.therapy-overview::before {
+    content: '🎵';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.section-heading {
+    color: #667eea;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 3rem 0 1.5rem 0;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.section-heading::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(to bottom, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.vibration-science {
+    background: linear-gradient(135deg, rgba(139, 94, 60, 0.05) 0%, rgba(139, 94, 60, 0.02) 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(139, 94, 60, 0.1);
+}
+
+.brainwave-section {
+    background: rgba(52, 152, 219, 0.03);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(52, 152, 219, 0.1);
+}
+
+.frequency-list {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.frequency-item {
+    background: white;
+    padding: 1.2rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-left: 4px solid #3498db;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.frequency-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, rgba(52, 152, 219, 0.1) 0%, transparent 100%);
+    transition: width 0.3s ease;
+}
+
+.frequency-item:hover::before {
+    width: 100%;
+}
+
+.frequency-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.15);
+}
+
+.frequency-range {
+    font-weight: 700;
+    color: #3498db;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.emotional-healing {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.05) 0%, rgba(39, 174, 96, 0.02) 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(39, 174, 96, 0.1);
+    position: relative;
+}
+
+.emotional-healing::before {
+    content: '💚';
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
+}
+
+.popularity-section {
+    background: rgba(230, 126, 34, 0.03);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(230, 126, 34, 0.1);
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 3rem 2rem;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-top: 3rem;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: float 10s ease-in-out infinite;
+    opacity: 0.3;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-10px, -10px) rotate(180deg); }
+}
+
+.cta-section h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.cta-section p {
+    position: relative;
+    z-index: 2;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.closing-wisdom {
+    font-style: italic;
+    font-size: 1.3rem;
+    font-weight: 300;
+    margin: 2rem 0;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.book-session {
+    margin-top: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.sound-healing-cta {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 15px 40px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.sound-healing-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.sound-healing-cta:hover::before {
+    left: 100%;
+}
+
+.sound-healing-cta:hover {
+    background: rgba(255,255,255,0.9);
+    color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-decoration: none;
+}
+
+/* Science of Sound Healing - Modern Styles */
+.science-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 4rem 2.5rem;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+}
+
+.science-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M20 20c11.046 0 20-8.954 20-20S31.046-20 20-20 0-11.046 0 0s8.954 20 20 20zM0 20c11.046 0 20-8.954 20-20S11.046-20 0-20-20-11.046-20 0s8.954 20 20 20z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+    animation: gentleWaves 25s linear infinite;
+    opacity: 0.4;
+}
+
+@keyframes gentleWaves {
+    0% { transform: translateX(0) translateY(0); }
+    100% { transform: translateX(-40px) translateY(-40px); }
+}
+
+.science-hero .lead {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: white;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+    font-weight: 300;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.instruments-overview {
+    background: linear-gradient(135deg, rgba(139, 94, 60, 0.06) 0%, rgba(139, 94, 60, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(139, 94, 60, 0.1);
+    margin-bottom: 3rem;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.instruments-overview::before {
+    content: '🎼';
+    position: absolute;
+    top: -15px;
+    left: 30px;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 15px rgba(139, 94, 60, 0.2);
+}
+
+.science-heading {
+    color: #667eea;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 4rem 0 2rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.science-heading::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 70%;
+    background: linear-gradient(to bottom, #667eea, #764ba2);
+    border-radius: 3px;
+}
+
+.cellular-science {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.06) 0%, rgba(52, 152, 219, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(52, 152, 219, 0.1);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.08);
+}
+
+.brainwave-research {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.06) 0%, rgba(155, 89, 182, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(155, 89, 182, 0.1);
+    box-shadow: 0 8px 25px rgba(155, 89, 182, 0.08);
+}
+
+.frequency-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin: 2.5rem 0;
+}
+
+.frequency-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+}
+
+.frequency-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: height 0.3s ease;
+}
+
+.frequency-card:hover::before {
+    height: 8px;
+}
+
+.frequency-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.frequency-card.focus {
+    border-top: 4px solid #e74c3c;
+}
+
+.frequency-card.meditation {
+    border-top: 4px solid #27ae60;
+}
+
+.frequency-card.healing {
+    border-top: 4px solid #9b59b6;
+}
+
+.freq-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.8rem;
+    letter-spacing: -1px;
+}
+
+.freq-benefit {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.8rem;
+}
+
+.freq-description {
+    color: #7f8c8d;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.insight {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-top: 2rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #2c3e50;
+    border-left: 4px solid #667eea;
+    position: relative;
+}
+
+.insight::before {
+    content: '💡';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.emotional-science {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.06) 0%, rgba(39, 174, 96, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(39, 174, 96, 0.1);
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.08);
+    position: relative;
+}
+
+.emotional-science::before {
+    content: '🌈';
+    position: absolute;
+    top: -12px;
+    right: 25px;
+    background: white;
+    padding: 10px 12px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+}
+
+.modern-wellness {
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.06) 0%, rgba(230, 126, 34, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(230, 126, 34, 0.1);
+    box-shadow: 0 8px 25px rgba(230, 126, 34, 0.08);
+}
+
+.experience-cta {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 4rem 3rem;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-top: 4rem;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+}
+
+.experience-cta::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 2px, transparent 2px);
+    background-size: 50px 50px;
+    animation: sparkle 20s linear infinite;
+    opacity: 0.6;
+}
+
+@keyframes sparkle {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-50px, -50px) rotate(360deg); }
+}
+
+.experience-cta .science-heading {
+    color: white;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.experience-cta p {
+    position: relative;
+    z-index: 2;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+}
+
+.healing-wisdom {
+    font-style: italic;
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin: 2.5rem 0;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 2rem 0;
+}
+
+.booking-section {
+    margin-top: 2.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.modern-cta-button {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 18px 45px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 700;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.4s ease;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.modern-cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+}
+
+.modern-cta-button:hover::before {
+    left: 100%;
+}
+
+.modern-cta-button:hover {
+    background: rgba(255,255,255,0.9);
+    color: #667eea;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    text-decoration: none;
+    border-color: white;
+}
+
+/* AI Meditation - Modern Styles (matching Sound Healing design) */
+.ai-meditation-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 4rem 2.5rem;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+}
+
+.ai-meditation-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Ccircle cx='20' cy='20' r='3'/%3E%3Ccircle cx='8' cy='8' r='2'/%3E%3Ccircle cx='32' cy='8' r='2'/%3E%3Ccircle cx='8' cy='32' r='2'/%3E%3Ccircle cx='32' cy='32' r='2'/%3E%3C/g%3E%3C/svg%3E") repeat;
+    animation: aiPulse 20s linear infinite;
+    opacity: 0.4;
+}
+
+@keyframes aiPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+.ai-meditation-hero .lead {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: white;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+    font-weight: 300;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.ai-heading {
+    color: #667eea;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 4rem 0 2rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ai-heading::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 70%;
+    background: linear-gradient(to bottom, #667eea, #764ba2);
+    border-radius: 3px;
+}
+
+.pattern-analysis {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.06) 0%, rgba(52, 152, 219, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(52, 152, 219, 0.1);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.08);
+    position: relative;
+}
+
+.pattern-analysis::before {
+    content: '🔍';
+    position: absolute;
+    top: -15px;
+    right: 25px;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+}
+
+.script-personalization {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.06) 0%, rgba(155, 89, 182, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(155, 89, 182, 0.1);
+    box-shadow: 0 8px 25px rgba(155, 89, 182, 0.08);
+}
+
+.ai-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2.5rem 0;
+}
+
+.ai-feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+}
+
+.ai-feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: height 0.3s ease;
+}
+
+.ai-feature-card:hover::before {
+    height: 8px;
+}
+
+.ai-feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.feature-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.8rem;
+}
+
+.feature-description {
+    color: #7f8c8d;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.ai-insight {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-top: 2rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #2c3e50;
+    border-left: 4px solid #667eea;
+    position: relative;
+}
+
+.ai-insight::before {
+    content: '🤖';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.tracking-science {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.06) 0%, rgba(39, 174, 96, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(39, 174, 96, 0.1);
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.08);
+}
+
+.tracking-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.metric-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-left: 4px solid #27ae60;
+    transition: all 0.3s ease;
+}
+
+.metric-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.15);
+}
+
+.metric-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    text-align: center;
+}
+
+.metric-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.emotion-recognition {
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.06) 0%, rgba(230, 126, 34, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(230, 126, 34, 0.1);
+    box-shadow: 0 8px 25px rgba(230, 126, 34, 0.08);
+    position: relative;
+}
+
+.emotion-recognition::before {
+    content: '🎭';
+    position: absolute;
+    top: -12px;
+    right: 25px;
+    background: white;
+    padding: 10px 12px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.2);
+}
+
+.tradition-enhancement {
+    background: linear-gradient(135deg, rgba(142, 68, 173, 0.06) 0%, rgba(142, 68, 173, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(142, 68, 173, 0.1);
+    box-shadow: 0 8px 25px rgba(142, 68, 173, 0.08);
+}
+
+.enhancement-list {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.enhancement-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #8e44ad;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    line-height: 1.6;
+}
+
+.enhancement-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 20px rgba(142, 68, 173, 0.15);
+}
+
+.practice-name {
+    font-weight: 700;
+    color: #8e44ad;
+    text-transform: capitalize;
+}
+
+.partnership-philosophy {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.06) 0%, rgba(231, 76, 60, 0.02) 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid rgba(231, 76, 60, 0.1);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.08);
+}
+
+.ai-qualities {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.quality-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #e74c3c;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+.quality-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.15);
+}
+
+.ai-meditation-cta {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 4rem 3rem;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-top: 4rem;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+}
+
+.ai-meditation-cta::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 2px, transparent 2px);
+    background-size: 30px 30px;
+    animation: aiSparkle 15s linear infinite;
+    opacity: 0.6;
+}
+
+@keyframes aiSparkle {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-30px, -30px) rotate(360deg); }
+}
+
+.ai-meditation-cta .ai-heading {
+    color: white;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.ai-meditation-cta p {
+    position: relative;
+    z-index: 2;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+}
+
+.meditation-wisdom {
+    font-style: italic;
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin: 2.5rem 0;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 2rem 0;
+}
+
+.meditation-booking {
+    margin-top: 2.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.ai-cta-button {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 18px 45px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 700;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.4s ease;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.ai-cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+}
+
+.ai-cta-button:hover::before {
+    left: 100%;
+}
+
+.ai-cta-button:hover {
+    background: rgba(255,255,255,0.9);
+    color: #667eea;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    text-decoration: none;
+    border-color: white;
+}
+
+/* ==========================================================================
+   ENERGY BLOCKAGES POST STYLING
+   ========================================================================== */
+
+/* Energy Hero Section */
+.energy-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 3rem 2rem;
+    margin: -2rem -2rem 3rem -2rem;
+    border-radius: 0 0 20px 20px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.energy-hero .lead {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    max-width: 800px;
+    margin: 0 auto;
+    font-weight: 400;
+    opacity: 0.95;
+}
+
+/* Energy Section Headings */
+.energy-heading {
+    color: #667eea;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    margin: 3rem 0 1.5rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.energy-heading::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    margin: 0.5rem auto;
+    border-radius: 2px;
+}
+
+/* Blockage Definition Section */
+.blockage-definition {
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin: 2rem 0;
+    border: 1px solid #e8ebff;
+}
+
+.energy-insight {
+    background: #667eea;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    font-style: italic;
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    box-shadow: 0  4px 16px rgba(102, 126, 234, 0.2);
+}
+
+/* Symptoms Grid */
+.symptoms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.symptom-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-top: 4px solid #667eea;
+}
+
+.symptom-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+}
+
+.symptom-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.symptom-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.symptom-description {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Formation Process Section */
+.formation-process {
+    background: linear-gradient(135deg, #fff8f0 0%, #fff2e6 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin: 2rem 0;
+    border: 1px solid #f7e6d3;
+}
+
+.blockage-causes {
+    margin-top: 2rem;
+}
+
+.cause-section {
+    background: white;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #764ba2;
+}
+
+.cause-title {
+    color: #764ba2;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.cause-section p {
+    color: #555;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+/* Daily Impact Section */
+.daily-impact {
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin: 2rem 0;
+    border: 1px solid #d1e9ff;
+}
+
+.impact-signs {
+    margin-top: 2rem;
+}
+
+.signs-title {
+    color: #2980b9;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.signs-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.sign-item {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(41, 128, 185, 0.1);
+    font-size: 1rem;
+    color: #2c3e50;
+    border-left: 4px solid #3498db;
+}
+
+.reassurance {
+    background: #27ae60;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2);
+}
+
+/* Healing Methods Section */
+.healing-methods {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 3rem 2.5rem;
+    border-radius: 16px;
+    margin: 3rem 0;
+}
+
+.healing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.healing-method {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.healing-method::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.healing-method:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+}
+
+.method-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.method-title {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.method-description {
+    color: #555;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Energy Wisdom Section */
+.energy-wisdom-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    margin: 3rem 0;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.energy-wisdom-section .energy-heading {
+    color: white;
+    margin-top: 0;
+}
+
+.energy-wisdom-section .energy-heading::after {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.wisdom-content p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+}
+
+.energy-quote {
+    font-size: 1.3rem;
+    font-style: italic;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    border-left: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.energy-cta {
+    margin-top: 2.5rem;
+}
+
+.energy-cta-button {
+    display: inline-block;
+    background: white;
+    color: #667eea;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+}
+
+.energy-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
+    color: #764ba2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .energy-hero {
+        padding: 2rem 1.5rem;
+        margin: -1.5rem -1.5rem 2rem -1.5rem;
+    }
+    
+    .energy-hero .lead {
+        font-size: 1.1rem;
+    }
+    
+    .energy-heading {
+        font-size: 1.7rem;
+    }
+    
+    .symptoms-grid,
+    .healing-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .symptom-card,
+    .healing-method {
+        padding: 1.5rem;
+    }
+    
+    .blockage-definition,
+    .formation-process,
+    .daily-impact {
+        padding: 2rem 1.5rem;
+    }
+    
+    .healing-methods {
+        padding: 2rem 1.5rem;
+    }
+    
+    .energy-wisdom-section {
+        padding: 2rem 1.5rem;
+    }
+    
+    .signs-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .energy-quote {
+        font-size: 1.1rem;
+        padding: 1.5rem;
+    }
+}

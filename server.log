@@ -1,0 +1,50 @@
+✅ Twilio client initialized successfully
+
+============================================================
+📁 APPLICATION CONFIGURATION
+============================================================
+📁 Database path: sqlite:////Users/zoloo/project_v2/website/holisticweb/instance/data.sqlite
+📁 Instance path: /Users/zoloo/project_v2/website/holisticweb/instance
+🔧 Debug mode: True
+🔒 Secret key: ⚠️ Default
+
+📧 EMAIL CONFIGURATION:
+   Server: smtp.gmail.com:587
+   TLS: True, SSL: False
+   Username: ❌ Not set
+   Password: ❌ Not set
+
+📘 FACEBOOK CONFIGURATION:
+   App ID: ✅ Set
+   App Secret: ✅ Set
+   Redirect URI: http://localhost:5000/auth/facebook/callback
+   Default Page ID: ✅ Set
+============================================================
+
+📱 SMS SERVICE CHECK:
+📱 SMS Service Status:
+   Twilio Library: ✅ Available
+   Client: ✅ Configured
+   Credentials: ✅ Set
+   Phone Number: +18337225813
+✅ Twilio client connection test passed
+
+✅ CORS enabled
+🗄️ Initializing Database Admin Panel...
+📊 Adding model views to Database Admin...
+✅ Database Admin Panel initialized with all model views
+✅ Database Admin Panel initialized
+⚠️ Facebook integration not available - missing dependencies or facebook module
+✅ Feature 'booking' registered successfully
+✅ Feature 'testimonials' registered successfully
+✅ Feature 'admin' registered successfully
+✅ Feature 'auth' registered successfully
+✅ Feature 'blog' registered successfully
+✅ Modular features registered: booking, testimonials, admin, auth, blog
+✅ Database initialized successfully
+📅 SMS reminder scheduler started - checking every 5 minutes
+ * Serving Flask app 'app_factory'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+On macOS, try disabling the 'AirPlay Receiver' service from System Preferences -> General -> AirDrop & Handoff.

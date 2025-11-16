@@ -1,0 +1,79 @@
+<!-- Featured Image Placeholder for Energy Blockages Guide -->
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="energyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#f5576c;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#4facfe;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#energyGradient)"/>
+  
+  <!-- Energy Flow Lines -->
+  <path d="M50 200 Q200 150 350 200 T650 200" stroke="url(#flowGradient)" stroke-width="6" fill="none" opacity="0.7">
+    <animate attributeName="stroke-dasharray" values="0 1000;1000 0" dur="3s" repeatCount="indefinite"/>
+  </path>
+  
+  <path d="M50 180 Q200 130 350 180 T650 180" stroke="rgba(255,255,255,0.5)" stroke-width="3" fill="none" opacity="0.6">
+    <animate attributeName="stroke-dasharray" values="0 800;800 0" dur="4s" repeatCount="indefinite"/>
+  </path>
+  
+  <path d="M50 220 Q200 170 350 220 T650 220" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" opacity="0.5">
+    <animate attributeName="stroke-dasharray" values="0 600;600 0" dur="5s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Chakra Points -->
+  <circle cx="150" cy="200" r="12" fill="rgba(255,255,255,0.8)" opacity="0.9">
+    <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="300" cy="190" r="10" fill="rgba(255,255,255,0.7)" opacity="0.8">
+    <animate attributeName="r" values="6;14;6" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="450" cy="210" r="11" fill="rgba(255,255,255,0.75)" opacity="0.85">
+    <animate attributeName="r" values="7;15;7" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="195" r="9" fill="rgba(255,255,255,0.65)" opacity="0.75">
+    <animate attributeName="r" values="5;13;5" dur="2.8s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Central Energy Symbol -->
+  <g transform="translate(400,200)">
+    <circle r="40" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" opacity="0.8">
+      <animate attributeName="r" values="35;50;35" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="25" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="3" opacity="0.9">
+      <animate attributeName="r" values="20;35;20" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="8" fill="rgba(255,255,255,0.9)" opacity="1">
+      <animate attributeName="r" values="5;12;5" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Title Text -->
+  <text x="400" y="80" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold" opacity="0.95">
+    Energy Blockages
+  </text>
+  <text x="400" y="120" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-family="Arial, sans-serif" font-size="24" font-weight="300">
+    Understanding Your Inner Flow
+  </text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="100" cy="100" r="3" fill="rgba(255,255,255,0.6)" opacity="0.7">
+    <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="700" cy="120" r="2" fill="rgba(255,255,255,0.5)" opacity="0.6">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="80" cy="320" r="4" fill="rgba(255,255,255,0.4)" opacity="0.5">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="720" cy="300" r="3" fill="rgba(255,255,255,0.6)" opacity="0.8">
+    <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>

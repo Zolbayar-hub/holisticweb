@@ -1,0 +1,133 @@
+/* Sound Healing Therapy - Additional Enhancement Styles */
+
+/* Enhanced typography for better readability */
+.article-content {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+/* Improved heading styles */
+.article-content h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    color: #667eea;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.article-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Enhanced paragraph styling */
+.article-content p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+/* Quote styling */
+.article-content blockquote,
+.closing-wisdom {
+    font-style: italic;
+    font-size: 1.3rem;
+    color: #667eea;
+    text-align: center;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border-left: 4px solid #667eea;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 0 8px 8px 0;
+}
+
+/* Enhanced list styling */
+.article-content ul,
+.article-content ol {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+}
+
+.article-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+/* Enhanced link styling */
+.article-content a {
+    color: #667eea;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.article-content a:hover {
+    color: #5a67d8;
+    border-bottom-color: #667eea;
+}
+
+/* Print styles for better printing */
+@media print {
+    .sound-healing-hero::before,
+    .cta-section::before {
+        display: none;
+    }
+    
+    .sound-healing-cta {
+        background: #667eea !important;
+        color: white !important;
+    }
+    
+    .frequency-item::before {
+        display: none;
+    }
+}
+
+/* Enhanced accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .sound-healing-hero::before,
+    .cta-section::before,
+    .frequency-item::before {
+        animation: none;
+    }
+    
+    .sound-healing-cta::before {
+        display: none;
+    }
+    
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .sound-healing-hero {
+        background: #000;
+        color: #fff;
+    }
+    
+    .therapy-overview,
+    .vibration-science,
+    .brainwave-section,
+    .emotional-healing,
+    .popularity-section {
+        border: 2px solid #000;
+        background: #fff;
+    }
+    
+    .section-heading {
+        color: #000;
+    }
+}
