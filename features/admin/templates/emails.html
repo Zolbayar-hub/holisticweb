@@ -1,0 +1,159 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Email Templates{% endblock %}
+{% block page_title %}Email Templates Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Manage Email Templates</h3>
+            <a href="{{ url_for('web_admin_panel.create_email_template') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>
+                Add New Template
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if templates %}
+        {% for template in templates %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-envelope me-1"></i>
+                        {{ template.name }}
+                    </h6>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-2">
+                        <small class="text-muted">Subject:</small><br>
+                        <strong>{{ template.subject }}</strong>
+                    </div>
+                    
+                    {% if template.description %}
+                    <div class="mb-2">
+                        <small class="text-muted">Description:</small><br>
+                        <span class="small">{{ template.description }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3 flex-grow-1">
+                        <small class="text-muted">Body Preview:</small><br>
+                        <div class="small text-muted border p-2 rounded" style="max-height: 100px; overflow-y: auto;">
+                            {{ template.body[:200] }}{% if template.body|length > 200 %}...{% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('web_admin_panel.edit_email_template', template_id=template.id) }}" 
+                               class="btn btn-outline-primary btn-sm flex-fill">
+                                <i class="fas fa-edit me-1"></i>
+                                Edit
+                            </a>
+                            <button class="btn btn-outline-danger btn-sm" 
+                                    onclick="confirmDeleteTemplate({{ template.id }}, '{{ template.name }}')">
+                                <i class="fas fa-trash me-1"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="card text-center">
+                <div class="card-body py-5">
+                    <i class="fas fa-envelope fa-4x text-muted mb-3"></i>
+                    <h4>No Email Templates Found</h4>
+                    <p class="text-muted">Create your first email template to customize customer communications.</p>
+                    <a href="{{ url_for('web_admin_panel.create_email_template') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Create Your First Template
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Default templates section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Template Variables
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>You can use the following variables in your email templates:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Customer Variables:</h6>
+                        <ul class="small">
+                            <li><code>{user_name}</code> - Customer's name</li>
+                            <li><code>{email}</code> - Customer's email</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Booking Variables:</h6>
+                        <ul class="small">
+                            <li><code>{service_name}</code> - Service name</li>
+                            <li><code>{service_price}</code> - Service price</li>
+                            <li><code>{start_time}</code> - Appointment start time</li>
+                            <li><code>{end_time}</code> - Appointment end time</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteTemplateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the email template "<span id="templateName"></span>"?</p>
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteTemplateForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>
+                        Delete Template
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDeleteTemplate(templateId, templateName) {
+    document.getElementById('templateName').textContent = templateName;
+    document.getElementById('deleteTemplateForm').action = '/admin-panel/emails/delete/' + templateId;
+    
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteTemplateModal'));
+    deleteModal.show();
+}
+</script>
+{% endblock %}

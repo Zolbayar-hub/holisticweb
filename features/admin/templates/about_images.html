@@ -1,0 +1,480 @@
+{% extends "admin/base.html" %}
+
+{% block title %}About Images Management{% endblock %}
+{% block page_title %}About Images Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Manage About Section Images</h3>
+            <a href="{{ url_for('web_admin_panel.create_about_image') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>
+                Add New Image
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if images %}
+<!-- Carousel Preview Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">
+                        <i class="fas fa-eye me-2"></i>
+                        Live Preview - About Section Carousel
+                        {% set active_images = images|selectattr('is_active')|list %}
+                        <small class="text-muted">({{ active_images|length }} active images)</small>
+                    </h5>
+                    <small class="text-muted">This is how your images will appear on the website</small>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="refreshCarousel()">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        Refresh
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleAutoplay()">
+                        <i class="fas fa-pause me-1" id="playIcon"></i>
+                        <span id="playText">Pause</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="aboutCarouselPreview" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                    <div class="carousel-inner">
+                        {% set active_images = images|selectattr('is_active')|list %}
+                        {% if active_images|length > 0 %}
+                            {% for image in active_images %}
+                            <div class="carousel-item{% if loop.first %} active{% endif %}" data-bs-interval="3000">
+                                <div class="position-relative" style="height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <img src="{{ url_for('static', filename=image.image_path) }}" 
+                                         class="d-block w-100 h-100" 
+                                         style="object-fit: cover; opacity: 0.8;"
+                                         alt="{{ image.title }}"
+                                         onload="console.log('Image loaded: {{ image.title }}')">
+                                    {% if image.caption %}
+                                    <div class="carousel-caption d-block">
+                                        <div class="bg-dark bg-opacity-50 rounded p-3">
+                                            <h5 class="text-white mb-0">{{ image.caption }}</h5>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <!-- Admin overlay -->
+                                    <div class="position-absolute top-0 start-0 m-2">
+                                        <span class="badge bg-primary">{{ image.title }}</span>
+                                        <span class="badge bg-success">Order: {{ image.sort_order }}</span>
+                                        <span class="badge bg-info">Slide {{ loop.index }}/{{ active_images|length }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Carousel controls -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarouselPreview" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#aboutCarouselPreview" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    
+                    <!-- Indicators -->
+                    <div class="carousel-indicators">
+                        {% set active_images = images|selectattr('is_active')|list %}
+                        {% for image in active_images %}
+                        <button type="button" data-bs-target="#aboutCarouselPreview" data-bs-slide-to="{{ loop.index0 }}" 
+                                {% if loop.first %}class="active"{% endif %}></button>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                {% if images|selectattr('is_active')|list|length == 0 %}
+                <div class="text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h5>No Active Images</h5>
+                    <p class="text-muted">Activate at least one image to see the carousel preview.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Management Section -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-1"></i>
+            Drag and drop images below to reorder them in the carousel. Only active images appear in the preview above.
+        </div>
+    </div>
+</div>
+
+<div class="row" id="images-container">
+    {% for image in images %}
+    <div class="col-md-6 col-lg-4 mb-4" data-image-id="{{ image.id }}" style="cursor: move;">
+        <div class="card h-100{% if not image.is_active %} opacity-50{% endif %}">
+            <div class="position-relative">
+                <img src="{{ url_for('static', filename=image.image_path) }}" 
+                     class="card-img-top" 
+                     style="height: 200px; object-fit: cover;"
+                     alt="{{ image.title }}">
+                
+                <!-- Status badges -->
+                <div class="position-absolute top-0 end-0 p-2">
+                    {% if image.is_active %}
+                    <span class="badge bg-success">Active</span>
+                    {% else %}
+                    <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                    <span class="badge bg-primary">Order: {{ image.sort_order }}</span>
+                </div>
+                
+                <!-- Drag handle -->
+                <div class="position-absolute top-0 start-0 p-2">
+                    <i class="fas fa-grip-vertical text-white bg-dark bg-opacity-50 p-1 rounded"></i>
+                </div>
+            </div>
+            
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ image.title }}</h5>
+                {% if image.caption %}
+                <p class="card-text flex-grow-1">{{ image.caption }}</p>
+                {% else %}
+                <p class="card-text flex-grow-1 text-muted fst-italic">No caption</p>
+                {% endif %}
+                
+                <div class="mt-auto">
+                    <div class="d-flex gap-2 mb-2">
+                        <a href="{{ url_for('web_admin_panel.edit_about_image', image_id=image.id) }}" 
+                           class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="fas fa-edit me-1"></i>
+                            Edit
+                        </a>
+                        <form method="POST" action="{{ url_for('web_admin_panel.toggle_about_image_active', image_id=image.id) }}" 
+                              style="display: inline;" class="flex-fill">
+                            <button type="submit" class="btn btn-outline-{% if image.is_active %}warning{% else %}success{% endif %} btn-sm w-100">
+                                <i class="fas fa-{% if image.is_active %}eye-slash{% else %}eye{% endif %} me-1"></i>
+                                {% if image.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm w-100" 
+                            onclick="confirmDelete({{ image.id }}, '{{ image.title }}')">
+                        <i class="fas fa-trash me-1"></i>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="card text-center">
+            <div class="card-body py-5">
+                <i class="fas fa-images fa-4x text-muted mb-3"></i>
+                <h4>No About Images Found</h4>
+                <p class="text-muted">Get started by adding images for your about section carousel.</p>
+                <a href="{{ url_for('web_admin_panel.create_about_image') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>
+                    Add Your First Image
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the image "<span id="imageName"></span>"?</p>
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    This action cannot be undone and will also delete the image file.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>
+                        Delete Image
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+function confirmDelete(imageId, imageName) {
+    document.getElementById('imageName').textContent = imageName;
+    document.getElementById('deleteForm').action = '/admin/about-images/delete/' + imageId;
+    
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+// Initialize sortable for drag and drop reordering
+if (document.getElementById('images-container')) {
+    const sortable = Sortable.create(document.getElementById('images-container'), {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: function (evt) {
+            const imageIds = [];
+            const items = document.querySelectorAll('[data-image-id]');
+            items.forEach(function(item) {
+                imageIds.push(parseInt(item.dataset.imageId));
+            });
+            
+            // Send new order to server
+            fetch('/admin/about-images/reorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    image_ids: imageIds
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update order badges
+                    items.forEach(function(item, index) {
+                        const badge = item.querySelector('.badge.bg-primary');
+                        if (badge) {
+                            badge.textContent = 'Order: ' + (index + 1);
+                        }
+                    });
+                    
+                    // Show success message
+                    showToast('Images reordered successfully! Refreshing preview...', 'success');
+                    
+                    // Reload page to update carousel preview order
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showToast('Error reordering images: ' + data.message, 'danger');
+                    location.reload(); // Reload to reset order
+                }
+            })
+            .catch(error => {
+                showToast('Error reordering images', 'danger');
+                location.reload(); // Reload to reset order
+            });
+        }
+    });
+}
+
+// Global carousel instance
+let carouselInstance = null;
+let isPlaying = true;
+
+// Auto-start carousel
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing carousel...');
+    initializeCarousel();
+});
+
+function initializeCarousel() {
+    const carousel = document.getElementById('aboutCarouselPreview');
+    if (!carousel) {
+        console.log('Carousel element not found');
+        return;
+    }
+
+    // Check if there are any carousel items
+    const carouselItems = carousel.querySelectorAll('.carousel-item');
+    console.log('Found carousel items:', carouselItems.length);
+    
+    // Log each item for debugging
+    carouselItems.forEach((item, index) => {
+        const isActive = item.classList.contains('active');
+        console.log(`Item ${index}: ${isActive ? 'ACTIVE' : 'inactive'}`);
+    });
+    
+    if (carouselItems.length > 1) {
+        console.log('Multiple images found, starting auto-carousel...');
+        
+        // Dispose existing carousel if it exists
+        if (carouselInstance) {
+            carouselInstance.dispose();
+        }
+        
+        // Initialize with very simple settings
+        carouselInstance = new bootstrap.Carousel(carousel, {
+            interval: 3000,  // 3 seconds for faster testing
+            ride: true,
+            wrap: true
+        });
+        
+        // Manually start cycling
+        setTimeout(() => {
+            if (carouselInstance) {
+                console.log('Starting carousel cycle...');
+                carouselInstance.cycle();
+            }
+        }, 1000);
+        
+        // Debug event listeners
+        carousel.addEventListener('slide.bs.carousel', function(event) {
+            console.log(`Sliding from ${event.from} to ${event.to}`);
+        });
+        
+        carousel.addEventListener('slid.bs.carousel', function(event) {
+            console.log(`Successfully slid to slide ${event.to}`);
+        });
+        
+    } else if (carouselItems.length === 1) {
+        console.log('Only one image - no auto-slide needed');
+    } else {
+        console.log('No carousel items found');
+    }
+}
+
+function refreshCarousel() {
+    console.log('Refreshing carousel...');
+    location.reload();
+}
+
+function toggleAutoplay() {
+    const playIcon = document.getElementById('playIcon');
+    const playText = document.getElementById('playText');
+    
+    if (carouselInstance) {
+        if (isPlaying) {
+            carouselInstance.pause();
+            isPlaying = false;
+            playIcon.className = 'fas fa-play me-1';
+            playText.textContent = 'Play';
+            console.log('Autoplay stopped');
+        } else {
+            carouselInstance.cycle();
+            isPlaying = true;
+            playIcon.className = 'fas fa-pause me-1';
+            playText.textContent = 'Pause';
+            console.log('Autoplay started');
+        }
+    }
+}
+
+// Force carousel to work - alternative method
+setTimeout(() => {
+    const carousel = document.getElementById('aboutCarouselPreview');
+    if (carousel) {
+        const items = carousel.querySelectorAll('.carousel-item');
+        if (items.length > 1) {
+            console.log('Forcing carousel start with setInterval backup...');
+            
+            let currentIndex = 0;
+            setInterval(() => {
+                if (isPlaying) {
+                    // Remove active from current item
+                    items[currentIndex].classList.remove('active');
+                    
+                    // Move to next item
+                    currentIndex = (currentIndex + 1) % items.length;
+                    
+                    // Add active to new item
+                    items[currentIndex].classList.add('active');
+                    
+                    console.log(`Manual slide to index ${currentIndex}`);
+                }
+            }, 4000); // Backup 4-second timer
+        }
+    }
+}, 2000); // Start after 2 seconds
+
+function showToast(message, type) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    toast.style.cssText = 'top: 20px; right: 20px; z-index: 1055; min-width: 300px;';
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 3000);
+}
+</script>
+
+<style>
+.sortable-ghost {
+    opacity: 0.4;
+}
+
+.card[data-image-id]:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* Carousel preview enhancements */
+#aboutCarouselPreview .carousel-item {
+    transition: transform 0.8s ease-in-out;
+}
+
+#aboutCarouselPreview .carousel-caption {
+    bottom: 20px;
+}
+
+#aboutCarouselPreview .carousel-control-prev,
+#aboutCarouselPreview .carousel-control-next {
+    width: 5%;
+    opacity: 0.7;
+}
+
+#aboutCarouselPreview .carousel-control-prev:hover,
+#aboutCarouselPreview .carousel-control-next:hover {
+    opacity: 1;
+}
+
+#aboutCarouselPreview .carousel-indicators {
+    bottom: 10px;
+}
+
+#aboutCarouselPreview .carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 3px;
+}
+
+/* Preview card styling */
+.card-header h5 {
+    color: #495057;
+}
+
+.card-header small {
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %}

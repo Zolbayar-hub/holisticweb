@@ -25,9 +25,10 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#about">About</a></li>
+                <li><a href="{{ url_for('blog.index') }}">Blog</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
-                <li><a href="{{ url_for('booking_bp.my_bookings') }}">My Bookings</a></li>
+                <li><a href="{{ url_for('booking.booking_page') }}">Book Now</a></li>
+                <li><a href="{{ url_for('booking.my_bookings') }}">My Bookings</a></li>
                 {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
                 <li><a href="{{ url_for('web_admin_panel.web_admin_panel') }}" style="color: #ffc107;">Admin</a></li>
                 {% endif %}
@@ -53,9 +54,10 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#about">About</a></li>
+                    <li><a href="{{ url_for('blog.index') }}">Blog</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="{{ url_for('booking_bp.booking_page') }}">Book Now</a></li>
-                    <li><a href="{{ url_for('booking_bp.my_bookings') }}">My Bookings</a></li>
+                    <li><a href="{{ url_for('booking.booking_page') }}">Book Now</a></li>
+                    <li><a href="{{ url_for('booking.my_bookings') }}">My Bookings</a></li>
                     {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
                     <li><a href="{{ url_for('web_admin_panel.web_admin_panel') }}" style="color: #ffc107;">Admin Panel</a></li>
                     {% endif %}
@@ -94,7 +96,7 @@
                 <h1>{{ settings.get('hero_title', 'Bio Energy Healer and Sound Therapy') }}</h1>
                 <p style="text-align: center !important; margin: 0 auto;">{{ settings.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit. Our comprehensive approach combines traditional wisdom with modern techniques to help you achieve optimal wellness.') }}</p>
                 <a href="#services" class="cta-button">Explore Our Services</a>
-                <a href="{{ url_for('booking_bp.booking_page') }}" class="cta-button" style="margin-left: 15px;">Book Now</a>
+                <a href="{{ url_for('booking.booking_page') }}" class="cta-button" style="margin-left: 15px;">Book Now</a>
             </div>
         </section>
         
@@ -119,7 +121,7 @@
                                 <p>{{ service.description }}</p>
                                 <p><strong>Duration:</strong> {{ service.duration }} min</p>
                                 <p><strong>Price:</strong> ${{ '%.2f'|format(service.price) }}</p>
-                                <a href="{{ url_for('booking_bp.booking_page') }}" class="service-book-btn">Book This Service</a>
+                                <a href="{{ url_for('booking.booking_page') }}" class="service-book-btn">Book This Service</a>
                             </div>
                             {% endfor %}
                         </div>
@@ -481,7 +483,7 @@
               {% endif %}
             {% endwith %}
 
-            <form method="POST" action="{{ url_for('testimony.submit_testimonial') }}" class="testimonial-form">
+            <form method="POST" action="{{ url_for('testimonials.submit_testimonial') }}" class="testimonial-form">
                 <div class="form-group">
                     <label for="client_name_modal">Your Name *</label>
                     <input type="text" id="client_name_modal" name="client_name" required placeholder="Enter your full name" style="width:100%; box-sizing:border-box;">

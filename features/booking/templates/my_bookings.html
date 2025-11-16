@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Holistic Wellness</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='book.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <header class="booking-header">
+            <h1><i class="fas fa-calendar-check"></i> My Bookings</h1>
+            <p>View and manage your holistic wellness appointments</p>
+        </header>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-search me-2"></i>
+                            Find Your Bookings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="search-form">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Enter your email address:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input type="email" class="form-control" id="email" 
+                                           placeholder="your.email@example.com" required>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search me-1"></i>
+                                        Search Bookings
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading spinner -->
+        <div id="loading" class="text-center mt-4" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Searching for your bookings...</p>
+        </div>
+
+        <!-- Bookings results -->
+        <div id="bookings-results" class="mt-4" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>
+                                Your Bookings
+                            </h5>
+                            <span id="bookings-count" class="badge bg-primary"></span>
+                        </div>
+                        <div class="card-body">
+                            <div id="bookings-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No bookings message -->
+        <div id="no-bookings" class="text-center mt-4" style="display: none;">
+            <div class="card">
+                <div class="card-body py-5">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No bookings found</h5>
+                    <p class="text-muted">No bookings were found for this email address.</p>
+                    <a href="{{ url_for('booking.booking_page') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Book a New Session
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error message -->
+        <div id="error-message" class="alert alert-danger mt-4" style="display: none;">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="error-text"></span>
+        </div>
+    </div>
+
+    <!-- Cancel Confirmation Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelModalLabel">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        Cancel Booking
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel this booking?</p>
+                    <div id="cancel-booking-details" class="alert alert-info"></div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        This action cannot be undone. You will receive a cancellation confirmation email.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>
+                        No, Keep Booking
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirm-cancel-btn">
+                        <i class="fas fa-check me-1"></i>
+                        Yes, Cancel Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBookings = [];
+        let cancelBookingId = null;
+
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchBookings();
+        });
+
+        function searchBookings() {
+            const email = document.getElementById('email').value;
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('bookings-results');
+            const noBookings = document.getElementById('no-bookings');
+            const errorMessage = document.getElementById('error-message');
+
+            // Hide all sections
+            results.style.display = 'none';
+            noBookings.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Show loading
+            loading.style.display = 'block';
+
+            fetch(`/booking/my-bookings/search?email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+
+                    if (data.error) {
+                        showError(data.error);
+                        return;
+                    }
+
+                    currentBookings = data;
+
+                    if (data.length === 0) {
+                        noBookings.style.display = 'block';
+                    } else {
+                        displayBookings(data);
+                        results.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    loading.style.display = 'none';
+                    showError('Failed to search bookings. Please try again.');
+                    console.error('Error:', error);
+                });
+        }
+
+        function displayBookings(bookings) {
+            const bookingsList = document.getElementById('bookings-list');
+            const bookingsCount = document.getElementById('bookings-count');
+
+            bookingsCount.textContent = `${bookings.length} booking${bookings.length !== 1 ? 's' : ''}`;
+
+            bookingsList.innerHTML = '';
+
+            bookings.forEach(booking => {
+                const startDate = new Date(booking.start_time);
+                const endDate = new Date(booking.end_time);
+                
+                const statusClass = booking.status === 'cancelled' ? 'secondary' : 
+                                   booking.status === 'confirmed' ? 'success' : 'warning';
+
+                const canCancel = booking.status !== 'cancelled' && startDate > new Date();
+
+                const bookingCard = document.createElement('div');
+                bookingCard.className = 'card mb-3';
+                bookingCard.innerHTML = `
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6 class="card-title">
+                                    <i class="fas fa-spa me-2"></i>
+                                    ${booking.service ? booking.service.name : 'Service'}
+                                </h6>
+                                <p class="card-text">
+                                    <strong>Date:</strong> ${startDate.toLocaleDateString()} <br>
+                                    <strong>Time:</strong> ${startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
+                                                           ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} <br>
+                                    <strong>People:</strong> ${booking.num_people} ${booking.num_people === 1 ? 'person' : 'people'} <br>
+                                    ${booking.service ? `<strong>Price:</strong> $${booking.service.price}` : ''}
+                                </p>
+                                <span class="badge bg-${statusClass}">${booking.status.toUpperCase()}</span>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <small class="text-muted">Booking #${booking.id}</small>
+                                <br>
+                                ${canCancel ? 
+                                    `<button class="btn btn-sm btn-outline-danger mt-2" 
+                                             onclick="showCancelModal(${booking.id})">
+                                        <i class="fas fa-times me-1"></i>
+                                        Cancel
+                                    </button>` : 
+                                    '<span class="text-muted">Cannot cancel</span>'
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+                bookingsList.appendChild(bookingCard);
+            });
+        }
+
+        function showCancelModal(bookingId) {
+            const booking = currentBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            cancelBookingId = bookingId;
+
+            const startDate = new Date(booking.start_time);
+            const endDate = new Date(booking.end_time);
+
+            document.getElementById('cancel-booking-details').innerHTML = `
+                <strong>Service:</strong> ${booking.service ? booking.service.name : 'Service'}<br>
+                <strong>Date:</strong> ${startDate.toLocaleDateString()}<br>
+                <strong>Time:</strong> ${startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
+                                       ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br>
+                <strong>People:</strong> ${booking.num_people} ${booking.num_people === 1 ? 'person' : 'people'}
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+            modal.show();
+        }
+
+        document.getElementById('confirm-cancel-btn').addEventListener('click', function() {
+            if (!cancelBookingId) return;
+
+            const button = this;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Cancelling...';
+            button.disabled = true;
+
+            fetch(`/booking/events/${cancelBookingId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+
+                if (data.success) {
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('cancelModal'));
+                    modal.hide();
+
+                    // Refresh bookings
+                    searchBookings();
+
+                    // Show success message
+                    showSuccess('Booking cancelled successfully. You will receive a confirmation email.');
+                } else {
+                    showError(data.error || 'Failed to cancel booking');
+                }
+            })
+            .catch(error => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                showError('Failed to cancel booking. Please try again.');
+                console.error('Error:', error);
+            });
+        });
+
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            document.getElementById('error-text').textContent = message;
+            errorMessage.style.display = 'block';
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            // Create and show success alert
+            const successAlert = document.createElement('div');
+            successAlert.className = 'alert alert-success mt-4';
+            successAlert.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                ${message}
+            `;
+
+            const container = document.querySelector('.container');
+            container.appendChild(successAlert);
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                successAlert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Edit Service' if service else 'Create Service' }}{% endblock %}
+{% block page_title %}{{ 'Edit Service' if service else 'Create New Service' }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-spa me-2"></i>
+                    {{ 'Edit Service' if service else 'Create New Service' }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Service Name</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ service.name if service else '' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" 
+                                  rows="4" placeholder="Describe the service and its benefits...">{{ service.description if service else '' }}</textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price ($)</label>
+                                <input type="number" class="form-control" id="price" name="price" 
+                                       step="0.01" min="0" value="{{ service.price if service else '' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="duration" class="form-label">Duration (minutes)</label>
+                                <input type="number" class="form-control" id="duration" name="duration" 
+                                       min="1" value="{{ service.duration if service else '' }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Language</label>
+                        <select class="form-control" id="language" name="language" required>
+                            <option value="ENG" {{ 'selected' if (service and service.language == 'ENG') or not service else '' }}>English</option>
+                            <option value="MON" {{ 'selected' if service and service.language == 'MON' else '' }}>Mongolian</option>
+                        </select>
+                        <div class="form-text">Select the language for this service</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Service Image</label>
+                        {% if service and service.image_path %}
+                        <div class="mb-2">
+                            <img src="{{ url_for('static', filename=service.image_path) }}" 
+                                 alt="Current image" class="preview-image rounded">
+                            <div class="text-muted small mt-1">Current image</div>
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="image" name="image" 
+                               accept="image/*" onchange="previewImage(this)">
+                        <div class="form-text">Upload a new image to replace the current one (if any). Recommended size: 400x300px</div>
+                        
+                        <!-- Image preview -->
+                        <div id="imagePreview" class="mt-2" style="display: none;">
+                            <img id="preview" class="preview-image rounded" alt="Preview">
+                            <div class="text-muted small mt-1">New image preview</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('web_admin_panel.admin_services') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Back to Services
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>
+                            {{ 'Update Service' if service else 'Create Service' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('preview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

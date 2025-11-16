@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Your Experience - Holistic Therapy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="{{ url_for('main.home') }}" class="logo">Holistic Therapy</a>
+            
+            <!-- Desktop Navigation -->
+            <ul class="desktop-nav">
+                <li><a href="{{ url_for('main.home') }}#home">Home</a></li>
+                <li><a href="{{ url_for('main.home') }}#services">Services</a></li>
+                <li><a href="{{ url_for('main.home') }}#about">About</a></li>
+                <li><a href="{{ url_for('main.home') }}#contact">Contact</a></li>
+                <li><a href="{{ url_for('booking.booking_page') }}">Book Now</a></li>
+            </ul>
+            
+            <!-- Mobile Hamburger Button -->
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Mobile Menu Dropdown -->
+            <div class="mobile-menu" id="mobile-menu">
+                <ul>
+                    <li><a href="{{ url_for('main.home') }}#home">Home</a></li>
+                    <li><a href="{{ url_for('main.home') }}#services">Services</a></li>
+                    <li><a href="{{ url_for('main.home') }}#about">About</a></li>
+                    <li><a href="{{ url_for('main.home') }}#contact">Contact</a></li>
+                    <li><a href="{{ url_for('booking.booking_page') }}">Book Now</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="testimonial-form-section">
+            <div class="container">
+                <div class="testimonial-form-container">
+                    <h1>Share Your Experience</h1>
+                    <p>We would love to hear about your healing journey with us. Your testimonial helps others discover the transformative power of holistic therapy.</p>
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                      {% if messages %}
+                        {% for category, message in messages %}
+                          <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else category }}">
+                            {{ message }}
+                          </div>
+                        {% endfor %}
+                      {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST" class="testimonial-form">
+                        <div class="form-group">
+                            <label for="client_name">Your Name *</label>
+                            <input type="text" id="client_name" name="client_name" required 
+                                   placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="client_title">Your Title/Profession</label>
+                            <input type="text" id="client_title" name="client_title" 
+                                   placeholder="e.g., Teacher, Marketing Executive (optional)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" name="email" 
+                                   placeholder="your.email@example.com (optional)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rating">Rating *</label>
+                            <div class="rating-input">
+                                <input type="radio" id="star5" name="rating" value="5" checked>
+                                <label for="star5">⭐⭐⭐⭐⭐</label>
+                                
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4">⭐⭐⭐⭐</label>
+                                
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3">⭐⭐⭐</label>
+                                
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2">⭐⭐</label>
+                                
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1">⭐</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="testimonial_text">Your Experience *</label>
+                            <textarea id="testimonial_text" name="testimonial_text" rows="6" required 
+                                      placeholder="Please share your experience with our holistic therapy services. How have our treatments helped you on your healing journey?"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="submit-btn">Submit Testimonial</button>
+                            <a href="{{ url_for('main.home') }}" class="cancel-btn">Cancel</a>
+                        </div>
+                        
+                        <p class="form-note">
+                            <small>
+                                * Required fields. Your testimonial will be published immediately on the site after submission. 
+                                We respect your privacy and will only use your information for testimonial purposes.
+                            </small>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Holistic Therapy. All rights reserved. | Healing Mind, Body & Spirit</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+</body>
+</html>

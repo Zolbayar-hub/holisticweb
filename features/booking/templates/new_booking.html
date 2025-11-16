@@ -1,0 +1,205 @@
+"""
+Template for creating a new booking
+"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Service - Holistic Therapy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .booking-form {
+            max-width: 600px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            margin-right: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .flash-messages {
+            margin: 100px auto 0;
+            max-width: 600px;
+        }
+        
+        .flash-message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="booking-form">
+        <h2>Book a Service</h2>
+        <p>Fill out the form below to schedule your holistic therapy session.</p>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="user_name">Full Name *</label>
+                <input type="text" id="user_name" name="user_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="service_id">Service *</label>
+                <select id="service_id" name="service_id" required>
+                    <option value="">Select a service...</option>
+                    {% for service in services %}
+                        <option value="{{ service.id }}">
+                            {{ service.name }} - ${{ service.price }} 
+                            {% if service.duration %}({{ service.duration }} min){% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="start_time">Preferred Start Time *</label>
+                <input type="datetime-local" id="start_time" name="start_time" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="end_time">Preferred End Time *</label>
+                <input type="datetime-local" id="end_time" name="end_time" required>
+            </div>
+            
+            <div class="form-group">
+                <a href="{{ url_for('main.home') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn">Book Service</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Auto-calculate end time based on service duration
+        document.getElementById('service_id').addEventListener('change', function() {
+            const startTimeInput = document.getElementById('start_time');
+            const endTimeInput = document.getElementById('end_time');
+            
+            if (this.value && startTimeInput.value) {
+                updateEndTime();
+            }
+        });
+        
+        document.getElementById('start_time').addEventListener('change', function() {
+            const serviceSelect = document.getElementById('service_id');
+            
+            if (serviceSelect.value) {
+                updateEndTime();
+            }
+        });
+        
+        function updateEndTime() {
+            const serviceSelect = document.getElementById('service_id');
+            const startTimeInput = document.getElementById('start_time');
+            const endTimeInput = document.getElementById('end_time');
+            
+            if (!serviceSelect.value || !startTimeInput.value) return;
+            
+            // Get duration from service text (extract number before "min)")
+            const serviceText = serviceSelect.options[serviceSelect.selectedIndex].text;
+            const durationMatch = serviceText.match(/\((\d+) min\)/);
+            
+            if (durationMatch) {
+                const duration = parseInt(durationMatch[1]);
+                const startTime = new Date(startTimeInput.value);
+                const endTime = new Date(startTime.getTime() + duration * 60000); // Add duration in milliseconds
+                
+                // Format for datetime-local input
+                const year = endTime.getFullYear();
+                const month = String(endTime.getMonth() + 1).padStart(2, '0');
+                const day = String(endTime.getDate()).padStart(2, '0');
+                const hours = String(endTime.getHours()).padStart(2, '0');
+                const minutes = String(endTime.getMinutes()).padStart(2, '0');
+                
+                endTimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+        }
+    </script>
+</body>
+</html>

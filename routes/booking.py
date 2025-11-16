@@ -391,11 +391,11 @@ def create_booking():
 
             # Redirect to the new booking page
             flash(f"Booking created successfully for {num_people} {'person' if num_people == 1 else 'people'}!", "success")
-            return redirect(url_for("booking_bp.booking_page"))
+            return redirect(url_for("booking.booking_page"))
 
         except Exception as e:
             flash(f"Error creating booking: {e}", "error")
-            return redirect(url_for("booking_bp.create_booking"))
+            return redirect(url_for("booking.create_booking"))
 
     # Get language from query parameter or default to 'ENG'
     current_language = request.args.get('lang', 'ENG')

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ tag }} Articles - Serenity Wellness Studio</title>
+    <meta name="description" content="Browse articles about {{ tag }} - insights on wellness, AI, and mindfulness.">
+    <link rel="stylesheet" href="{{ url_for('blog.static', filename='blog.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="blog-header">
+        <div class="container">
+            <nav class="blog-nav">
+                <a href="{{ url_for('blog.index') }}" class="back-link">← Back to Blog</a>
+                <a href="/" class="home-link">Home</a>
+            </nav>
+            
+            <div class="tag-hero">
+                <h1 class="tag-title">{{ tag }} Articles</h1>
+                <p class="tag-subtitle">{{ posts|length }} article{{ 's' if posts|length != 1 else '' }} found</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="blog-main">
+        <div class="container">
+            {% if posts %}
+                <div class="posts-grid">
+                    {% for post in posts %}
+                        <article class="post-card">
+                            <div class="post-image">
+                                <img src="{{ url_for('blog.static', filename='images/' + post.featured_image) }}" 
+                                     alt="{{ post.title }}" 
+                                     onerror="this.src='{{ url_for('blog.static', filename='images/default-post.jpg') }}'">
+                                <div class="post-tags">
+                                    {% for post_tag in post.tags[:2] %}
+                                        <a href="{{ url_for('blog.posts_by_tag', tag=post_tag) }}" 
+                                           class="tag {{ 'active' if post_tag == tag else '' }}">{{ post_tag }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <span class="author">{{ post.author }}</span>
+                                    <span class="date">{{ moment(post.published_date).format('MMM DD, YYYY') if moment else post.published_date }}</span>
+                                    <span class="read-time">{{ post.read_time }} min read</span>
+                                </div>
+                                
+                                <h2 class="post-title">
+                                    <a href="{{ url_for('blog.post_detail', slug=post.slug) }}">{{ post.title }}</a>
+                                </h2>
+                                
+                                <p class="post-excerpt">{{ post.excerpt }}</p>
+                                
+                                <a href="{{ url_for('blog.post_detail', slug=post.slug) }}" class="read-more">
+                                    Read Article →
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h2>No articles found for "{{ tag }}"</h2>
+                    <p>We're constantly adding new content. Check back soon or explore other topics!</p>
+                    <a href="{{ url_for('blog.index') }}" class="btn-primary">Browse All Articles</a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="blog-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Popular Tags</h3>
+                    <div class="tag-cloud">
+                        <a href="{{ url_for('blog.posts_by_tag', tag='AI') }}" class="tag {{ 'active' if tag == 'AI' else '' }}">AI</a>
+                        <a href="{{ url_for('blog.posts_by_tag', tag='Wellness') }}" class="tag {{ 'active' if tag == 'Wellness' else '' }}">Wellness</a>
+                        <a href="{{ url_for('blog.posts_by_tag', tag='Mindfulness') }}" class="tag {{ 'active' if tag == 'Mindfulness' else '' }}">Mindfulness</a>
+                        <a href="{{ url_for('blog.posts_by_tag', tag='Meditation') }}" class="tag {{ 'active' if tag == 'Meditation' else '' }}">Meditation</a>
+                        <a href="{{ url_for('blog.posts_by_tag', tag='Technology') }}" class="tag {{ 'active' if tag == 'Technology' else '' }}">Technology</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Serenity Wellness Studio. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('blog.static', filename='blog.js') }}"></script>
+</body>
+</html>

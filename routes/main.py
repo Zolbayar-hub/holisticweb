@@ -152,19 +152,19 @@ Holistic Therapy Team
 @main_bp.route('/book')
 def book_redirect():
     """Redirect to the booking page for easy access"""
-    return redirect(url_for('booking_bp.booking_page'))
+    return redirect(url_for('booking.booking_page'))
 
 
 @main_bp.route('/bookings/new')
 def old_booking_redirect():
     """Redirect old booking URL to new booking page"""
-    return redirect(url_for('booking_bp.create_booking'))
+    return redirect(url_for('booking.create_booking'))
 
 
 @main_bp.route('/submit-testimonial', methods=['GET', 'POST'])
 def old_testimonial_redirect():
     """Redirect old testimonial URL to new testimonial route"""
-    return redirect(url_for('testimony.submit_testimonial'))
+    return redirect(url_for('testimonials.submit_testimonial'))
 
 
 @main_bp.route('/health')

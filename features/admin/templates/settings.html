@@ -1,0 +1,461 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Home Page Settings{% endblock %}
+{% block page_title %}Home Page Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-home me-2"></i>
+                    Home Page Content Management
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('web_admin_panel.update_settings') }}" enctype="multipart/form-data">
+                    
+                    <!-- Language Selection -->
+                    <div class="mb-4">
+                        <h6 class="text-primary">
+                            <i class="fas fa-language me-1"></i>
+                            Language Selection
+                        </h6>
+                        <hr>
+                        
+                        <div class="mb-3">
+                            <label for="language" class="form-label">Select Language to Edit</label>
+                            <select class="form-control" id="language" name="language" onchange="loadLanguageSettings(this.value)">
+                                <option value="ENG" selected>English (ENG)</option>
+                                <option value="MON">Mongolian (MON)</option>
+                            </select>
+                            <div class="form-text">Choose the language for the content you want to edit. Settings are saved per language.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hero Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary">
+                            <i class="fas fa-star me-1"></i>
+                            Hero Section
+                        </h6>
+                        <hr>
+                        
+                        <div class="mb-3">
+                            <label for="hero_title" class="form-label">Hero Title</label>
+                            <input type="text" class="form-control" id="hero_title" name="setting_hero_title" 
+                                   value="{{ settings_dict.get('hero_title', 'Holistic Therapy') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="hero_subtitle" class="form-label">Hero Subtitle</label>
+                            <textarea class="form-control" id="hero_subtitle" name="setting_hero_subtitle" 
+                                      rows="3">{{ settings_dict.get('hero_subtitle', 'Discover the power of integrated healing for your mind, body, and spirit.') }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="home_image" class="form-label">Background Image</label>
+                            
+                            <!-- Current image display -->
+                            {% if settings_dict.get('home_image') %}
+                            <div class="mb-2">
+                                <img src="{{ url_for('static', filename=settings_dict.get('home_image')) }}" 
+                                     alt="Current background" class="preview-image rounded"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div class="text-danger small mt-1" style="display: none;">⚠️ Current image file not found</div>
+                                <div class="text-muted small mt-1">Current: {{ settings_dict.get('home_image') }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- File input -->
+                            <input type="file" class="form-control" id="home_image" name="home_image" 
+                                   accept="image/*,.webp" onchange="previewHomeImage(this)">
+                            <div class="form-text">
+                                Upload a new background image for the hero section. 
+                                <br>Supported: JPG, PNG, GIF, WebP | Recommended: 1920x1080px
+                                <br><small>Language: <span id="currentLanguage">{{ selected_language or 'ENG' }}</span></small>
+                            </div>
+                            
+                            <!-- Upload status -->
+                            <div id="uploadStatus" class="mt-2" style="display: none;">
+                                <div class="alert alert-info">Uploading...</div>
+                            </div>
+                            
+                            <!-- Image preview -->
+                            <div id="homeImagePreview" class="mt-2" style="display: none;">
+                                <img id="homePreview" class="preview-image rounded" alt="Preview">
+                                <div class="text-muted small mt-1">New image preview</div>
+                            </div>
+                            
+                            <!-- Debug info for troubleshooting -->
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="checkFileSystemDebug()">
+                                    🔍 Debug File System
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="mb-4">
+                        <h6 class="text-success">
+                            <i class="fas fa-info-circle me-1"></i>
+                            About Section
+                        </h6>
+                        <hr>
+
+                        <div class="mb-3">
+                            <label for="about_title" class="form-label">About Section Title</label>
+                            <input type="text" class="form-control" id="about_title" name="setting_about_title" 
+                                   value="{{ settings_dict.get('about_title', 'Our Holistic Approach') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="about_text_1" class="form-label">About Paragraph 1</label>
+                            <textarea class="form-control" id="about_text_1" name="setting_about_text_1" 
+                                      rows="3">{{ settings_dict.get('about_text_1', 'At Holistic Therapy, we believe that true healing encompasses all aspects of the human experience.') }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="about_text_2" class="form-label">About Paragraph 2</label>
+                            <textarea class="form-control" id="about_text_2" name="setting_about_text_2" 
+                                      rows="3">{{ settings_dict.get('about_text_2', 'Our experienced practitioners work with you to create personalized treatment plans.') }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="about_text_3" class="form-label">About Paragraph 3</label>
+                            <textarea class="form-control" id="about_text_3" name="setting_about_text_3" 
+                                      rows="3">{{ settings_dict.get('about_text_3', 'Whether you\'re seeking relief from stress or embarking on a journey of personal growth, we\'re here to support you.') }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Contact Section -->
+                    <div class="mb-4">
+                        <h6 class="text-info">
+                            <i class="fas fa-envelope me-1"></i>
+                            Contact Section
+                        </h6>
+                        <hr>
+
+                        <div class="mb-3">
+                            <label for="contact_title" class="form-label">Contact Section Title</label>
+                            <input type="text" class="form-control" id="contact_title" name="setting_contact_title" 
+                                   value="{{ settings_dict.get('contact_title', 'Begin Your Healing Journey') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contact_text" class="form-label">Contact Section Text</label>
+                            <textarea class="form-control" id="contact_text" name="setting_contact_text" 
+                                      rows="2">{{ settings_dict.get('contact_text', 'Ready to take the first step? Contact us to schedule a consultation.') }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="mb-4">
+                        <h6 class="text-dark">
+                            <i class="fas fa-copyright me-1"></i>
+                            Footer
+                        </h6>
+                        <hr>
+
+                        <div class="mb-3">
+                            <label for="footer_text" class="form-label">Footer Text</label>
+                            <input type="text" class="form-control" id="footer_text" name="setting_footer_text" 
+                                   value="{{ settings_dict.get('footer_text', 'Holistic Therapy. All rights reserved. | Healing Mind, Body & Spirit') }}">
+                        </div>
+                    </div>
+
+                    <!-- Business Information -->
+                    <div class="mb-4">
+                        <h6 class="text-warning">
+                            <i class="fas fa-building me-1"></i>
+                            Business Information
+                        </h6>
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="business_phone" class="form-label">Phone Number</label>
+                                    <input type="text" class="form-control" id="business_phone" name="setting_business_phone" 
+                                           value="{{ settings_dict.get('business_phone', '') }}" placeholder="(555) 123-4567">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="business_email" class="form-label">Business Email</label>
+                                    <input type="email" class="form-control" id="business_email" name="setting_business_email" 
+                                           value="{{ settings_dict.get('business_email', '') }}" placeholder="info@holistictherapy.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="business_address" class="form-label">Business Address</label>
+                            <textarea class="form-control" id="business_address" name="setting_business_address" 
+                                      rows="2" placeholder="123 Wellness St, Healing City, HC 12345">{{ settings_dict.get('business_address', '') }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('web_admin_panel.web_admin_panel') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Back to Dashboard
+                        </a>
+                        <div>
+                            <a href="{{ url_for('main.home') }}" class="btn btn-outline-info me-2" target="_blank">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                Preview Site
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tips Card -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Tips for Better Content
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Hero Section</h6>
+                        <ul class="small">
+                            <li>Keep titles short and powerful</li>
+                            <li>Use high-quality images (1920x1080px)</li>
+                            <li>Focus on benefits to visitors</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>About Section</h6>
+                        <ul class="small">
+                            <li>Tell your story authentically</li>
+                            <li>Highlight your unique approach</li>
+                            <li>Build trust with credentials</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Contact Information</h6>
+                        <ul class="small">
+                            <li>Keep contact info current</li>
+                            <li>Make it easy for customers to reach you</li>
+                            <li>Include multiple contact methods</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Language settings data passed from backend
+const settingsByLanguage = {{ settings_by_language | tojson }};
+
+function loadLanguageSettings(language) {
+    const langSettings = settingsByLanguage[language] || {};
+    
+    // Update all form fields with the selected language values
+    const formElements = document.querySelectorAll('[name^="setting_"]');
+    formElements.forEach(element => {
+        const settingKey = element.name.replace('setting_', '');
+        const value = langSettings[settingKey] || '';
+        
+        if (element.tagName === 'TEXTAREA') {
+            element.value = value;
+        } else if (element.type === 'text' || element.type === 'email') {
+            element.value = value;
+        }
+    });
+    
+    // Show a message about which language is being edited
+    showLanguageMessage(language);
+}
+
+function showLanguageMessage(language) {
+    // Remove any existing language messages
+    const existingMessage = document.querySelector('.language-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Create new message
+    const message = document.createElement('div');
+    message.className = 'alert alert-info language-message';
+    message.innerHTML = `<i class="fas fa-info-circle me-2"></i>Now editing content for: <strong>${language === 'ENG' ? 'English' : 'Mongolian'}</strong>`;
+    
+    // Insert after language selection
+    const languageSection = document.querySelector('.mb-4');
+    languageSection.insertAdjacentElement('afterend', message);
+}
+
+function previewHomeImage(input) {
+    const preview = document.getElementById('homeImagePreview');
+    const previewImg = document.getElementById('homePreview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+function checkFileSystemDebug() {
+    // Show loading state
+    const debugButton = event.target;
+    const originalText = debugButton.innerHTML;
+    debugButton.innerHTML = '🔄 Checking...';
+    debugButton.disabled = true;
+    
+    fetch('/web_admin/debug/file-system')
+        .then(response => response.json())
+        .then(data => {
+            // Create modal or alert with debug info
+            let debugInfo = 'File System Debug Information:\n\n';
+            debugInfo += `Static Folder: ${data.static_folder}\n`;
+            debugInfo += `Uploads Dir: ${data.uploads_dir}\n`;
+            debugInfo += `Home Uploads Dir: ${data.home_uploads_dir}\n\n`;
+            
+            debugInfo += 'Directory Existence:\n';
+            for (const [dir, exists] of Object.entries(data.directories_exist)) {
+                debugInfo += `  ${dir}: ${exists ? '✅' : '❌'}\n`;
+            }
+            
+            debugInfo += '\nPermissions:\n';
+            for (const [dir, perms] of Object.entries(data.permissions)) {
+                debugInfo += `  ${dir}: ${perms}\n`;
+            }
+            
+            debugInfo += '\nCurrent Home Images:\n';
+            for (const [lang, info] of Object.entries(data.current_home_images)) {
+                if (typeof info === 'object') {
+                    debugInfo += `  ${lang}: ${info.value} (exists: ${info.file_exists ? '✅' : '❌'})\n`;
+                } else {
+                    debugInfo += `  Error: ${info}\n`;
+                }
+            }
+            
+            // Show in alert or console
+            console.log('File System Debug:', data);
+            alert(debugInfo);
+        })
+        .catch(error => {
+            console.error('Debug check failed:', error);
+            alert('Debug check failed. Check console for details.');
+        })
+        .finally(() => {
+            debugButton.innerHTML = originalText;
+            debugButton.disabled = false;
+        });
+}
+
+function enhancedPreviewHomeImage(input) {
+    const preview = document.getElementById('homeImagePreview');
+    const previewImg = document.getElementById('homePreview');
+    const status = document.getElementById('uploadStatus');
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Invalid file type. Please select a JPG, PNG, GIF, or WebP image.');
+            input.value = '';
+            preview.style.display = 'none';
+            return;
+        }
+        
+        // Validate file size (10MB max)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('File too large. Please select an image under 10MB.');
+            input.value = '';
+            preview.style.display = 'none';
+            return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+            
+            // Show file info
+            const fileInfo = `File: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            preview.querySelector('.text-muted').textContent = fileInfo;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// Enhanced form submission with progress tracking
+function enhanceFormSubmission() {
+    const form = document.querySelector('form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const homeImageInput = document.getElementById('home_image');
+    
+    form.addEventListener('submit', function(e) {
+        // If there's a home image file, show upload progress
+        if (homeImageInput.files && homeImageInput.files[0]) {
+            const status = document.getElementById('uploadStatus');
+            status.style.display = 'block';
+            status.innerHTML = '<div class="alert alert-info">🔄 Uploading home image...</div>';
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '🔄 Uploading...';
+        }
+    });
+}
+
+// Initialize enhanced functionality when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Replace the existing preview function
+    const homeImageInput = document.getElementById('home_image');
+    if (homeImageInput) {
+        homeImageInput.setAttribute('onchange', 'enhancedPreviewHomeImage(this)');
+    }
+    
+    // Enhance form submission
+    enhanceFormSubmission();
+    
+    // Update current language display
+    const languageSelect = document.getElementById('language');
+    const currentLanguageSpan = document.getElementById('currentLanguage');
+    if (languageSelect && currentLanguageSpan) {
+        languageSelect.addEventListener('change', function() {
+            currentLanguageSpan.textContent = this.value;
+        });
+    }
+});
+
+// Initialize with English settings on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadLanguageSettings('ENG');
+});
+</script>
+{% endblock %}

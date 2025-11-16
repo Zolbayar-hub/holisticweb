@@ -114,21 +114,40 @@ def initialize_extensions(app):
 
 
 def register_blueprints(app):
-    """Register application blueprints"""
+    """Register application blueprints using modular feature system"""
     
-    from routes.auth import auth_bp
-    from routes.web_admin import web_admin_bp
-    from routes.booking import booking_bp
-    from routes.testimony import testimony_bp
+    # Register core main blueprint (always needed)
     from routes.main import main_bp
-    
     app.register_blueprint(main_bp)
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(booking_bp)
-    app.register_blueprint(testimony_bp)
-    app.register_blueprint(web_admin_bp)
     
-    print("✅ Blueprints registered")
+    # Register modular features using feature manager
+    try:
+        from features.feature_manager import register_all_features
+        feature_manager = register_all_features(app)
+        
+        # Print feature summary
+        features = feature_manager.list_features()
+        print(f"✅ Modular features registered: {', '.join(features.keys())}")
+        
+    except Exception as e:
+        print(f"⚠️ Feature manager error: {e}")
+        print("Falling back to traditional blueprint registration...")
+        
+        # Fallback to traditional registration
+        try:
+            from routes.auth import auth_bp
+            from routes.web_admin import web_admin_bp
+            from routes.booking import booking_bp
+            from routes.testimony import testimony_bp
+            
+            app.register_blueprint(auth_bp)
+            app.register_blueprint(booking_bp, url_prefix='/booking')
+            app.register_blueprint(testimony_bp)
+            app.register_blueprint(web_admin_bp)
+            
+            print("✅ Traditional blueprints registered")
+        except Exception as fallback_error:
+            print(f"❌ Blueprint registration failed: {fallback_error}")
 
 
 def register_error_handlers(app):
@@ -147,12 +166,7 @@ def register_error_handlers(app):
 
 def register_template_filters(app):
     """Register custom template filters"""
-    
-    import markdown as md
-    
-    @app.template_filter('markdown')
-    def markdown_filter(text):
-        return md.markdown(text or "", extensions=['fenced_code', 'codehilite', 'tables'])
+    pass
 
 
 def initialize_database(app):

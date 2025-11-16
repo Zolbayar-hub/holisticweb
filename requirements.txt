@@ -14,8 +14,7 @@ SQLAlchemy>=2.0.0
 Flask-Login>=0.6.0
 Werkzeug>=2.3.0
 
-# Text processing and markdown
-Markdown>=3.4.0
+# Text processing (removed markdown - no longer needed)
 
 # HTTP requests for testing
 requests>=2.31.0

@@ -1,0 +1,4 @@
+🖼️ PLACEHOLDER IMAGE
+This file represents default-post.jpg
+Replace with actual JPG image (800x400px)
+Content: Generic blog post header image
