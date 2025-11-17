@@ -38,37 +38,38 @@ BLOG_CATEGORIES = {
     },
     'energy-work': {
         'name': 'Energy Work',
-        'description': 'Discover the power of energy healing through chakra balancing, stress release practices, and nervous system restoration.',
+        'description': 'Transform your energetic well-being through expert-guided practices that balance chakras, release stress, reset your nervous system, and restore healthy sleep patterns. Our energy work sessions combine ancient wisdom with modern understanding to create profound shifts in your physical, emotional, and spiritual vitality.',
         'icon': '⚡',
-        'color': '#2c3e50',
+        'color': '#764ba2',
         'services': [
-            'Chakra Balancing',
+            'Chakra Balancing Sessions',
             'Stress Release Practice',
-            'Nervous System Reset',
-            'Sleep Support Session'
+            'Nervous System Reset Therapy',
+            'Sleep Support & Restoration'
         ]
     },
     'group-experiences': {
         'name': 'Group Experiences',
-        'description': 'Join community healing through group sound baths, workshops, classes, and transformative events and retreats.',
+        'description': 'Experience the profound power of community healing through expertly facilitated group sound baths, transformational workshops, and immersive wellness retreats. Our group experiences create sacred spaces where individuals come together to heal, learn, and grow in supportive community environments that amplify personal transformation.',
         'icon': '👥',
         'color': '#27ae60',
         'services': [
-            'Group Sound Bath',
-            'Workshops & Classes',
-            'Events & Retreats'
+            'Group Sound Bath Experiences',
+            'Wellness Workshops & Classes',
+            'Transformational Events & Retreats',
+            'Community Healing Circles'
         ]
     },
     'wellness-benefits': {
         'name': 'Wellness Benefits',
-        'description': 'Learn about the profound benefits of holistic practices for stress relief, emotional wellness, better sleep, and energy balance.',
+        'description': 'Discover the scientifically-backed benefits of holistic wellness practices. Learn how sound healing, energy work, and mindful practices create measurable improvements in stress relief, emotional wellness, sleep quality, and energy balance for sustainable well-being.',
         'icon': '✨',
         'color': '#e67e22',
         'services': [
-            'Stress Relief',
-            'Emotional Wellness',
-            'Better Sleep',
-            'Energy Balance'
+            'Science-Based Stress Relief',
+            'Emotional Wellness & Balance',
+            'Restorative Sleep Enhancement',
+            'Natural Energy Optimization'
         ]
     },
     'soundbath': {

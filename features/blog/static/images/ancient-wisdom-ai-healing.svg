@@ -1,0 +1,232 @@
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="ancientGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B7D3A;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#357ABD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E5C8A;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="fusionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.8" />
+      <stop offset="30%" style="stop-color:#4A90E2;stop-opacity:0.8" />
+      <stop offset="70%" style="stop-color:#8A2BE2;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#20B2AA;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <radialGradient id="energyField" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#4A90E2;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#8A2BE2;stop-opacity:0.1" />
+    </radialGradient>
+    
+    <!-- Filters for glow effects -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="aiGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#energyField)"/>
+  
+  <!-- Sacred geometry background pattern -->
+  <g opacity="0.1">
+    <circle cx="200" cy="200" r="100" fill="none" stroke="url(#ancientGradient)" stroke-width="2"/>
+    <circle cx="200" cy="200" r="60" fill="none" stroke="url(#ancientGradient)" stroke-width="1"/>
+    <circle cx="200" cy="200" r="20" fill="none" stroke="url(#ancientGradient)" stroke-width="1"/>
+    
+    <circle cx="600" cy="200" r="100" fill="none" stroke="url(#aiGradient)" stroke-width="2"/>
+    <circle cx="600" cy="200" r="60" fill="none" stroke="url(#aiGradient)" stroke-width="1"/>
+    <circle cx="600" cy="200" r="20" fill="none" stroke="url(#aiGradient)" stroke-width="1"/>
+  </g>
+  
+  <!-- Ancient Wisdom Side -->
+  <g id="ancient-side">
+    <!-- Temple/Ancient structure -->
+    <g transform="translate(50, 100)">
+      <!-- Base -->
+      <rect x="0" y="150" width="300" height="20" fill="url(#ancientGradient)" opacity="0.8"/>
+      
+      <!-- Columns -->
+      <rect x="30" y="50" width="20" height="120" fill="url(#ancientGradient)" opacity="0.9"/>
+      <rect x="90" y="50" width="20" height="120" fill="url(#ancientGradient)" opacity="0.9"/>
+      <rect x="150" y="50" width="20" height="120" fill="url(#ancientGradient)" opacity="0.9"/>
+      <rect x="210" y="50" width="20" height="120" fill="url(#ancientGradient)" opacity="0.9"/>
+      <rect x="270" y="50" width="20" height="120" fill="url(#ancientGradient)" opacity="0.9"/>
+      
+      <!-- Roof -->
+      <polygon points="10,50 290,50 150,10" fill="url(#ancientGradient)" opacity="0.9"/>
+      
+      <!-- Sacred symbols -->
+      <circle cx="150" cy="100" r="15" fill="none" stroke="#D4AF37" stroke-width="2" filter="url(#glow)"/>
+      <path d="M 135 100 L 150 85 L 165 100 L 150 115 Z" fill="none" stroke="#D4AF37" stroke-width="1"/>
+    </g>
+    
+    <!-- Sound waves emanating from temple -->
+    <g opacity="0.6">
+      <path d="M 200 200 Q 250 150 300 200 Q 250 250 200 200" fill="none" stroke="url(#ancientGradient)" stroke-width="2"/>
+      <path d="M 200 200 Q 270 130 340 200 Q 270 270 200 200" fill="none" stroke="url(#ancientGradient)" stroke-width="1" opacity="0.7"/>
+      <path d="M 200 200 Q 290 110 380 200 Q 290 290 200 200" fill="none" stroke="url(#ancientGradient)" stroke-width="1" opacity="0.5"/>
+    </g>
+  </g>
+  
+  <!-- AI/Technology Side -->
+  <g id="ai-side">
+    <!-- Neural network nodes -->
+    <g transform="translate(450, 50)">
+      <!-- Main processing nodes -->
+      <circle cx="50" cy="50" r="8" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="120" cy="30" r="6" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="180" cy="70" r="7" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="100" cy="100" r="5" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="200" cy="120" r="8" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="160" cy="150" r="6" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="80" cy="180" r="7" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="220" cy="180" r="5" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="140" cy="220" r="6" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="60" cy="250" r="4" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      <circle cx="190" cy="260" r="5" fill="url(#aiGradient)" filter="url(#aiGlow)"/>
+      
+      <!-- Neural connections -->
+      <line x1="50" y1="50" x2="120" y2="30" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="50" y1="50" x2="100" y2="100" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="120" y1="30" x2="180" y2="70" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="180" y1="70" x2="200" y2="120" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="100" y1="100" x2="160" y2="150" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="200" y1="120" x2="160" y2="150" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="160" y1="150" x2="80" y2="180" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="160" y1="150" x2="220" y2="180" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="80" y1="180" x2="140" y2="220" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="220" y1="180" x2="140" y2="220" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="140" y1="220" x2="60" y2="250" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      <line x1="140" y1="220" x2="190" y2="260" stroke="url(#aiGradient)" stroke-width="1" opacity="0.6"/>
+      
+      <!-- Data flow particles -->
+      <g opacity="0.8">
+        <circle cx="85" cy="75" r="2" fill="#4A90E2">
+          <animateMotion dur="3s" repeatCount="indefinite" 
+                         path="M 0 0 L 75 75 L 60 105 L 0 0"/>
+        </circle>
+        <circle cx="150" cy="100" r="2" fill="#357ABD">
+          <animateMotion dur="4s" repeatCount="indefinite" 
+                         path="M 0 0 L -50 50 L 40 70 L 0 0"/>
+        </circle>
+        <circle cx="180" cy="200" r="2" fill="#2E5C8A">
+          <animateMotion dur="5s" repeatCount="indefinite" 
+                         path="M 0 0 L -100 -50 L -40 -40 L 0 0"/>
+        </circle>
+      </g>
+    </g>
+    
+    <!-- Digital waves -->
+    <g opacity="0.6">
+      <path d="M 600 200 Q 550 150 500 200 Q 550 250 600 200" fill="none" stroke="url(#aiGradient)" stroke-width="2"/>
+      <path d="M 600 200 Q 530 130 460 200 Q 530 270 600 200" fill="none" stroke="url(#aiGradient)" stroke-width="1" opacity="0.7"/>
+      <path d="M 600 200 Q 510 110 420 200 Q 510 290 600 200" fill="none" stroke="url(#aiGradient)" stroke-width="1" opacity="0.5"/>
+    </g>
+  </g>
+  
+  <!-- Central Fusion Area -->
+  <g id="fusion-center">
+    <!-- Energy convergence point -->
+    <circle cx="400" cy="200" r="40" fill="url(#fusionGradient)" opacity="0.3" filter="url(#glow)">
+      <animate attributeName="r" values="40;50;40" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="400" cy="200" r="25" fill="url(#fusionGradient)" opacity="0.5" filter="url(#glow)">
+      <animate attributeName="r" values="25;35;25" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="400" cy="200" r="10" fill="url(#fusionGradient)" opacity="0.8" filter="url(#glow)">
+      <animate attributeName="r" values="10;15;10" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Symbolic fusion - Ancient meets Digital -->
+    <g transform="translate(400, 200)">
+      <!-- Ancient symbol (left half) -->
+      <path d="M -20 0 A 20 20 0 0 1 0 -20 L 0 0 Z" fill="url(#ancientGradient)" opacity="0.8"/>
+      <path d="M -15 -5 L -5 -15 M -15 5 L -5 15" stroke="#D4AF37" stroke-width="2"/>
+      
+      <!-- AI symbol (right half) -->
+      <path d="M 20 0 A 20 20 0 0 1 0 20 L 0 0 Z" fill="url(#aiGradient)" opacity="0.8"/>
+      <!-- Circuit pattern -->
+      <rect x="5" y="-15" width="2" height="10" fill="#4A90E2"/>
+      <rect x="10" y="-10" width="2" height="15" fill="#4A90E2"/>
+      <rect x="15" y="-5" width="2" height="10" fill="#4A90E2"/>
+      <circle cx="6" cy="-10" r="1" fill="#4A90E2"/>
+      <circle cx="11" cy="5" r="1" fill="#4A90E2"/>
+      <circle cx="16" cy="0" r="1" fill="#4A90E2"/>
+    </g>
+    
+    <!-- Infinity symbol representing endless possibilities -->
+    <path d="M 360 220 Q 380 200 400 220 Q 420 240 440 220 Q 420 200 400 220 Q 380 240 360 220" 
+          fill="none" stroke="url(#fusionGradient)" stroke-width="3" opacity="0.7" filter="url(#glow)"/>
+  </g>
+  
+  <!-- Connecting energy streams -->
+  <g opacity="0.4">
+    <!-- From ancient to center -->
+    <path d="M 350 200 Q 375 180 400 200" fill="none" stroke="url(#ancientGradient)" stroke-width="2"/>
+    <path d="M 350 200 Q 375 220 400 200" fill="none" stroke="url(#ancientGradient)" stroke-width="2"/>
+    
+    <!-- From AI to center -->
+    <path d="M 450 200 Q 425 180 400 200" fill="none" stroke="url(#aiGradient)" stroke-width="2"/>
+    <path d="M 450 200 Q 425 220 400 200" fill="none" stroke="url(#aiGradient)" stroke-width="2"/>
+  </g>
+  
+  <!-- Floating wisdom symbols -->
+  <g opacity="0.6">
+    <!-- Ancient wisdom symbols -->
+    <g transform="translate(100, 50)">
+      <text x="0" y="0" font-family="serif" font-size="20" fill="url(#ancientGradient)" opacity="0.7">☯</text>
+      <animateTransform attributeName="transform" type="translate" 
+                        values="100,50; 120,40; 100,50" dur="6s" repeatCount="indefinite"/>
+    </g>
+    
+    <g transform="translate(250, 320)">
+      <text x="0" y="0" font-family="serif" font-size="18" fill="url(#ancientGradient)" opacity="0.7">🕉</text>
+      <animateTransform attributeName="transform" type="translate" 
+                        values="250,320; 270,310; 250,320" dur="7s" repeatCount="indefinite"/>
+    </g>
+    
+    <!-- AI/Tech symbols -->
+    <g transform="translate(700, 80)">
+      <text x="0" y="0" font-family="monospace" font-size="16" fill="url(#aiGradient)" opacity="0.7">{ }</text>
+      <animateTransform attributeName="transform" type="translate" 
+                        values="700,80; 680,90; 700,80" dur="5s" repeatCount="indefinite"/>
+    </g>
+    
+    <g transform="translate(550, 350)">
+      <text x="0" y="0" font-family="monospace" font-size="14" fill="url(#aiGradient)" opacity="0.7">□□■</text>
+      <animateTransform attributeName="transform" type="translate" 
+                        values="550,350; 530,340; 550,350" dur="8s" repeatCount="indefinite"/>
+    </g>
+  </g>
+  
+  <!-- Title area background -->
+  <rect x="0" y="0" width="800" height="60" fill="rgba(0,0,0,0.1)"/>
+  
+  <!-- Main title -->
+  <text x="400" y="35" text-anchor="middle" font-family="serif" font-size="28" font-weight="bold" 
+        fill="url(#fusionGradient)" filter="url(#glow)">
+    Ancient Wisdom Meets AI: The New Era of Personalized Healing
+  </text>
+</svg>

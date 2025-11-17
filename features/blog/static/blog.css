@@ -1406,7 +1406,7 @@ body {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 30px 30px;
+    background-size: 50px 50px;
     animation: float 10s ease-in-out infinite;
     opacity: 0.3;
 }
@@ -1775,10 +1775,6 @@ body {
     margin: 2.5rem 0;
     position: relative;
     z-index: 2;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-top: 1px solid rgba(255,255,255,0.2);
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    padding: 2rem 0;
 }
 
 .booking-section {
@@ -2202,415 +2198,1499 @@ body {
     position: relative;
     z-index: 2;
     text-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-top: 1px solid rgba(255,255,255,0.2);
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    padding: 2rem 0;
 }
 
-.meditation-booking {
-    margin-top: 2.5rem;
-    position: relative;
-    z-index: 2;
-}
+/* =================================================================
+   GROUP SOUND BATH POST STYLES
+   ================================================================= */
 
-.ai-cta-button {
-    display: inline-block;
-    background: rgba(255,255,255,0.15);
+/* Group Sound Bath Hero */
+.group-soundbath-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 18px 45px;
-    text-decoration: none;
-    border-radius: 50px;
-    font-weight: 700;
-    border: 2px solid rgba(255,255,255,0.3);
-    transition: all 0.4s ease;
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    padding: 2.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
 }
 
-.ai-cta-button::before {
+.group-soundbath-hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.6s;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="2" fill="rgba(255,255,255,0.1)"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/></circle><circle cx="75" cy="50" r="1.5" fill="rgba(255,255,255,0.08)"><animate attributeName="opacity" values="0.08;0.2;0.08" dur="4s" repeatCount="indefinite"/></circle><circle cx="50" cy="75" r="1" fill="rgba(255,255,255,0.06)"><animate attributeName="opacity" values="0.06;0.15;0.06" dur="5s" repeatCount="indefinite"/></circle></svg>');
+    animation: float 20s infinite linear;
+    pointer-events: none;
 }
 
-.ai-cta-button:hover::before {
-    left: 100%;
-}
-
-.ai-cta-button:hover {
-    background: rgba(255,255,255,0.9);
-    color: #667eea;
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    text-decoration: none;
-    border-color: white;
-}
-
-/* ==========================================================================
-   ENERGY BLOCKAGES POST STYLING
-   ========================================================================== */
-
-/* Energy Hero Section */
-.energy-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 3rem 2rem;
-    margin: -2rem -2rem 3rem -2rem;
-    border-radius: 0 0 20px 20px;
-    color: white;
-    text-align: center;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-}
-
-.energy-hero .lead {
-    font-size: 1.2rem;
-    line-height: 1.7;
-    max-width: 800px;
-    margin: 0 auto;
-    font-weight: 400;
-    opacity: 0.95;
-}
-
-/* Energy Section Headings */
-.energy-heading {
-    color: #667eea;
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    margin: 3rem 0 1.5rem 0;
-    text-align: center;
+/* Group Headings */
+.group-heading {
+    color: #764ba2;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #667eea;
     position: relative;
 }
 
-.energy-heading::after {
+.group-heading::after {
     content: '';
-    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    margin: 0.5rem auto;
-    border-radius: 2px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
 }
 
-/* Blockage Definition Section */
-.blockage-definition {
-    background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
-    padding: 2.5rem;
-    border-radius: 16px;
-    margin: 2rem 0;
-    border: 1px solid #e8ebff;
-}
-
-.energy-insight {
-    background: #667eea;
-    color: white;
+/* Sound Bath Definition */
+.soundbath-definition {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 1.5rem;
     border-radius: 12px;
-    font-style: italic;
-    text-align: center;
-    margin-top: 2rem;
+    border-left: 4px solid #667eea;
+    margin-bottom: 2rem;
     font-size: 1.1rem;
-    box-shadow: 0  4px 16px rgba(102, 126, 234, 0.2);
+    line-height: 1.7;
 }
 
-/* Symptoms Grid */
-.symptoms-grid {
+/* Collective Energy Section */
+.collective-energy-section {
+    background: rgba(102, 126, 234, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.collective-benefits {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
 }
 
-.symptom-card {
+.benefit-card {
     background: white;
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-top: 4px solid #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+    border-top: 3px solid transparent;
 }
 
-.symptom-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
 }
 
-.symptom-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    display: block;
+.benefit-card.supportive { border-top-color: #28a745; }
+.benefit-card.deeper { border-top-color: #6f42c1; }
+.benefit-card.belonging { border-top-color: #17a2b8; }
+.benefit-card.release { border-top-color: #fd7e14; }
+
+.benefit-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
-.symptom-name {
+.benefit-title {
     font-weight: 600;
     color: #2c3e50;
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
 }
 
-.symptom-description {
-    color: #7f8c8d;
+.benefit-description {
+    color: #6c757d;
+    line-height: 1.6;
     font-size: 0.95rem;
-    line-height: 1.5;
 }
 
-/* Formation Process Section */
-.formation-process {
-    background: linear-gradient(135deg, #fff8f0 0%, #fff2e6 100%);
-    padding: 2.5rem;
-    border-radius: 16px;
-    margin: 2rem 0;
-    border: 1px solid #f7e6d3;
-}
-
-.blockage-causes {
-    margin-top: 2rem;
-}
-
-.cause-section {
-    background: white;
-    padding: 2rem;
-    margin: 1.5rem 0;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    border-left: 5px solid #764ba2;
-}
-
-.cause-title {
-    color: #764ba2;
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-}
-
-.cause-section p {
-    color: #555;
-    line-height: 1.7;
-    font-size: 1rem;
-}
-
-/* Daily Impact Section */
-.daily-impact {
-    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
-    padding: 2.5rem;
-    border-radius: 16px;
-    margin: 2rem 0;
-    border: 1px solid #d1e9ff;
-}
-
-.impact-signs {
-    margin-top: 2rem;
-}
-
-.signs-title {
-    color: #2980b9;
-    font-size: 1.3rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-}
-
-.signs-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
-.sign-item {
-    background: white;
-    padding: 1.2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(41, 128, 185, 0.1);
-    font-size: 1rem;
-    color: #2c3e50;
-    border-left: 4px solid #3498db;
-}
-
-.reassurance {
-    background: #27ae60;
+.collective-insight {
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-style: italic;
+    margin-top: 1.5rem;
+    position: relative;
+}
+
+/* Sound Physics Section */
+.sound-physics-section {
+    background: linear-gradient(135deg, #f1f3f4 0%, #e8eaf6 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.physics-benefits {
+    margin: 1.5rem 0;
+}
+
+.physics-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.physics-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.physics-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    min-width: 40px;
+}
+
+.physics-text {
+    color: #495057;
+    line-height: 1.6;
+}
+
+.physics-insight {
+    background: rgba(118, 75, 162, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid #764ba2;
+    font-style: italic;
+    margin-top: 1.5rem;
+}
+
+/* Emotional Safety Section */
+.emotional-safety-section {
+    background: rgba(255, 193, 7, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.emotional-releases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.release-type {
+    background: white;
     padding: 1.5rem;
     border-radius: 12px;
     text-align: center;
-    margin-top: 2rem;
-    font-size: 1.05rem;
-    box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
 }
 
-/* Healing Methods Section */
-.healing-methods {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    padding: 3rem 2.5rem;
-    border-radius: 16px;
-    margin: 3rem 0;
+.release-type:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
-.healing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
+.release-type.tears { border-bottom-color: #007bff; }
+.release-type.laughter { border-bottom-color: #28a745; }
+.release-type.tension { border-bottom-color: #6f42c1; }
+.release-type.patterns { border-bottom-color: #fd7e14; }
+
+.release-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
 }
 
-.healing-method {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.healing-method::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-}
-
-.healing-method:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
-}
-
-.method-icon {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    display: block;
-}
-
-.method-title {
-    font-size: 1.3rem;
-    color: #2c3e50;
-    margin-bottom: 1rem;
+.release-name {
     font-weight: 600;
-}
-
-.method-description {
-    color: #555;
-    line-height: 1.6;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
     font-size: 1rem;
 }
 
-/* Energy Wisdom Section */
-.energy-wisdom-section {
+.release-description {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.emotional-wisdom {
+    background: linear-gradient(135deg, #ffc107, #ff8c00);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+/* Community Wellness Section */
+.community-wellness-section {
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.wellbeing-outcomes {
+    margin: 2rem 0;
+}
+
+.outcome-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+}
+
+.outcome-item {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+    transition: all 0.3s ease;
+}
+
+.outcome-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.community-insight {
+    background: rgba(40, 167, 69, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid #28a745;
+    font-style: italic;
+    color: #155724;
+}
+
+/* Accessibility Section */
+.accessibility-section {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.ideal-for-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.ideal-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border-top: 4px solid transparent;
+}
+
+.ideal-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.ideal-card.professionals { border-top-color: #007bff; }
+.ideal-card.burnout { border-top-color: #dc3545; }
+.ideal-card.meditation { border-top-color: #6f42c1; }
+.ideal-card.emotional { border-top-color: #17a2b8; }
+.ideal-card.groups { border-top-color: #28a745; }
+
+.ideal-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.ideal-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.ideal-description {
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Group Sound Bath CTA */
+.group-soundbath-cta {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 3rem 2rem;
     border-radius: 20px;
-    margin: 3rem 0;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    margin: 3rem 0;
+    position: relative;
+    overflow: hidden;
 }
 
-.energy-wisdom-section .energy-heading {
-    color: white;
-    margin-top: 0;
+.group-soundbath-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: twinkle 15s infinite linear;
+    pointer-events: none;
 }
 
-.energy-wisdom-section .energy-heading::after {
-    background: rgba(255, 255, 255, 0.3);
+.cta-content {
+    position: relative;
+    z-index: 1;
 }
 
-.wisdom-content p {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    opacity: 0.95;
-}
-
-.energy-quote {
+.group-wisdom {
     font-size: 1.3rem;
-    font-style: italic;
-    font-weight: 500;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
-    border-radius: 12px;
-    margin: 2rem 0;
-    border-left: 4px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+    margin: 1.5rem 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.energy-cta {
-    margin-top: 2.5rem;
-}
-
-.energy-cta-button {
-    display: inline-block;
-    background: white;
-    color: #667eea;
+.group-cta-button {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
     padding: 1rem 2.5rem;
     border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
     font-size: 1.1rem;
+    display: inline-block;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    margin-top: 1rem;
 }
 
-.energy-cta-button:hover {
+.group-cta-button:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
-    color: #764ba2;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    color: white;
+    text-decoration: none;
 }
 
-/* Responsive Design */
+/* =================================================================
+   ANCIENT WISDOM MEETS AI POST STYLES
+   ================================================================= */
+
+/* Ancient AI Hero */
+.ancient-ai-hero {
+    background: linear-gradient(135deg, #8e44ad 0%, #3498db 50%, #f39c12 100%);
+    color: white;
+    padding: 2.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.ancient-ai-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="2" fill="rgba(255,255,255,0.1)"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/></circle><circle cx="75" cy="50" r="1.5" fill="rgba(255,255,255,0.08)"><animate attributeName="opacity" values="0.08;0.2;0.08" dur="4s" repeatCount="indefinite"/></circle><circle cx="50" cy="75" r="1" fill="rgba(255,255,255,0.06)"><animate attributeName="opacity" values="0.06;0.15;0.06" dur="5s" repeatCount="indefinite"/></circle></svg>');
+    animation: mystical-flow 20s infinite linear;
+    pointer-events: none;
+}
+
+/* Fusion Introduction */
+.fusion-introduction {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #8e44ad;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    position: relative;
+}
+
+.fusion-introduction::before {
+    content: '⚡';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    opacity: 0.3;
+}
+
+/* Ancient AI Headings */
+.ancient-ai-heading {
+    color: #8e44ad;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #3498db;
+    position: relative;
+}
+
+.ancient-ai-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(45deg, #8e44ad, #3498db, #f39c12);
+}
+
+/* Ancient Traditions Section */
+.ancient-traditions-section {
+    background: rgba(142, 68, 173, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.traditions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.tradition-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.tradition-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.tradition-card.tibetan { border-top: 4px solid #9b59b6; }
+.tradition-card.mongolian { border-top: 4px solid #e74c3c; }
+.tradition-card.ayurvedic { border-top: 4px solid #27ae60; }
+.tradition-card.chinese { border-top: 4px solid #f39c12; }
+
+.tradition-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    text-align: center;
+    display: block;
+}
+
+.tradition-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.tradition-practice {
+    color: #6c757d;
+    font-style: italic;
+    margin-bottom: 0.8rem;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.tradition-element {
+    color: #495057;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 0.5rem;
+    background: rgba(142, 68, 173, 0.05);
+    border-radius: 8px;
+}
+
+/* Ancient Wisdom Insight */
+.ancient-wisdom-insight {
+    margin-top: 2rem;
+}
+
+.wisdom-principles {
+    margin: 1.5rem 0;
+}
+
+.principle-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    color: white;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(142, 68, 173, 0.3);
+    transition: all 0.3s ease;
+}
+
+.principle-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+}
+
+.principle-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    min-width: 40px;
+}
+
+.principle-text {
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+/* AI Healing Section */
+.ai-healing-section {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1ecf1 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.ai-capabilities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.capability-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.capability-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.capability-item.hrv { border-left-color: #e74c3c; }
+.capability-item.nervous { border-left-color: #9b59b6; }
+.capability-item.sleep { border-left-color: #3498db; }
+.capability-item.emotional { border-left-color: #f39c12; }
+.capability-item.breathing { border-left-color: #1abc9c; }
+.capability-item.stress { border-left-color: #e67e22; }
+
+.capability-icon {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+}
+
+.capability-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.capability-description {
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.ai-insight {
+    margin-top: 2rem;
+}
+
+.ai-vision {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-style: italic;
+    margin-top: 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.ai-vision::before {
+    content: '💡';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+/* AI Guide Section */
+.ai-guide-section {
+    background: rgba(243, 156, 18, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.ai-examples {
+    margin: 2rem 0;
+}
+
+.example-card {
+    display: flex;
+    align-items: flex-start;
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border-right: 4px solid transparent;
+}
+
+.example-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.example-card.meditation { border-right-color: #9b59b6; }
+.example-card.frequency { border-right-color: #3498db; }
+.example-card.emotional { border-right-color: #e74c3c; }
+.example-card.habits { border-right-color: #27ae60; }
+.example-card.bioenergetic { border-right-color: #f39c12; }
+
+.example-number {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.example-content {
+    flex: 1;
+}
+
+.example-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.example-description {
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Fusion Benefits Section */
+.fusion-benefits-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.fusion-benefits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.fusion-benefit {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.fusion-benefit:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.benefit-gradient {
+    height: 4px;
+    width: 100%;
+}
+
+.intuitive-gradient { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+.precise-gradient { background: linear-gradient(90deg, #3498db, #2980b9); }
+.personalized-gradient { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+.effective-gradient { background: linear-gradient(90deg, #27ae60, #229954); }
+
+.benefit-content {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.benefit-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.benefit-description {
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Healing Trinity */
+.healing-trinity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 15px;
+    color: white;
+}
+
+.trinity-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    min-width: 150px;
+}
+
+.trinity-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.trinity-text {
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.trinity-connector {
+    font-size: 2rem;
+    font-weight: 700;
+    opacity: 0.8;
+}
+
+/* Ancient AI CTA */
+.ancient-ai-cta {
+    background: linear-gradient(135deg, #8e44ad 0%, #3498db 50%, #f39c12 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    margin: 3rem 0 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.ancient-ai-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: mystical-pattern 25s infinite linear;
+    pointer-events: none;
+}
+
+.ancient-ai-wisdom {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 1.5rem 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ancient-ai-cta-button {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    margin-top: 1rem;
+}
+
+.ancient-ai-cta-button:hover {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Animations */
+@keyframes mystical-flow {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    100% { transform: translateX(-50px) translateY(-50px) rotate(360deg); }
+}
+
+@keyframes mystical-pattern {
+    0% { transform: translateX(0) translateY(0); }
+    100% { transform: translateX(-30px) translateY(-30px); }
+}
+
+/* ===============================================
+   GROUP EXPERIENCES SERIES STYLES
+   =============================================== */
+
+/* Group Experience Hero Sections */
+.group-experience-hero {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.group-experience-hero.workshops-hero {
+    background: linear-gradient(135deg, #27ae60 0%, #16a085 100%);
+}
+
+.group-experience-hero.retreats-hero {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.group-experience-hero .lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin: 0;
+    font-weight: 400;
+    opacity: 0.95;
+}
+
+/* Group Experience Headings */
+.group-experience-heading {
+    color: #27ae60;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 2.5rem 0 1.5rem 0;
+    text-align: center;
+}
+
+/* Group Learning Benefits */
+.group-learning-benefits,
+.immersive-healing-benefits {
+    margin: 2rem 0;
+}
+
+.learning-benefits-grid,
+.immersion-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.benefit-card {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.benefit-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #27ae60;
+}
+
+.benefit-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.benefit-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #27ae60;
+    margin-bottom: 0.5rem;
+}
+
+.benefit-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* Workshop Categories */
+.workshop-categories {
+    margin: 2rem 0;
+}
+
+.workshop-category {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.category-header {
+    background: linear-gradient(135deg, #f8fcf8 0%, #e8f5e8 100%);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.category-icon {
+    font-size: 2rem;
+    background: #27ae60;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-header h3 {
+    color: #27ae60;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.category-content {
+    padding: 1.5rem;
+}
+
+.category-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.workshop-types {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.workshop-type {
+    padding: 0.75rem;
+    background: #f8fcf8;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Class Formats */
+.class-formats {
+    margin: 2rem 0;
+}
+
+.format-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.format-card {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.format-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #27ae60;
+}
+
+.format-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.format-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #27ae60;
+    margin-bottom: 0.5rem;
+}
+
+.format-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.format-duration {
+    font-size: 0.9rem;
+    color: #27ae60;
+    font-weight: 500;
+    background: #f8fcf8;
+    padding: 0.5rem;
+    border-radius: 6px;
+}
+
+/* Learning Outcomes */
+.learning-outcomes {
+    margin: 2rem 0;
+}
+
+.outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.outcome-card {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.outcome-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #27ae60;
+}
+
+.outcome-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.outcome-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #27ae60;
+    margin-bottom: 0.5rem;
+}
+
+.outcome-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* Retreat Types */
+.retreat-types {
+    margin: 2rem 0;
+}
+
+.retreat-type {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.type-header {
+    background: linear-gradient(135deg, #f8fcf8 0%, #e8f5e8 100%);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.type-icon {
+    font-size: 2rem;
+    background: #27ae60;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.type-header h3 {
+    color: #27ae60;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.type-content {
+    padding: 1.5rem;
+}
+
+.type-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.type-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.feature-item {
+    padding: 0.75rem;
+    background: #f8fcf8;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Retreat Components */
+.retreat-components {
+    margin: 2rem 0;
+}
+
+.components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.component-card {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.component-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #27ae60;
+}
+
+.component-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.component-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #27ae60;
+    margin-bottom: 0.5rem;
+}
+
+.component-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* Transformational Elements */
+.transformational-elements {
+    margin: 2rem 0;
+}
+
+.elements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.element-item {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.element-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #27ae60;
+}
+
+.element-icon {
+    font-size: 2rem;
+    background: #27ae60;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.element-content h3 {
+    color: #27ae60;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.element-content p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Journey Phases */
+.journey-phases {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.phase-card {
+    background: white;
+    border: 1px solid #e8f5e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.phase-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #27ae60;
+}
+
+.phase-number {
+    background: #27ae60;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.phase-content h3 {
+    color: #27ae60;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.phase-content > p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.phase-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-item {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    background: #f8fcf8;
+    border-radius: 6px;
+}
+
+/* Group Experience CTAs */
+.group-experience-cta {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    margin: 3rem 0 2rem 0;
+    text-align: center;
+}
+
+.group-experience-cta.workshops-cta {
+    background: linear-gradient(135deg, #27ae60 0%, #16a085 100%);
+}
+
+.group-experience-cta.retreats-cta {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.group-experience-cta .cta-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+}
+
+.group-experience-wisdom {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin: 1.5rem 0;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.cta-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.group-experience-cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    transition: var(--transition-smooth);
+    min-width: 250px;
+}
+
+.group-experience-cta-button.primary {
+    background: white;
+    color: #27ae60;
+    border: 2px solid white;
+}
+
+.group-experience-cta-button.primary:hover {
+    background: transparent;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.group-experience-cta-button.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.group-experience-cta-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design for Group Experiences */
 @media (max-width: 768px) {
-    .energy-hero {
-        padding: 2rem 1.5rem;
-        margin: -1.5rem -1.5rem 2rem -1.5rem;
+    .group-experience-hero {
+        padding: 2rem 1rem;
     }
     
-    .energy-hero .lead {
-        font-size: 1.1rem;
+    .group-experience-hero .lead {
+        font-size: 1rem;
     }
     
-    .energy-heading {
-        font-size: 1.7rem;
+    .group-experience-heading {
+        font-size: 1.6rem;
     }
     
-    .symptoms-grid,
-    .healing-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .symptom-card,
-    .healing-method {
-        padding: 1.5rem;
-    }
-    
-    .blockage-definition,
-    .formation-process,
-    .daily-impact {
-        padding: 2rem 1.5rem;
-    }
-    
-    .healing-methods {
-        padding: 2rem 1.5rem;
-    }
-    
-    .energy-wisdom-section {
-        padding: 2rem 1.5rem;
-    }
-    
-    .signs-list {
+    .learning-benefits-grid,
+    .immersion-benefits-grid,
+    .format-grid,
+    .outcomes-grid,
+    .components-grid {
         grid-template-columns: 1fr;
     }
     
-    .energy-quote {
+    .category-header,
+    .type-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .element-item,
+    .phase-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+    }
+    
+    .group-experience-cta-button {
+        min-width: 200px;
+    }
+    
+    .group-experience-cta {
+        padding: 2rem 1rem;
+    }
+    
+    .group-experience-wisdom {
         font-size: 1.1rem;
-        padding: 1.5rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .cta-buttons {
+        flex-direction: row;
+        justify-content: center;
     }
 }
